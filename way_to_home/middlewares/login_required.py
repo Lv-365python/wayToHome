@@ -10,7 +10,7 @@ GUESTS_PATHS = [
 ]
 
 
-class LoginRequiredMiddleware:
+class LoginRequiredMiddleware:  # pylint: disable=too-few-public-methods
     """
     The сustom middleware that provides JSON check, performs authentication
     validations in case if the path is not available for anonymous users.
@@ -24,7 +24,7 @@ class LoginRequiredMiddleware:
         """Provide JSON check and authentication validations."""
         if request.method in ['POST', 'PATCH', 'PUT']:
             try:
-                request._body = json.loads(request.body)
+                request._body = json.loads(request.body)  # pylint: disable=protected-access
             except json.JSONDecodeError:
                 return HttpResponse(status=400)
 
