@@ -2,37 +2,17 @@ const path = require('path');
 
 module.exports = {
 
-    mode: 'development',
-
-    entry: './way_to_home/static/index.js',
+    entry: path.join(__dirname, 'way_to_home/static/src/app.js'),
 
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, 'way_to_home/static/public'),
         filename: 'bundle.js',
-    },
-
-    watch: true,
-
-    watchOptions: {
-        aggregateTime: 100
     },
 
     module: {
         rules: [
               { test: /\.css$/, use: 'css-loader' },
-              { test: /\.ts$/, use: 'ts-loader' }
+              { test: /\.(js|jsx)$/, use: 'script-loader' },
         ]
     },
-
-    devtool: "source-map",
-
-    externals: {
-        react: 'react'
-    },
-
-    devServer: {
-        proxy: {
-            '/api': 'http://localhost:8000'
-        },
-    }
 };
