@@ -1,0 +1,12 @@
+{
+  "name": "wayToHome",
+  "version": "0.1.0",
+  "description": "The main idea of project – planning routes and get a notification",
+  "main": "app.js",
+  "scripts": {
+    "start": "webpack -d --watch --config webpack.config.js",
+    "build": "webpack --config webpack.config.js",
+    "test": "nyc --reporter=lcov --reporter=text webpack --config webpack-test.config.js",
+    "lint": "eslint --config .eslintrc.js eventually/static/src/;exit 0"
+  }
+};
