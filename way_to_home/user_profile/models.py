@@ -9,8 +9,8 @@ class UserProfile(AbstractModel):
     """Model for user profile entity."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
+    first_name = models.CharField(max_length=64, blank=True)
+    last_name = models.CharField(max_length=64, blank=True)
 
     def __str__(self):
         """Method that returns route instance as string."""
@@ -27,7 +27,7 @@ class UserProfile(AbstractModel):
         }
 
     @classmethod
-    def create(cls, user, first_name=None, last_name=None):  # pylint: disable=arguments-differ
+    def create(cls, user, first_name='', last_name=''):  # pylint: disable=arguments-differ
         """Method for object creation."""
 
         user_profile = cls()
@@ -42,7 +42,7 @@ class UserProfile(AbstractModel):
 
         return user_profile
 
-    def update(self, first_name=None, last_name=None):  # pylint: disable=arguments-differ
+    def update(self, first_name='', last_name=''):  # pylint: disable=arguments-differ
         """Method for object updating."""
 
         if first_name:

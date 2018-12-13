@@ -8,7 +8,7 @@ from utils.abstract_models import AbstractModel
 class Way(AbstractModel):
     """Model for user profile entity."""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, required=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         """Method that returns route instance as string."""

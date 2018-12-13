@@ -8,17 +8,17 @@ from utils.abstract_models import AbstractModel
 class Place(AbstractModel):
     """Model for place entity."""
 
-    longitude = models.DecimalField()
-    latitude = models.DecimalField()
+    longitude = models.DecimalField(decimal_places=6, max_digits=9)
+    latitude = models.DecimalField(decimal_places=6, max_digits=9)
     name = models.CharField(max_length=64)
     address = models.CharField(max_length=255)
-    stop_id = models.PositiveSmallIntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE, required=True)
+    stop_id = models.PositiveSmallIntegerField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         """Method that returns route instance as string."""
 
-        return f'{self.name}'
+        return self.name
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
