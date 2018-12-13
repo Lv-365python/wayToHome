@@ -46,6 +46,7 @@ class Notification(AbstractModel):
 
         try:
             notification.way = way
+            notification.save()
         except (ValueError, IntegrityError):
             notification = None
 

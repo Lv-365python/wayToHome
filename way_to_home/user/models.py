@@ -27,7 +27,7 @@ class User(AbstractBaseUser):
         }
 
     @classmethod
-    def create(cls, email=None, password=None, google_token=None, phone_number=None):  # pylint: disable=arguments-differ
+    def create(cls, email=None, password=None, google_token='', phone_number=''):  # pylint: disable=arguments-differ
         """Method for object creation."""
 
         user = cls()
@@ -41,7 +41,7 @@ class User(AbstractBaseUser):
         except (ValueError, IntegrityError):
             return None
 
-    def update(self, email=None, password=None, google_token=None, phone_number=None):  # pylint: disable=arguments-differ
+    def update(self, email=None, password=None, google_token='', phone_number=''):  # pylint: disable=arguments-differ
         """Method for object updating."""
 
         if email:
