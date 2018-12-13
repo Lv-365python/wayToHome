@@ -16,21 +16,34 @@ class RouteView(View):
     operations with route model.
     """
 
-    def get(self, route_id=None):
+    def get(self, request, route_id=None):
         """ Method that handles GET request. """
 
-        if route_id:
-            route = Route.get_by_id(obj_id=route_id)
-            if not route:
-                return 404
+        route = Route.get_by_id(obj_id=route_id)
+        if not route:
+            return 404
 
         return JsonResponse(route.to_dict(), status=200)
 
+    def put(self, request, route_id=None):
+        """ Method that handles PUT request. """
+
+        route = Route.get_by_id(obj_id=route_id)
+
+        data = request.body
+
+        data = {
+            'time': data.get('time'),
+            'transport_id': data.get('transport_id'),
+            'position': data.get('position'),
+        }
+
+        route.update(**data)
+
+        return 200
+
     def post(self):
         """ Method that handles POST request. """
-
-    def put(self):
-        """ Method that handles PUT request. """
 
     def delete(self):
         """ Method that handles DELETE request. """
