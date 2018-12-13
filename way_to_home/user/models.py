@@ -9,7 +9,7 @@ class User(AbstractBaseUser):
 
     email = models.EmailField(max_length=64, unique=True)
     password = models.CharField(max_length=128)
-    google_token = models.CharField(blank=True, max_length=255)
+    google_token = models.CharField(null=True, max_length=255, unique=True)
     phone_number = models.CharField(blank=True, max_length=15)
 
     def __str__(self):
@@ -27,7 +27,7 @@ class User(AbstractBaseUser):
         }
 
     @classmethod
-    def create(cls, email=None, password=None, google_token='', phone_number=''):  # pylint: disable=arguments-differ
+    def create(cls, email=None, password=None, google_token=None, phone_number=''):  # pylint: disable=arguments-differ
         """Method for object creation."""
 
         user = cls()
@@ -41,7 +41,7 @@ class User(AbstractBaseUser):
         except (ValueError, IntegrityError):
             return None
 
-    def update(self, email=None, password=None, google_token='', phone_number=''):  # pylint: disable=arguments-differ
+    def update(self, email=None, password=None, google_token=None, phone_number=''):  # pylint: disable=arguments-differ
         """Method for object updating."""
 
         if email:
