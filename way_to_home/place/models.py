@@ -12,13 +12,13 @@ class Place(AbstractModel):
     latitude = models.DecimalField()
     name = models.CharField(max_length=64)
     address = models.CharField(max_length=255)
-    stop_id = models.PositiveSmallIntegerField()
+    stop_id = models.PositiveSmallIntegerField(null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, required=True)
 
     def __str__(self):
         """Method that returns route instance as string."""
 
-        return f'{self.name}'
+        return self.name
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""

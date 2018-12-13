@@ -10,7 +10,7 @@ class UserProfile(AbstractModel):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64, blank=True)
 
     def __str__(self):
         """Method that returns route instance as string."""
