@@ -1,0 +1,6 @@
+.LogInBtnDiv{
+    position: fixed;
+    right: 150px;
+    top: 50px;
+    z-index: 10;
+}
