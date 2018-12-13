@@ -15,7 +15,7 @@ class User(AbstractBaseUser):
     def __str__(self):
         """Method that returns route instance as string."""
 
-        return f"{self.email}"
+        return f'User: {self.email}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
