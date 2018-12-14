@@ -10,10 +10,10 @@ class Place(AbstractModel):
 
     longitude = models.DecimalField(decimal_places=6, max_digits=9)
     latitude = models.DecimalField(decimal_places=6, max_digits=9)
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, blank=True)
     address = models.CharField(max_length=255)
     stop_id = models.PositiveSmallIntegerField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         """Method that returns route instance as string."""
@@ -33,7 +33,7 @@ class Place(AbstractModel):
         }
 
     @classmethod
-    def create(cls, user, longitude=None, latitude=None, name=None, address=None, stop_id=None):  # pylint: disable=arguments-differ
+    def create(cls, user, longitude=None, latitude=None, name='', address=None, stop_id=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
 
         place = cls()
@@ -51,7 +51,7 @@ class Place(AbstractModel):
 
         return place
 
-    def update(self, longitude=None, latitude=None, name=None, address=None, stop_id=None):  # pylint: disable=arguments-differ
+    def update(self, longitude=None, latitude=None, name='', address=None, stop_id=None):  # pylint: disable=arguments-differ
         """Method for object updating."""
 
         if longitude:
