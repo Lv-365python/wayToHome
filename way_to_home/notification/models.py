@@ -31,7 +31,7 @@ class Notification(AbstractModel):
             'end_time': self.end_time,
             'week_day': self.week_day,
             'time': self.time,
-            'way': self.way.id
+            'way': self.way_id
         }
 
     @classmethod
