@@ -114,3 +114,4 @@ venv.bak/
 node_modules/
 package-lock.json
 bundle.js
+way_to_home/..pylintrc.swp
