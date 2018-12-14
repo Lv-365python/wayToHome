@@ -10,17 +10,22 @@ class Route(AbstractModel):
     """Model for Route entity."""
 
     way = models.ForeignKey(Way, on_delete=models.CASCADE)
-    start_place = models.ForeignKey(Place, on_delete=models.CASCADE)
-    end_place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    start_place = models.ForeignKey(Place,
+                                    related_name="starts_routes",
+                                    on_delete=models.CASCADE)
+
+    end_place = models.ForeignKey(Place,
+                                  related_name="ends_routes",
+                                  on_delete=models.CASCADE)
+
     time = models.TimeField()
-    transport_id = models.PositiveIntegerField()
+    transport_id = models.PositiveIntegerField(null=True)
     position = models.PositiveSmallIntegerField()
 
     def __str__(self):
         """Method that returns route instance as string."""
 
-        return f'route from place with id: {self.start_place.id} ' \
-            f'to place with id {self.end_place.id} id'
+        return f'route from: {self.start_place_id} to {self.end_place_id}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
@@ -30,9 +35,9 @@ class Route(AbstractModel):
             'time': self.time,
             'transport_id': self.transport_id,
             'position': self.position,
-            'way': self.way.id,
-            'start_place': self.start_place,
-            'end_place': self.end_place
+            'way': self.way_id,
+            'start_place': self.start_place_id,
+            'end_place': self.end_place_id
 
         }
 
@@ -50,6 +55,7 @@ class Route(AbstractModel):
             route.way = way
             route.start_place = start_place
             route.end_place = end_place
+            route.save()
             return route
         except (ValueError, IntegrityError):
             return None
