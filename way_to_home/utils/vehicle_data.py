@@ -1,4 +1,4 @@
-from google.protobuf import json_format
+import google.protobuf
 from google.transit import gtfs_realtime_pb2
 import requests
 
