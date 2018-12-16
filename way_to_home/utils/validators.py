@@ -82,7 +82,7 @@ def notification_create_or_update_validate(data, update=False):
 
     validation_rules = {
         'start_date': start_date_notification_validator,
-        'end_date': lambda val: end_date_notification_validator(val, data.get('start_date')),
+        'end_date': lambda val: end_date_notification_validator(end_date=val, start_date=data.get('start_date')),
         'week_day': week_day_notification_validator,
         'time': time_notification_validator
     }
