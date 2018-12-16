@@ -41,9 +41,9 @@ def start_date_notification_validator(start_date):
     return True
 
 
-def end_date_notification_validator(start_date, end_date):
+def end_date_notification_validator(end_date, start_date):
     """Function validates end_date field in Notification model"""
-    start_date = date_validator(start_date)
+    start_date = date_validator(start_date) if start_date else datetime.now() - timedelta(days=1)
     end_date = date_validator(end_date)
     if not start_date or not end_date:
         return None
@@ -82,7 +82,7 @@ def notification_create_or_update_validate(data, update=False):
 
     validation_rules = {
         'start_date': start_date_notification_validator,
-        'end_date': lambda val: end_date_notification_validator(end_date=val, start_date=data.get('start_date')),
+        'end_date': lambda val: end_date_notification_validator(val, data.get('start_date')),
         'week_day': week_day_notification_validator,
         'time': time_notification_validator
     }
