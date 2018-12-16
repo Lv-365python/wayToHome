@@ -11,3 +11,5 @@ pytz==2018.7
 six==1.11.0
 wrapt==1.10.11
 psycopg2-binary==2.7.6.1
+google==2.0.1
+requests==2.21.0
