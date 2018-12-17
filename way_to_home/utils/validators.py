@@ -27,6 +27,18 @@ def string_validator(value, min_length=0, max_length=None):
     return True
 
 
+def coordinate_validator(value, min_value, max_value):
+    """Provide coordinate validation."""
+
+    if not isinstance(value, float):
+        return False
+
+    if not min_value <= value <= max_value:
+        return False
+
+    return True
+
+
 def required_keys_validator(data, keys_required):
     """Provide required keys validation."""
     keys = set(data.keys())
@@ -141,10 +153,10 @@ def place_data_validator(data, update=False):
     validation_rules = {
         'address': lambda val: string_validator(val, max_length=255),
         'name': lambda val: string_validator(val, max_length=255),
-        'stop_id': lambda val: isinstance(val, int) and val > 0,
-        'longitude': lambda val: isinstance(val, float),
-        'latitude': lambda val: isinstance(val, float),
-        'user': lambda val: isinstance(val, int) and val > 0
+        'stop_id': lambda val: isinstance(val, int) and val >= 0,
+        'longitude': lambda val: coordinate_validator(val, min_value=-180, max_value=180),
+        'latitude': lambda val: coordinate_validator(val, min_value=-90, max_value=90),
+        'user': lambda val: isinstance(val, int) and val >= 0
     }
 
     for key, value in filtered_data.items():
