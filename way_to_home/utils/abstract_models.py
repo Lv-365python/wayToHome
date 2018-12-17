@@ -43,9 +43,13 @@ class AbstractModel(models.Model):
     def create(cls, **kwargs):
         """Create object."""
 
-    @abstractmethod
     def update(self, **kwargs):
         """Update object parameters."""
+        for key, value in kwargs.items():
+            if value:
+                setattr(self, key, value)
+
+        self.save()
 
     @abstractmethod
     def to_dict(self):
