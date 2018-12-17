@@ -1,12 +1,12 @@
 """This module implements class that represents the way entity."""
 
-from custom_user.models import CustomUser
 from django.db import models, IntegrityError
+from custom_user.models import CustomUser
 
 
 class Way(models.Model):
     """Model for user profile entity."""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         """Method that returns route instance as string."""

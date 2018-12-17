@@ -1,7 +1,7 @@
 """This module implements class that represents the place entity."""
 
-from custom_user.models import CustomUser
 from django.db import models, IntegrityError
+from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
 
 
@@ -12,7 +12,7 @@ class Place(AbstractModel):
     name = models.CharField(max_length=64, blank=True)
     address = models.CharField(max_length=255)
     stop_id = models.PositiveSmallIntegerField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         """Method that returns route instance as string."""

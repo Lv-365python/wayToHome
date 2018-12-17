@@ -1,8 +1,9 @@
 """This module implements class that represents the user entity."""
 
+import uuid
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models, IntegrityError
-import uuid
+
 
 
 class CustomUser(AbstractBaseUser):
@@ -10,7 +11,7 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=64, unique=True)
     password = models.CharField(max_length=128)
     google_token = models.CharField(null=True, max_length=255, unique=True)
-    email_token = models.CharField(null=True, max_length=255, unique=True, blank=True, default=uuid.uuid4)
+    email_token = models.UUIDField(default=uuid.uuid4)
     phone_number = models.CharField(blank=True, max_length=15)
     is_active = models.BooleanField(default=False)
 
@@ -30,7 +31,8 @@ class CustomUser(AbstractBaseUser):
         }
 
     @classmethod
-    def create(cls, email=None, password=None, google_token=None, email_token = None, phone_number=''):  # pylint: disable=arguments-differ
+    def create(cls, email=None, password=None, google_token=None,
+               email_token=None, phone_number=''):
         """Method for object creation."""
         user = cls()
         user.email = email

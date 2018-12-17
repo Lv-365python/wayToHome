@@ -1,13 +1,13 @@
 """This module implements class that represents the user profile entity."""
 
-from custom_user.models import CustomUser
 from django.db import models, IntegrityError
+from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
 
 
 class UserProfile(AbstractModel):
     """Model for user profile entity."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=64, blank=True)
     last_name = models.CharField(max_length=64, blank=True)
 
