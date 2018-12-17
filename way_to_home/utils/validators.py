@@ -98,7 +98,6 @@ def week_day_notification_validator(week_day):
     return False
 
 
-
 def notification_data_validator(data, update=False):
     """Function that provides update notification model data validation"""
     required_fields = ['start_date', 'end_date', 'week_day', 'time', 'way_id']
@@ -163,5 +162,18 @@ def place_data_validator(data, update=False):
         if value is not None:
             if not validation_rules[key](value):
                 return False
+
+    return True
+
+
+def way_data_validator(data):
+    """Function that provides update way model data validation"""
+    user_id = data.get('user')
+
+    if not user_id:
+        return False
+
+    if not isinstance(user_id, int) and not user_id >= 0:
+        return False
 
     return True
