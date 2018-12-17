@@ -109,3 +109,38 @@ def notification_data_validator(data, update=False):
                 return False
 
     return True
+
+
+def place_data_validator(data, update=False):
+    """Provide data validation before create/update place object."""
+    required_fields = ['longitude', 'latitude', 'address']
+
+    if not update:
+        if not required_keys_validator(data, required_fields):
+            return False
+
+    place_model_fields = [
+        'longitude',
+        'latitude',
+        'address',
+        'name',
+        'user',
+        'stop_id',
+    ]
+
+    filtered_data = {key: data.get(key) for key in place_model_fields}
+    validation_rules = {
+        'address': lambda val: string_validator(val, max_length=255),
+        'name': lambda val: string_validator(val, max_length=255),
+        'stop_id': lambda val: isinstance(val, int) and val > 0,
+        'longitude': lambda val: isinstance(val, float),
+        'latitude': lambda val: isinstance(val, float),
+        'user': lambda val: isinstance(val, int) and val > 0
+    }
+
+    for key, value in filtered_data.items():
+        if value is not None:
+            if not validation_rules[key](value):
+                return False
+
+    return True
