@@ -7,35 +7,31 @@ from utils.abstract_models import AbstractModel
 
 class Place(AbstractModel):
     """Model for place entity."""
-
     longitude = models.DecimalField(decimal_places=6, max_digits=9)
     latitude = models.DecimalField(decimal_places=6, max_digits=9)
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, blank=True)
     address = models.CharField(max_length=255)
     stop_id = models.PositiveSmallIntegerField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         """Method that returns route instance as string."""
-
         return self.name
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
-
         return {
             'longitude': self.longitude,
             'latitude': self.latitude,
             'name': self.name,
             'address': self.address,
             'stop_id': self.stop_id,
-            'user_id': self.user.id
+            'user_id': self.user_id
         }
 
     @classmethod
-    def create(cls, user, longitude=None, latitude=None, name=None, address=None, stop_id=None):  # pylint: disable=arguments-differ
+    def create(cls, user, longitude=None, latitude=None, name='', address=None, stop_id=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
-
         place = cls()
         place.longitude = longitude
         place.latitude = latitude
@@ -46,23 +42,6 @@ class Place(AbstractModel):
 
         try:
             place.save()
+            return place
         except (ValueError, IntegrityError):
-            place = None
-
-        return place
-
-    def update(self, longitude=None, latitude=None, name=None, address=None, stop_id=None):  # pylint: disable=arguments-differ
-        """Method for object updating."""
-
-        if longitude:
-            self.longitude = longitude
-        if latitude:
-            self.latitude = latitude
-        if name:
-            self.name = name
-        if address:
-            self.address = address
-        if stop_id:
-            self.stop_id = stop_id
-
-        self.save()
+            pass
