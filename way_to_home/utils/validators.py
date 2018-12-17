@@ -62,9 +62,9 @@ def start_date_notification_validator(start_date):
     today = datetime.now() - timedelta(days=1)
     start_date = date_validator(start_date)
     if not start_date:
-        return None
+        return False
     if today > start_date:
-        return None
+        return False
 
     return True
 
@@ -74,9 +74,9 @@ def end_date_notification_validator(end_date, start_date):
     start_date = date_validator(start_date) if start_date else datetime.now() - timedelta(days=1)
     end_date = date_validator(end_date)
     if not start_date or not end_date:
-        return None
+        return False
     if start_date > end_date:
-        return None
+        return False
 
     return True
 
@@ -85,9 +85,10 @@ def time_notification_validator(time):
     """Function validates time field in Notification model"""
     try:
         datetime.strptime(time, TIME_MASK)
-        return True
     except ValueError:
-        pass
+        return False
+
+    return True
 
 
 def week_day_notification_validator(week_day):
@@ -95,6 +96,7 @@ def week_day_notification_validator(week_day):
     if isinstance(week_day, int):
         if int(week_day) in range(0, 7):
             return True
+
     return False
 
 
