@@ -98,4 +98,3 @@ class RouteSearchForm extends Component {
 }
 
 export default RouteSearchForm
-
