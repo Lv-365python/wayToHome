@@ -173,7 +173,10 @@ def way_data_validator(data):
     if not user_id:
         return False
 
-    if not isinstance(user_id, int) and not user_id >= 0:
+    if not isinstance(user_id, int):
+        return False
+
+    if not user_id > 0:
         return False
 
     return True
