@@ -3,9 +3,9 @@
     in GTFS format.
 """
 
-import google.protobuf
-from google.transit import gtfs_realtime_pb2
 import requests
+from google import protobuf
+from google.transit import gtfs_realtime_pb2
 
 
 FEED = gtfs_realtime_pb2.FeedMessage()
