@@ -8,7 +8,6 @@ from place.models import Place
 
 class Route(AbstractModel):
     """Model for Route entity."""
-
     way = models.ForeignKey(Way, on_delete=models.CASCADE)
     start_place = models.ForeignKey(Place,
                                     related_name="starts_routes",
@@ -24,12 +23,10 @@ class Route(AbstractModel):
 
     def __str__(self):
         """Method that returns route instance as string."""
-
         return f'route from: {self.start_place_id} to {self.end_place_id}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
-
         return {
             'id': self.id,
             'time': self.time,
@@ -45,7 +42,6 @@ class Route(AbstractModel):
     def create(cls, way=None, start_place=None, end_place=None,  # pylint: disable=arguments-differ
                time=None, transport_id=None, position=None):
         """Method for object creation."""
-
         route = cls()
         route.time = time
         route.transport_id = transport_id
@@ -58,22 +54,4 @@ class Route(AbstractModel):
             route.save()
             return route
         except (ValueError, IntegrityError):
-            return None
-
-    def update(self, way=None, start_place=None, end_place=None,  # pylint: disable=arguments-differ
-               time=None, transport_id=None, position=None):
-        """Method for object updating."""
-
-        if way:
-            self.way = way
-        if start_place:
-            self.start_place = start_place
-        if end_place:
-            self.end_place = end_place
-        if time:
-            self.time = time
-        if transport_id:
-            self.transport_id = transport_id
-        if position:
-            self.position = position
-        self.save()
+            pass

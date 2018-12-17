@@ -1,6 +1,6 @@
 """This module implements class that represents the place entity."""
 
-from user.models import User
+from custom_user.models import CustomUser
 from django.db import models, IntegrityError
 from utils.abstract_models import AbstractModel
 

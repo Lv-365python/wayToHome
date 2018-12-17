@@ -10,7 +10,6 @@ WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 
 class Notification(AbstractModel):
     """Model for Notification entity."""
-
     way = models.ForeignKey(Way, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -19,12 +18,10 @@ class Notification(AbstractModel):
 
     def __str__(self):
         """Method that returns route instance as string."""
-
         return f'notification at: {WEEK[self.week_day]} {str(self.time)}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
-
         return {
             'id': self.id,
             'start_time': self.start_time,
@@ -37,7 +34,6 @@ class Notification(AbstractModel):
     @classmethod
     def create(cls, way=None, start_time=None, end_time=None, week_day=None, time=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
-
         notification = cls()
         notification.start_time = start_time
         notification.end_time = end_time
@@ -47,22 +43,6 @@ class Notification(AbstractModel):
         try:
             notification.way = way
             notification.save()
+            return notification
         except (ValueError, IntegrityError):
-            notification = None
-
-        return notification
-
-    def update(self, way=None, start_time=None, end_time=None, week_day=None, time=None):  # pylint: disable=arguments-differ
-        """Method for object updating."""
-
-        if way:
-            self.way = way
-        if start_time:
-            self.start_time = start_time
-        if end_time:
-            self.end_time = end_time
-        if week_day:
-            self.week_day = week_day
-        if time:
-            self.time = time
-        self.save()
+            pass
