@@ -11,6 +11,22 @@ DATE_MASK = ['%Y%m%d', '%Y-%m-%d', '%d-%m-%Y', '%d%m%Y', '%m%d%Y', '%d/%m/%Y']
 TIME_MASK = "%H:%M:%S"
 
 
+def string_validator(value, min_length=0, max_length=None):
+    """Provide string validation."""
+
+    if not isinstance(value, str):
+        return False
+
+    if len(value) < min_length:
+        return False
+
+    if max_length:
+        if len(value) > max_length:
+            return False
+
+    return True
+
+
 def required_keys_validator(data, keys_required):
     """Provide required keys validation."""
     keys = set(data.keys())
@@ -71,7 +87,7 @@ def week_day_notification_validator(week_day):
         pass
 
 
-def notification_create_or_update_validate(data, update=False):
+def notification_data_validator(data, update=False):
     """Function that provides update notification model data validation"""
     notification_model_fields = ['start_date', 'end_date', 'week_day', 'time']
     filtered_data = {key: data.get(key) for key in notification_model_fields}
