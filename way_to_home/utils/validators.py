@@ -81,7 +81,7 @@ def end_date_notification_validator(end_date, start_date):
     return True
 
 
-def time_notification_validator(time):
+def time_validator(time):
     """Function validates time field in Notification model"""
     try:
         datetime.strptime(time, TIME_MASK)
@@ -121,7 +121,7 @@ def notification_data_validator(data, update=False):
         'start_date': start_date_notification_validator,
         'end_date': lambda val: end_date_notification_validator(val, data.get('start_date')),
         'week_day': week_day_notification_validator,
-        'time': time_notification_validator,
+        'time': time_validator,
         'way': lambda val: isinstance(val, int) and val > 0
     }
 
