@@ -27,6 +27,18 @@ def string_validator(value, min_length=0, max_length=None):
     return True
 
 
+def coordinate_validator(value, min_value, max_value):
+    """Provide coordinate validation."""
+
+    if not isinstance(value, float):
+        return False
+
+    if not min_value <= value <= max_value:
+        return False
+
+    return True
+
+
 def required_keys_validator(data, keys_required):
     """Provide required keys validation."""
     keys = set(data.keys())
