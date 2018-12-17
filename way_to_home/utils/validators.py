@@ -89,18 +89,27 @@ def week_day_notification_validator(week_day):
 
 def notification_data_validator(data, update=False):
     """Function that provides update notification model data validation"""
-    notification_model_fields = ['start_date', 'end_date', 'week_day', 'time']
-    filtered_data = {key: data.get(key) for key in notification_model_fields}
+    required_fields = ['start_date', 'end_date', 'week_day', 'time', 'way_id']
 
     if not update:
-        if not required_keys_validator(data, notification_model_fields):
+        if not required_keys_validator(data, required_fields):
             return False
 
+    notification_model_fields = [
+        'start_date',
+        'end_date',
+        'week_day',
+        'time',
+        'way_id'
+    ]
+
+    filtered_data = {key: data.get(key) for key in notification_model_fields}
     validation_rules = {
         'start_date': start_date_notification_validator,
         'end_date': lambda val: end_date_notification_validator(val, data.get('start_date')),
         'week_day': week_day_notification_validator,
-        'time': time_notification_validator
+        'time': time_notification_validator,
+        'way': lambda val: isinstance(val, int) and val > 0
     }
 
     for key, value in filtered_data.items():
