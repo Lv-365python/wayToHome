@@ -92,11 +92,11 @@ def time_notification_validator(time):
 
 def week_day_notification_validator(week_day):
     """Function validates week_day field in Notification model"""
-    try:
+    if isinstance(week_day, int):
         if int(week_day) in range(0, 7):
             return True
-    except ValueError:
-        pass
+    return False
+
 
 
 def notification_data_validator(data, update=False):
@@ -153,10 +153,10 @@ def place_data_validator(data, update=False):
     validation_rules = {
         'address': lambda val: string_validator(val, max_length=255),
         'name': lambda val: string_validator(val, max_length=255),
-        'stop_id': lambda val: isinstance(val, int) and val >= 0,
+        'stop_id': lambda val: isinstance(val, int) and val > 0,
         'longitude': lambda val: coordinate_validator(val, min_value=-180, max_value=180),
         'latitude': lambda val: coordinate_validator(val, min_value=-90, max_value=90),
-        'user': lambda val: isinstance(val, int) and val >= 0
+        'user': lambda val: isinstance(val, int) and val > 0
     }
 
     for key, value in filtered_data.items():
