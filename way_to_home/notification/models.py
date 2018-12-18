@@ -5,12 +5,9 @@ from utils.abstract_models import AbstractModel
 from way.models import Way
 
 
-WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-
 class Notification(AbstractModel):
     """Model for Notification entity."""
-    way = models.ForeignKey(Way, on_delete=models.CASCADE)
+    way = models.ForeignKey(Way, on_delete=models.CASCADE, related_name='notifications')
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     week_day = models.PositiveSmallIntegerField()
@@ -18,7 +15,7 @@ class Notification(AbstractModel):
 
     def __str__(self):
         """Method that returns route instance as string."""
-        return f'notification at: {WEEK[self.week_day]} {str(self.time)}'
+        return f'notification at: {self.week_day} {str(self.time)}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
@@ -32,7 +29,7 @@ class Notification(AbstractModel):
         }
 
     @classmethod
-    def create(cls, way=None, start_time=None, end_time=None, week_day=None, time=None):  # pylint: disable=arguments-differ
+    def create(cls, way, start_time, end_time, week_day, time):  # pylint: disable=arguments-differ
         """Method for object creation."""
         notification = cls()
         notification.start_time = start_time

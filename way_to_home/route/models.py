@@ -8,15 +8,13 @@ from place.models import Place
 
 class Route(AbstractModel):
     """Model for Route entity."""
-    way = models.ForeignKey(Way, on_delete=models.CASCADE)
+    way = models.ForeignKey(Way, on_delete=models.CASCADE, related_name='routes')
     start_place = models.ForeignKey(Place,
-                                    related_name="starts_routes",
+                                    related_name='start_routes',
                                     on_delete=models.CASCADE)
-
     end_place = models.ForeignKey(Place,
-                                  related_name="ends_routes",
+                                  related_name='end_routes',
                                   on_delete=models.CASCADE)
-
     time = models.TimeField()
     transport_id = models.PositiveIntegerField(null=True)
     position = models.PositiveSmallIntegerField()
@@ -32,15 +30,15 @@ class Route(AbstractModel):
             'time': self.time,
             'transport_id': self.transport_id,
             'position': self.position,
-            'way': self.way_id,
-            'start_place': self.start_place_id,
-            'end_place': self.end_place_id
+            'way': self.way.id,
+            'start_place': self.start_place.id,
+            'end_place': self.end_place.id
 
         }
 
     @classmethod
-    def create(cls, way=None, start_place=None, end_place=None,  # pylint: disable=arguments-differ
-               time=None, transport_id=None, position=None):
+    def create(cls, way, start_place, end_place, time,  # pylint: disable=arguments-differ
+               position, transport_id=None):
         """Method for object creation."""
         route = cls()
         route.time = time

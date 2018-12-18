@@ -6,24 +6,29 @@ from custom_user.models import CustomUser
 
 class Way(models.Model):
     """Model for user profile entity."""
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='ways')
+    name = models.CharField(max_length=128, blank=True)
 
     def __str__(self):
         """Method that returns route instance as string."""
-        return f'Way_id: {self.id}, user_id: {self.user_id}'
+        return f'Way id: {self.id}, user id: {self.user.id}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
         return {
-            'way_id': self.id,
-            'user_id': self.user_id
+            'id': self.id,
+            'name': self.name,
+            'user_id': self.user.id
         }
 
     @classmethod
-    def create(cls, user):  # pylint: disable=arguments-differ
+    def create(cls, user, name=''):  # pylint: disable=arguments-differ
         """Method for object creation."""
+        way = cls()
+        way.name = name
+
         try:
-            way = cls(user=user)
+            way.user = user
             return way
         except (ValueError, IntegrityError):
             pass
