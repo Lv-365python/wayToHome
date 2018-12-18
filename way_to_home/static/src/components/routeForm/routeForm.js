@@ -31,11 +31,11 @@ class TextFields extends Component {
           <TextField
             label={this.state.name}
             value={this.state.value}
-            onChange={this.handleChange}
-          />
-        </div>)
+            onChange={this.handleChange}/>
+        </div>
+      )
     }
-}
+};
 
 class RouteSearchForm extends Component {
 

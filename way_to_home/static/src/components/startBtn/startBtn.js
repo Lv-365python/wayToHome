@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import './startBtn.css'
 import Button from '@material-ui/core/Button';
+import './startBtn.css'
 
 class StartBtn extends Component{
 
@@ -9,6 +9,10 @@ class StartBtn extends Component{
 
         this.state = {
         }
+    }
+
+    openRouteForm = () => {
+        document.getElementsByClassName('searchForm')[0].style.display = 'block';
     }
 
     render(){
@@ -20,10 +24,7 @@ class StartBtn extends Component{
             </div>
         )
     }
-
-    openRouteForm = () => {
-        document.getElementsByClassName('searchForm')[0].style.display = 'block';
-    }
 }
 
 export default StartBtn;
+

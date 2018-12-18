@@ -26,4 +26,5 @@ class LogInBtn extends Component{
     }
 }
 
-export default LogInBtn;
+export default LogInBtn
+

@@ -2,12 +2,23 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: path.join(__dirname, 'way_to_home/static/src/index.js'),
+  entry: path.join(__dirname, 'way_to_home/static/src/app.js'),
+  output: {
+    path: path.join(__dirname, 'way_to_home/static/public'),
+    publicPath: '/',
+    filename: 'bundle.js'
+  },
+  resolve: {
+    alias: {
+      src: path.join(__dirname, 'way_to_home/static/src')
+    },
+    extensions: ['*', '.js', '.jsx']
+  },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
+        test: /\.jsx?/,
+        include: path.join(__dirname, 'way_to_home/static/'),
         use: ['babel-loader']
       },
       {
@@ -15,14 +26,6 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       }
     ]
-  },
-  resolve: {
-    extensions: ['*', '.js', '.jsx']
-  },
-  output: {
-    path: path.join(__dirname, 'way_to_home/static/public'),
-    publicPath: '/',
-    filename: 'bundle.js'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
