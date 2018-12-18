@@ -12,4 +12,3 @@ ReactDOM.render(
     </div>,
     document.querySelector('#root')
 );
-

@@ -27,4 +27,3 @@ class LogInBtn extends Component{
 }
 
 export default LogInBtn
-

@@ -27,4 +27,3 @@ class StartBtn extends Component{
 }
 
 export default StartBtn;
-
