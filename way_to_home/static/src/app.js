@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {StartBtn, RouteSearchForm, LogInBtn, ResultForm} from './components'
+import {StartBtn, RouteSearchForm, LogInBtn, ResultForm, LogInForm} from './components'
 
 ReactDOM.render(
     <div>
@@ -9,6 +9,7 @@ ReactDOM.render(
         <RouteSearchForm></RouteSearchForm>
         <LogInBtn></LogInBtn>
         <ResultForm></ResultForm>
+        <LogInForm></LogInForm>
     </div>,
     document.querySelector('#root')
 );
