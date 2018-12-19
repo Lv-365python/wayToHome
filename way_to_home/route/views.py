@@ -1,1 +1,6 @@
-"""This module that provides base logic for CRUD of route`s model objects."""
+"""
+Route view module
+================
+
+This module that provides base logic for CRUD of route`s model objects.
+"""

@@ -6,7 +6,7 @@ This module implements abstract class.
 
 from abc import abstractmethod
 
-from django.db import models
+from django.db import models, IntegrityError
 
 
 class AbstractModel(models.Model):
@@ -43,9 +43,16 @@ class AbstractModel(models.Model):
     def create(cls, **kwargs):
         """Create object."""
 
-    @abstractmethod
     def update(self, **kwargs):
         """Update object parameters."""
+        for key, value in kwargs.items():
+            if value:
+                setattr(self, key, value)
+        try:
+            self.save()
+            return True
+        except (ValueError, IntegrityError):
+            return False
 
     @abstractmethod
     def to_dict(self):
