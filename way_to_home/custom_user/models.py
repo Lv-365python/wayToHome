@@ -31,7 +31,7 @@ class CustomUser(AbstractBaseUser):
     def update(self, password=None, google_token=None, phone_number=None, is_active=None):
         """Method for object update."""
         if password:
-            self.password = password.set_password()
+            self.set_password(password)
         if google_token:
             self.google_token = google_token
         if phone_number:
