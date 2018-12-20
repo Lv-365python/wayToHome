@@ -9,7 +9,7 @@ from .models import Place
 class PlaceView(View):
     """Class that handle HTTP requests for place model."""
 
-    def post(self, request, obj_id=None):
+    def post(self, request, place_id=None):
         """Handle the request for create a new place object."""
         data = request.body
         if not data:
@@ -25,17 +25,17 @@ class PlaceView(View):
         place = place.to_dict()
         return JsonResponse(place, status=201)
 
-    def get(self, request, obj_id=None):
+    def get(self, request, place_id=None):
         """Handle the request for retrieve a place object or user`s places."""
         user = request.user
 
-        if not obj_id:
+        if not place_id:
             places = user.places.all()
             data = [place.to_dict() for place in places]
 
             return JsonResponse(data, status=200, safe=False)
 
-        place = Place.get_by_id(obj_id)
+        place = Place.get_by_id(place_id)
 
         if not place:
             return HttpResponse('object not found', status=404)
@@ -46,16 +46,16 @@ class PlaceView(View):
         place = place.to_dict()
         return JsonResponse(place, status=200)
 
-    def put(self, request, obj_id=None):  # pylint: disable=R0201
+    def put(self, request, place_id=None):  # pylint: disable=R0201
         """Handle the request for update an existing place object with appropriate id."""
-        if not obj_id:
+        if not place_id:
             return HttpResponse('object id is not received', status=400)
 
         data = request.body
         if not data:
             return HttpResponse('empty json received', status=400)
 
-        place = Place.get_by_id(obj_id)
+        place = Place.get_by_id(place_id)
 
         if not place:
             return HttpResponse('object not found', status=404)
@@ -72,12 +72,12 @@ class PlaceView(View):
 
         return HttpResponse('object was successfully updated', status=200)
 
-    def delete(self, request, obj_id=None):  # pylint: disable=R0201
+    def delete(self, request, place_id=None):  # pylint: disable=R0201
         """Handle the request that will delete place object with appropriate id."""
-        if not obj_id:
+        if not place_id:
             return HttpResponse('object id is not received', status=400)
 
-        place = Place.get_by_id(obj_id)
+        place = Place.get_by_id(place_id)
 
         if not place:
             return HttpResponse('object not found', status=404)
@@ -85,7 +85,7 @@ class PlaceView(View):
         if request.user.id != place.user_id:
             return HttpResponse('access denied for non-owner user', status=403)
 
-        is_deleted = Place.delete_by_id(obj_id)
+        is_deleted = Place.delete_by_id(place_id)
         if not is_deleted:
             return HttpResponse('database operation is failed', status=400)
 
