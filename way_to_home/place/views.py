@@ -71,3 +71,22 @@ class PlaceView(View):
             return HttpResponse('database operation is failed', status=400)
 
         return HttpResponse('object was successfully updated', status=200)
+
+    def delete(self, request, obj_id=None):  # pylint: disable=R0201
+        """Handle the request that will delete place object with appropriate id."""
+        if not obj_id:
+            return HttpResponse('object id is not received', status=400)
+
+        place = Place.get_by_id(obj_id)
+
+        if not place:
+            return HttpResponse('object not found', status=404)
+
+        if request.user.id != place.user_id:
+            return HttpResponse('access denied for non-owner user', status=403)
+
+        is_deleted = Place.delete_by_id(obj_id)
+        if not is_deleted:
+            return HttpResponse('database operation is failed', status=400)
+
+        return HttpResponse('object was successfully deleted', status=200)
