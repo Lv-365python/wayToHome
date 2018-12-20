@@ -1,6 +1,7 @@
 """This module implements helpers functions for work with files."""
 
 import requests
+import pickle
 
 
 def load_file(url, save_to='./'):
@@ -15,3 +16,9 @@ def load_file(url, save_to='./'):
         file.write(request.content)
 
     return True
+
+
+def pickle_data(data, path_to_file):
+    """Write a pickled representation of data to file."""
+    with open(path_to_file, 'wb') as file:
+        pickle.dump(data, file)
