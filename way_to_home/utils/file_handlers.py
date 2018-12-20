@@ -22,3 +22,11 @@ def pickle_data(data, path_to_file):
     """Write a pickled representation of data to file."""
     with open(path_to_file, 'wb') as file:
         pickle.dump(data, file)
+
+
+def unpickle_data(path_to_file):
+    """Read a pickled representation of data from file."""
+    with open(path_to_file, 'rb') as file:
+        data = pickle.load(file)
+
+    return data
