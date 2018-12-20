@@ -18,7 +18,7 @@ def compile_file(file_gtfs):
         return False
 
     feed.ParseFromString(content)
-    json_data = parse_vehicle_data(feed.entity)
+    json_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
 
     with open('vehicle_data.json', 'w') as file:
         file.write(json_data)
@@ -54,3 +54,5 @@ def get_route(file_json, route_id):
 
     route = data.get(route_id)
     return route
+
+compile_file('./vehicle_position')
