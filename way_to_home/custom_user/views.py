@@ -60,6 +60,6 @@ def log_in(request):
     password = data.get('password')
     user = authenticate(email=email, password=password)
     if not user:
-        return HttpResponse('received password is not valid', status=400)
+        return HttpResponse('invalid credentials', status=400)
     login(request, user=user)
     return HttpResponse('operation was successful provided', status=200)

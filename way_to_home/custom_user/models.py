@@ -31,7 +31,7 @@ class CustomUser(AbstractBaseUser):
     def update(self, password=None, google_token=None, phone_number=None, is_active=None):
         """Method for object update."""
         if password:
-            self.password = password
+            self.password = password.set_password()
         if google_token:
             self.google_token = google_token
         if phone_number:
@@ -49,7 +49,7 @@ class CustomUser(AbstractBaseUser):
         """Method for returns user by email"""
         try:
             return cls.objects.get(email=email)
-        except (ValueError, IntegrityError):
+        except (ValueError, cls.DoesNotExist):
             pass
 
     @classmethod
