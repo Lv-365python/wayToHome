@@ -10,14 +10,20 @@ from google.transit import gtfs_realtime_pb2
 def compile_file(file_gtfs):
     """ This function compile gtfs file to json file """
     feed = gtfs_realtime_pb2.FeedMessage()
-    with open(file_gtfs, 'rb') as file:
-        content = file.read()
+
+    try:
+        with open(file_gtfs, 'rb') as file:
+            content = file.read()
+    except FileNotFoundError:
+        return False
 
     feed.ParseFromString(content)
     json_data = parse_vehicle_data(feed.entity)
 
     with open('vehicle_data.json', 'w') as file:
         file.write(json_data)
+
+    return True
 
 
 def parse_vehicle_data(feed_entity):
@@ -40,8 +46,11 @@ def parse_vehicle_data(feed_entity):
 
 def get_route(file_json, route_id):
     """ This function return json object that contain necessary data about certain trip """
-    with open(file_json, 'r') as file:
-        data = json.loads(file.read())
+    try:
+        with open(file_json, 'r') as file:
+            data = json.loads(file.read())
+    except FileNotFoundError:
+        return None
 
     route = data.get(route_id)
     return route
