@@ -1,5 +1,6 @@
 """This module implements class that represents the user entity."""
 
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models, IntegrityError
 
@@ -26,6 +27,30 @@ class CustomUser(AbstractBaseUser):
             'email': self.email,
             'phone_number': self.phone_number
         }
+
+    def update(self, password=None, google_token=None, phone_number=None, is_active=None):
+        """Method for object update."""
+        if password:
+            self.password = password
+        if google_token:
+            self.google_token = google_token
+        if phone_number:
+            self.phone_number = phone_number
+        if is_active is not None:
+            self.is_active = is_active
+        try:
+            self.save()
+            return True
+        except ValueError:
+            return False
+
+    @classmethod
+    def get_by_email(cls, email):
+        """Method for returns user by email"""
+        try:
+            return cls.objects.get(email=email)
+        except (ValueError, IntegrityError):
+            pass
 
     @classmethod
     def create(cls, email, password, google_token='', phone_number=''):
