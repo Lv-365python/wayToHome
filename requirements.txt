@@ -13,3 +13,6 @@ wrapt==1.10.11
 psycopg2-binary==2.7.6.1
 google==2.0.1
 requests==2.21.0
+protobuf==3.6.1
+gtfs-realtime-bindings==0.0.5
+idna==2.8
