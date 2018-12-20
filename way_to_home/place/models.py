@@ -16,7 +16,7 @@ class Place(AbstractModel):
 
     def __str__(self):
         """Method that returns route instance as string."""
-        return self.name
+        return f'{self.longitude}, {self.latitude}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
@@ -31,7 +31,7 @@ class Place(AbstractModel):
         }
 
     @classmethod
-    def create(cls, address, longitude, latitude, name='', user=None, stop_id=None):  # pylint: disable=arguments-differ
+    def create(cls, longitude, latitude, address='', name='', user=None, stop_id=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
         place = cls()
         place.longitude = longitude
