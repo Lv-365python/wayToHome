@@ -63,4 +63,3 @@ def log_in(request):
         return HttpResponse('received password is not valid', status=400)
     login(request, user=user)
     return HttpResponse('operation was successful provided', status=200)
-
