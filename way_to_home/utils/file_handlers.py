@@ -4,6 +4,18 @@ import requests
 import pickle
 
 
+def _get_fields_position(row_header, required_fields):
+    """
+    Return dictionary where the keys are required fields and
+    values are numbers of columns with the appropriate name.
+    """
+    fields_position = {}
+    for field in required_fields:
+        fields_position[field] = row_header.index(field)
+
+    return fields_position
+
+
 def load_file(url, save_to='./'):
     """Download file from `url` to directory with path `save_to`."""
     file_name = url.split('/')[-1]
