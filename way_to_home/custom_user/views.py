@@ -1,4 +1,5 @@
 """Authentication views module"""
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 
@@ -48,4 +49,18 @@ def registration_confirm(request, token):
         return HttpResponse('database operations is failed', status=400)
 
     return HttpResponse('user was successfully activated', status=200)
+
+
+@require_http_methods(["POST"])
+def log_in(request):
+    """Login of the existing user. Handles post and get requests."""
+
+    data = request.body
+    email = data.get('email').lower().strip()
+    password = data.get('password')
+    user = authenticate(email=email, password=password)
+    if not user:
+        return HttpResponse('received password is not valid', status=400)
+    login(request, user=user)
+    return HttpResponse('operation was successful provided', status=200)
 
