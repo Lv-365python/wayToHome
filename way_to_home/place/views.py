@@ -45,3 +45,29 @@ class PlaceView(View):
 
         place = place.to_dict()
         return JsonResponse(place, status=200)
+
+    def put(self, request, obj_id=None):  # pylint: disable=R0201
+        """Handle the request for update an existing place object with appropriate id."""
+        if not obj_id:
+            return HttpResponse('object id is not received', status=400)
+
+        data = request.body
+        if not data:
+            return HttpResponse('empty json received', status=400)
+
+        place = Place.get_by_id(obj_id)
+
+        if not place:
+            return HttpResponse('object not found', status=404)
+
+        if request.user.id != place.user_id:
+            return HttpResponse('access denied for non-owner users', status=403)
+
+        # if not place_data_validator(data, update=True):
+        #     return HttpResponse('invalid data', status=400)
+
+        is_updated = place.update(**data)
+        if not is_updated:
+            return HttpResponse('database operation is failed', status=400)
+
+        return HttpResponse('object was successfully updated', status=200)
