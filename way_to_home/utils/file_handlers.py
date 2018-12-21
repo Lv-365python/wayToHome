@@ -71,7 +71,10 @@ def parse_csv_file(path_to_file, required_fields):
 def pickle_data(data, path_to_file):
     """Write a pickled representation of data to file."""
     with open(path_to_file, 'wb') as file:
-        pickle.dump(data, file)
+        try:
+            pickle.dump(data, file)
+        except pickle.PicklingError:
+            return False
 
     return True
 
@@ -80,7 +83,10 @@ def unpickle_data(path_to_file):
     """Read a pickled representation of data from file."""
     try:
         with open(path_to_file, 'rb') as file:
-            data = pickle.load(file)
+            try:
+                data = pickle.load(file)
+            except pickle.UnpicklingError:
+                return None
     except FileNotFoundError:
         return None
 
