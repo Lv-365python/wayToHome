@@ -168,16 +168,13 @@ def place_data_validator(data, update=False):
 
 def route_data_validator(data, update=False):
     """Provide data validation before create/update route object."""
-    required_fields = ['way', 'start_place', 'end_place', 'time', 'position']
+    required_fields = ['time', 'position']
 
     if not update:
         if not required_keys_validator(data, required_fields):
             return False
 
     route_model_fields = [
-        'way',
-        'start_place',
-        'end_place',
         'time',
         'position',
         'transport_id'
@@ -185,9 +182,6 @@ def route_data_validator(data, update=False):
 
     filtered_data = {key: data.get(key) for key in route_model_fields}
     validation_rules = {
-        'way': lambda val: isinstance(val, int) and val > 0,
-        'start_place': lambda val: isinstance(val, int) and val > 0,
-        'end_place': lambda val: isinstance(val, int) and val > 0,
         'position': lambda val: isinstance(val, int) and val >= 0,
         'transport_id': lambda val: isinstance(val, int) and val > 0,
         'time': time_validator,
