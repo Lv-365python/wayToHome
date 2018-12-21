@@ -146,7 +146,6 @@ def place_data_validator(data, update=False):
         'latitude',
         'address',
         'name',
-        'user',
         'stop_id',
     ]
 
@@ -157,7 +156,6 @@ def place_data_validator(data, update=False):
         'stop_id': lambda val: isinstance(val, int) and val > 0,
         'longitude': lambda val: coordinate_validator(val, min_value=-180, max_value=180),
         'latitude': lambda val: coordinate_validator(val, min_value=-90, max_value=90),
-        'user': lambda val: isinstance(val, int) and val > 0
     }
 
     for key, value in filtered_data.items():
