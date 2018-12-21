@@ -105,4 +105,4 @@ class PlaceView(View):
         if not is_deleted:
             return HttpResponse('database operation is failed', status=400)
 
-        return HttpResponse('object was successfully deleted', status=200)
+        return HttpResponse('object was successfully deleted', status=204)
