@@ -10,10 +10,18 @@ class PlaceView(View):
     """Class that handle HTTP requests for place model."""
 
     def post(self, request, place_id=None):
-        """Handle the request for create a new place object."""
+        """Handle the request to create a new place object."""
         data = request.body
         if not data:
             return HttpResponse('empty json received', status=400)
+
+        data = {
+            'longitude': data.get('longitude'),
+            'latitude': data.get('latitude'),
+            'address': data.get('address'),
+            'name': data.get('name'),
+            'stop_id': data.get('stop_id')
+        }
 
         # if not place_data_validator(data):
         #     return HttpResponse('invalid data', status=400)
@@ -26,7 +34,7 @@ class PlaceView(View):
         return JsonResponse(place, status=201)
 
     def get(self, request, place_id=None):
-        """Handle the request for retrieve a place object or user`s places."""
+        """Handle the request to retrieve a place object or user`s places."""
         user = request.user
 
         if not place_id:
@@ -47,7 +55,7 @@ class PlaceView(View):
         return JsonResponse(place, status=200)
 
     def put(self, request, place_id=None):  # pylint: disable=R0201
-        """Handle the request for update an existing place object with appropriate id."""
+        """Handle the request to update an existing place object with appropriate id."""
         if not place_id:
             return HttpResponse('object id is not received', status=400)
 
@@ -63,6 +71,14 @@ class PlaceView(View):
         if request.user.id != place.user_id:
             return HttpResponse('access denied for non-owner users', status=403)
 
+        data = {
+            'longitude': data.get('longitude'),
+            'latitude': data.get('latitude'),
+            'address': data.get('address'),
+            'name': data.get('name'),
+            'stop_id': data.get('stop_id')
+        }
+
         # if not place_data_validator(data, update=True):
         #     return HttpResponse('invalid data', status=400)
 
@@ -73,7 +89,7 @@ class PlaceView(View):
         return HttpResponse('object was successfully updated', status=200)
 
     def delete(self, request, place_id=None):  # pylint: disable=R0201
-        """Handle the request that will delete place object with appropriate id."""
+        """Handle the request to delete place object with appropriate id."""
         if not place_id:
             return HttpResponse('object id is not received', status=400)
 
