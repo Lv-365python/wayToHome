@@ -52,7 +52,4 @@ def get_route(file_json, route_id):
     except FileNotFoundError:
         return None
 
-    route = data.get(route_id)
-    return route
-
-compile_file('./vehicle_position')
+    return data.get(route_id)
