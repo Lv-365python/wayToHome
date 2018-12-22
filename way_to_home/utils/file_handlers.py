@@ -2,7 +2,7 @@
 
 import pickle
 import csv
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipFile
 import requests
 
 
@@ -22,7 +22,10 @@ def unzip_file(path_to_file, unzip_to='./'):
     """Unzip file to directory with path `unzip_to`."""
     try:
         with ZipFile(path_to_file, 'r') as zip_file:
-            zip_file.extractall(unzip_to)
+            try:
+                zip_file.extractall(unzip_to)
+            except (ValueError, BadZipFile):
+                return False
     except FileNotFoundError:
         return False
 
