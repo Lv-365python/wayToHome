@@ -1,7 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {StartBtn, RouteSearchForm, LogInBtn, ResultForm, LogInForm} from './components'
+import {
+    StartBtn,
+    RouteSearchForm,
+    LogInBtn,
+    ResultForm,
+    LogInForm,
+    TestApp
+} from './components'
 
 ReactDOM.render(
     <div>
@@ -10,6 +17,7 @@ ReactDOM.render(
         <LogInBtn></LogInBtn>
         <ResultForm></ResultForm>
         <LogInForm></LogInForm>
+        <TestApp></TestApp>
     </div>,
     document.querySelector('#root')
 );

@@ -16,11 +16,11 @@ import withStyles from '@material-ui/core/styles/withStyles';
 const styles = theme => ({
   main: {
     width: 'auto',
-    display: 'block', // Fix IE 11 issue.
+    display: 'none',
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
+      width: 300,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -49,7 +49,7 @@ function LogInForm(props) {
   const { classes } = props;
 
   return (
-    <main className={classes.main}>
+    <main className={classes.main} id="loginform">
       <CssBaseline />
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -84,7 +84,7 @@ function LogInForm(props) {
       </Paper>
     </main>
   );
-}
+};
 
 LogInForm.propTypes = {
   classes: PropTypes.object.isRequired,
