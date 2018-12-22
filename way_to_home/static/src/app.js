@@ -6,8 +6,7 @@ import {
     RouteSearchForm,
     LogInBtn,
     ResultForm,
-    LogInForm,
-    TestApp
+    LoginForm,
 } from './components'
 
 ReactDOM.render(
@@ -16,8 +15,7 @@ ReactDOM.render(
         <RouteSearchForm></RouteSearchForm>
         <LogInBtn></LogInBtn>
         <ResultForm></ResultForm>
-        <LogInForm></LogInForm>
-        <TestApp></TestApp>
+        <LoginForm></LoginForm>
     </div>,
     document.querySelector('#root')
 );

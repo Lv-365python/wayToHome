@@ -5,20 +5,21 @@ import '../logInForm.js'
 
 class LogInBtn extends Component{
 
-    constructor(props){
-        super(props)
-
-        this.state = {
-        }
-    }
+    state = {}
 
     onClick = () => {
     this.openLogInForm();
+    this.closeStartBtn();
   }
 
   openLogInForm = () => {
     //alert('openLogInForm');
     document.getElementById('loginform').style.display = 'block'
+  }
+
+  closeStartBtn = () => {
+//    document.getElementsByClassName('StartBtnDiv').hidden = true;
+    document.getElementsByClassName('StartBtnDiv')[0].style.display = 'none'
   }
 
 

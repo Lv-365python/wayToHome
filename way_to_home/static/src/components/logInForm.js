@@ -71,6 +71,17 @@ function LogInForm(props) {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Sign in
+          </Button>
+
           <Button
             type="submit"
             fullWidth
@@ -80,11 +91,17 @@ function LogInForm(props) {
           >
             Log in
           </Button>
+
+          <Button fullWidth color="primary" className={classes.button}>
+            Cancel
+          </Button>
+
         </form>
       </Paper>
     </main>
   );
 };
+
 
 LogInForm.propTypes = {
   classes: PropTypes.object.isRequired,
