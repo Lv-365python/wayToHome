@@ -52,7 +52,10 @@ def parse_csv_file(path_to_file, required_fields):
 
     try:
         with open(path_to_file) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
+            try:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+            except csv.Error:
+                return None
 
             for row in csv_reader:
                 if csv_reader.line_num == 1:
