@@ -16,30 +16,26 @@ class NotificationView(View):
     Notification view that handles GET, POST, PUT, DELETE requests and provides
     appropriate operations with notification model.
     """
-    def get(self, request, notification_id=None): # pylint: disable=R0201
+    def get(self, request, notification_id=None):
         """ Method that handles GET request. """
-
-        user = request.user
-        print(user)
-        # TODO user
+        if not request.user:
+            return HttpResponse('login to view notifications', status=400)
 
         if not notification_id:
-            notifications = user.notifications.all()
+            # TODO get all user notifications
+            notifications = Notification.objects.all()
 
             data = [notification.to_dict() for notification in notifications]
 
             return JsonResponse(data, status=200, safe=False)
 
         notification = Notification.get_by_id(notification_id)
-
         if not notification:
             return HttpResponse('Notification not found', status=400)
 
-
-
         return JsonResponse(notification.to_dict(), status=200)
 
-    def put(self, request, notification_id=None):
+    def put(self, request, notification_id=None):  # pylint: disable=R0201
         """ Method that handles PUT request. """
 
         if not notification_id:
@@ -52,6 +48,9 @@ class NotificationView(View):
         notification = Notification.get_by_id(notification_id)
         if not notification:
             return HttpResponse('database operation is failed, notification not found', status=404)
+
+        if not request.user:
+            return HttpResponse('permission denied', status=400)
 
         data = {
             'start_time': data.get('start_time'),
@@ -71,8 +70,10 @@ class NotificationView(View):
 
         return HttpResponse('database is updated', status=200)
 
-    def post(self, request): # pylint: disable=R0201
+    def post(self, request):
         """ Method that handles POST request. """
+        if not request.user:
+            return HttpResponse('permission denied', status=400)
 
         data = request.body
         if not data:
@@ -98,6 +99,9 @@ class NotificationView(View):
 
     def delete(self, request, notification_id=None):  # pylint: disable=R0201
         """ Method that handles DELETE request. """
+        if not request.user:
+            return HttpResponse('permission denied', status=400)
+
         if not notification_id:
             return HttpResponse('object id is not received', status=400)
 
@@ -110,4 +114,3 @@ class NotificationView(View):
             return HttpResponse('database operation is failed', status=400)
 
         return HttpResponse('notification is deleted', status=200)
-
