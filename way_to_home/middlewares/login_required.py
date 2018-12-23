@@ -1,12 +1,14 @@
-"""Custom application's middlewares."""
+"""This module implements custom middlewares."""
 
 import json
 
 from django.http import HttpResponse
 
+
 GUESTS_PATHS = [
     '/api/v1/user/login',
     '/api/v1/user/register',
+    '/api/v1/user/activate'
 ]
 
 
@@ -26,16 +28,17 @@ class LoginRequiredMiddleware:  # pylint: disable=too-few-public-methods
             try:
                 request._body = json.loads(request.body)  # pylint: disable=protected-access
             except json.JSONDecodeError:
-                return HttpResponse(status=400)
+                return HttpResponse('invalid json received', status=400)
 
-        if request.path_info in GUESTS_PATHS:
-            if request.user.is_authenticated:
-                return HttpResponse(status=400)
-            response = self.get_response(request)
-            return response
+        for path in GUESTS_PATHS:
+            if request.path_info.startswith(path):
+                if request.user.is_authenticated:
+                    return HttpResponse('access denied for authenticated user', status=400)
+                response = self.get_response(request)
+                return response
 
         if not request.user.is_authenticated:
-            return HttpResponse(status=403)
+            return HttpResponse('access denied for unauthenticated user', status=403)
 
         response = self.get_response(request)
         return response
