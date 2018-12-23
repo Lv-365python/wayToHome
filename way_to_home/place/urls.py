@@ -6,5 +6,5 @@ from .views import PlaceView
 
 
 urlpatterns = [
-    re_path('place/(?P<place_id>\d+)?', PlaceView.as_view(), name='place'),
+    re_path('(?P<place_id>\d+)?/$', PlaceView.as_view(), name='place'),
 ]
