@@ -3,36 +3,23 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import Avatar from '@material-ui/core/Avatar';
-import './loginForm.css'
+import './signupForm.css'
 
 
-class LoginForm extends Component{
+class SignupForm extends Component{
 
     state = {}
 
-    onClickCancel = () => {
-        this.closeLoginForm();
+    onClick = () => {
+        this.closeSignupForm();
         this.openStartBtn();
         this.openLogInBtn();
     }
-    onClickSignUp = () => {
-        this.closeLoginForm();
-        this.openSignupForm();
-    }
-
-    closeLoginForm = () => {
-        document.getElementsByClassName('LoginFormDiv')[0].style.display = 'none'
+    closeSignupForm = () => {
+        document.getElementsByClassName('SignupFormDiv')[0].style.display = 'none'
     }
     openStartBtn = () => {
         document.getElementsByClassName('StartBtnDiv')[0].style.display = 'block'
-    }
-    openSignupForm = () => {
-        document.getElementsByClassName('SignupFormDiv')[0].style.display = 'block'
-    }
-    closeLoginBtn = () => {
-        document.getElementsByClassName('LoginBtnDiv')[0].style.display = 'none'
     }
     openLogInBtn = () => {
         document.getElementsByClassName('LogInBtnDiv')[0].style.display = 'block'
@@ -40,11 +27,15 @@ class LoginForm extends Component{
 
     render(){
         return(
-          <div style={{marginTop: '80px'}} className='LoginFormDiv'>
-          <Avatar> <LockIcon/> </Avatar>
+          <div style={{marginTop: '80px'}} className='SignupFormDiv'>
+
+              <TextField id="standard-dense" label="Firstname" margin="dense"/>
+              <TextField id="standard-dense" label="Lastname" margin="dense"/>
+              <TextField id="standard-dense" label="Mobile" margin="dense"/>
+
               <TextField
                   id="filled-email-input"
-                  label="Email"
+                  label="*Email"
                   type="email"
                   name="email"
                   autoComplete="email"
@@ -54,15 +45,14 @@ class LoginForm extends Component{
 
               <TextField
                   id="filled-password-input"
-                  label="Password"
+                  label="*Password"
                   type="password"
                   autoComplete="current-password"
                   margin="normal"
                   variant="filled"
               />
-              <div><FormControlLabel control={<Checkbox value="checkedC" />} label="Remember me" /></div>
-
-              <div><Button color="primary" onClick={this.onClickSignUp}> sign up </Button></div>
+              <div style={{color:'grey'}}> * Required fields </div>
+              <div><Button color="primary" style={{ marginTop:'20px'}}> sign up with google </Button></div>
 
               <Button variant='contained' color='primary' size='medium'> confirm </Button>
 
@@ -71,7 +61,7 @@ class LoginForm extends Component{
                   color='secondary'
                   size='medium'
                   className='Btn'
-                  onClick={this.onClickCancel}
+                  onClick={this.onClick}
               >
                 cancel
               </Button>
@@ -82,4 +72,4 @@ class LoginForm extends Component{
     }
 };
 
-export default LoginForm
+export default SignupForm
