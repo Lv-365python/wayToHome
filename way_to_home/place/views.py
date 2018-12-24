@@ -46,7 +46,7 @@ class PlaceView(View):
         place = Place.get_by_id(place_id)
 
         if not place:
-            return HttpResponse('object not found', status=404)
+            return HttpResponse('object not found', status=400)
 
         if place.user_id and place.user_id != user.id:
             return HttpResponse('access denied for non-owner users', status=403)
@@ -66,7 +66,7 @@ class PlaceView(View):
         place = Place.get_by_id(place_id)
 
         if not place:
-            return HttpResponse('object not found', status=404)
+            return HttpResponse('object not found', status=400)
 
         if request.user.id != place.user_id:
             return HttpResponse('access denied for non-owner users', status=403)
@@ -96,7 +96,7 @@ class PlaceView(View):
         place = Place.get_by_id(place_id)
 
         if not place:
-            return HttpResponse('object not found', status=404)
+            return HttpResponse('object not found', status=400)
 
         if request.user.id != place.user_id:
             return HttpResponse('access denied for non-owner user', status=403)
