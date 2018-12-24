@@ -82,8 +82,12 @@ def auth_google(request):
 def signin_google(request):
     """Function that provides user registration or authorization via google."""
     google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URL, state=STATE, scope=SCOPE)
-    google.fetch_token(token_url=TOKEN_URI, client_secret=CLIENT_SECRET, code=request.GET["code"],
-                       authorization_response='http://localhost:8000/api/v1/user/sign_in')
+    try:
+        code = request.GET["code"]
+    except ValueError:
+        return HttpResponse(status=400)
+    google.fetch_token(token_url=TOKEN_URI, client_secret=CLIENT_SECRET, code=code,
+                       authorization_response='/api/v1/user/sign_in')
     user_data = google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
