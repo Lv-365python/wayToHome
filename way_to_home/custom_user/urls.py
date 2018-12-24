@@ -6,6 +6,6 @@ urlpatterns = [
     path('register', signup, name='signup'),
     re_path(r'^activate/(?P<token>.+)$', registration_confirm, name='confirm_signup'),
     path('login', log_in, name='login_user'),
-    path('auth_via_google', auth_google, name='login_google'),
-    path('signin_via_google', signin_google, name='signup_google'),
+    path('auth_via_google', auth_google, name='auth_google'),
+    path('signin_via_google', signin_google, name='signin_google'),
 ]
