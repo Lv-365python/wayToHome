@@ -130,6 +130,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Required settings for authorization via google
+
+CLIENT_ID = '886654959108-v5nocnpcdjsgrovcthsb7o11uuf7g0am.apps.googleusercontent.com'
+CLIENT_SECRET = 'FwcIUXjKIzr4TEDmrXU4_7BS'
+REDIRECT_URL = 'http://localhost:8000/api/v1/user/signin_via_google'
+AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
+TOKEN_URI = 'https://www.googleapis.com/oauth2/v3/token'
+SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me']
+LOCAL_URL = "http://localhost:8000"
+STATE = 'way_to_home'
+
 # Required settings for sending email.
 
 EMAIL_HOST = 'smtp.gmail.com'
