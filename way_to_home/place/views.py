@@ -48,7 +48,7 @@ class PlaceView(View):
         if not place:
             return HttpResponse('object not found', status=400)
 
-        if place.user_id and place.user_id != user.id:
+        if place.user and place.user != user:
             return HttpResponse('access denied for non-owner users', status=403)
 
         place = place.to_dict()
@@ -56,6 +56,8 @@ class PlaceView(View):
 
     def put(self, request, place_id=None):  # pylint: disable=R0201
         """Handle the request to update an existing place object with appropriate id."""
+        user = request.user
+
         if not place_id:
             return HttpResponse('object id is not received', status=400)
 
@@ -68,7 +70,7 @@ class PlaceView(View):
         if not place:
             return HttpResponse('object not found', status=400)
 
-        if request.user.id != place.user_id:
+        if place.user and place.user != user:
             return HttpResponse('access denied for non-owner users', status=403)
 
         data = {
@@ -90,6 +92,7 @@ class PlaceView(View):
 
     def delete(self, request, place_id=None):  # pylint: disable=R0201
         """Handle the request to delete place object with appropriate id."""
+        user = request.user
         if not place_id:
             return HttpResponse('object id is not received', status=400)
 
@@ -98,7 +101,7 @@ class PlaceView(View):
         if not place:
             return HttpResponse('object not found', status=400)
 
-        if request.user.id != place.user_id:
+        if place.user and place.user != user:
             return HttpResponse('access denied for non-owner user', status=403)
 
         is_deleted = Place.delete_by_id(place_id)
