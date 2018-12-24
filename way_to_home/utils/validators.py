@@ -3,12 +3,15 @@ Project validators
 ==================
 Module that provides validation functions for all kinds of project's data.
 """
-
+import re
 from datetime import datetime, timedelta
 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 DATE_MASK = ['%Y%m%d', '%Y-%m-%d', '%d-%m-%Y', '%d%m%Y', '%m%d%Y', '%d/%m/%Y']
 TIME_MASK = "%H:%M:%S"
+PASSWORD_REG_EXP = r'^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$'
 
 
 def string_validator(value, min_length=0, max_length=None):
@@ -214,4 +217,48 @@ def way_data_validator(data):
     if not user_id > 0:
         return False
 
+    return True
+
+
+def email_validator(email):
+    """Function that provides email validation."""
+    try:
+        email = email.lower().strip()
+        validate_email(email)
+        return True
+    except (ValidationError, AttributeError):
+        pass
+
+
+def password_validator(password):
+    """Function that provides password validation."""
+    try:
+        template = re.compile(PASSWORD_REG_EXP)
+        if template.match(password):
+            return True
+    except (TypeError, AttributeError):
+        pass
+
+
+def registration_validate(data):
+    """Function that provides registration validation"""
+    required_keys = ['email', 'password']
+
+    if not required_keys_validator(data, required_keys):
+        return False
+    if not (string_validator(data.get('email')) and email_validator(data.get('email'))):
+        return False
+    if not (string_validator(data.get('password')) and password_validator(data.get('password'))):
+        return False
+    return True
+
+
+def login_validate(data):
+    """Function that provides login validation."""
+    if not data:
+        return False
+    if not required_keys_validator(data, ['email', 'password']):
+        return False
+    if not email_validator(data['email']):
+        return False
     return True
