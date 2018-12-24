@@ -253,8 +253,6 @@ def login_validate(data):
     """Function that provides login validation."""
     if not data:
         return False
-    if not required_keys_validator(data, ['email', 'password']):
-        return False
     if not email_validator(data['email']):
         return False
     return True
