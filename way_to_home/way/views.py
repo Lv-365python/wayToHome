@@ -11,13 +11,23 @@ from route.models import Route
 class WayView(View):
     """Class-based view for way model."""
     def post(self, request, way_id):  # pylint: disable=R0201
-        """Method for POST."""
+        """
+        Method for HTTP POST request
+
+        :param request: client HttpRequest. Is required
+        :type request: HttpRequest
+        :param way_id: id of Comment model
+        :type way_id: int
+
+        :return JsonResponse within way data and list with routes with status 200
+                if parameters are good or HttpRequest with error if parameters are bad
+        """
         # Add validator
         steps = request.body.get('gmaps_response')
 
         with transaction.atomic():
             # Add validator
-            way = Way.create(user=request.user, name=request.body.get('name', ''))
+            way = Way.create(user=request.user, name=request.body.get('name'))
 
             if not way:
                 return HttpResponse('Failed to create way', status=400)
@@ -29,16 +39,25 @@ class WayView(View):
                 # Add validators
                 route = make_route_dict(step)
 
-                start_place_data = route.get('start_place')
-                start_place = Place.create(longitude=start_place_data['longitude'],
-                                           latitude=start_place_data['latitude'])
-                end_place_data = route.get('end_place')
-                end_place = Place.create(longitude=end_place_data['longitude'],
-                                         latitude=end_place_data['latitude'])
+                places = {'start_place': route.get('start_place'),
+                          'end_place': route.get('end_place')}
+
+                start_place = Place.create(longitude=places['start_place']['longitude'],
+                                           latitude=places['start_place']['latitude'])
+                end_place = Place.create(longitude=places['end_place']['longitude'],
+                                         latitude=places['end_place']['latitude'])
+
+                if not start_place and not end_place:
+                    return HttpResponse('Bad request', status=400)
+
                 time = route.get('time')
                 transport_id = route.get('transport_id')
-                Route.create(way=way, start_place=start_place, end_place=end_place,
-                             time=time, position=position, transport_id=transport_id)
+                route_obj = Route.create(way=way, start_place=start_place, end_place=end_place,
+                                         time=time, position=position, transport_id=transport_id)
+
+                if not route_obj:
+                    return HttpResponse('Bad request', status=400)
+
                 position += 1
 
                 routes.append(route)
@@ -47,13 +66,23 @@ class WayView(View):
                              'routes': routes}, status=200)
 
     def delete(self, request, way_id):  # pylint: disable=R0201
-        """Method for DELETE."""
+        """
+        Method for HTTP DELETE request
+
+        :param request: client HttpRequest. Is required
+        :type request: HttpRequest
+        :param way_id: id of Comment model
+        :type way_id: int
+
+        :return HTTPResponse with status 200 if parameters are good or
+                HttpRequest with error if parameters are bad
+        """
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('Way not found', status=404)
+            return HttpResponse('Way not found', status=400)
 
-        if way.user.id != request.user.id:
+        if way.user != request.user:
             return HttpResponse('Access denied', status=403)
 
         if Way.delete_by_id(obj_id=way_id):
@@ -62,7 +91,14 @@ class WayView(View):
 
 
 def make_route_dict(step):
-    """Function for creating dict with route information."""
+    """
+    Method for HTTP POST request
+
+    :param step: Step data. Is required
+    :type step: dict
+
+    :return dict with route information
+    """
     route = {}
     start_place = {'longitude': step['start_location']['lng'],
                    'latitude': step['start_location']['lat']}

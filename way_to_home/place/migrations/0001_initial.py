@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('longitude', models.DecimalField(decimal_places=6, max_digits=9)),
                 ('latitude', models.DecimalField(decimal_places=6, max_digits=9)),
                 ('name', models.CharField(blank=True, max_length=64)),
-                ('address', models.CharField(max_length=255)),
+                ('address', models.CharField(max_length=255, blank=True)),
                 ('stop_id', models.PositiveSmallIntegerField(null=True)),
                 ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='places', to=settings.AUTH_USER_MODEL)),
             ],
