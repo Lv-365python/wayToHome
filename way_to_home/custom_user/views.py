@@ -87,15 +87,14 @@ def signin_google(request):
     except ValueError:
         return HttpResponse(status=400)
     google.fetch_token(token_url=TOKEN_URI, client_secret=CLIENT_SECRET, code=code,
-                       authorization_response='/api/v1/user/sign_in')
+                       authorization_response='http://localhost:8000/api/v1/user/sign_in')
     user_data = google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
         if user:
             login(request, user=user)
             return HttpResponse(status=200)
-        user = CustomUser()
-        user.email = user_data.get("email")
+        user = CustomUser().create(email=user_data.get("email"), password='via_google')
         user.save()
         login(request, user=user)
         return HttpResponse(status=201)
