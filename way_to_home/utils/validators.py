@@ -204,20 +204,11 @@ def route_data_validator(data, update=False):
     return True
 
 
-def way_data_validator(data):
-    """Function that provides update way model data validation"""
-    user_id = data.get('user')
-
-    if not user_id:
-        return False
-
-    if not isinstance(user_id, int):
-        return False
-
-    if not user_id > 0:
-        return False
-
-    return True
+def way_name_validator(name):
+    """Function that provides way model data validation"""
+    if string_validator(name, min_length=1, max_length=128):
+        return True
+    return False
 
 
 def email_validator(email):
