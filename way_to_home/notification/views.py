@@ -41,13 +41,9 @@ class NotificationView(View):
 
     def put(self, request, notification_id=None):  # pylint: disable=R0201
         """ Method that handles PUT request. """
-
-        if not notification_id:
-            return HttpResponse('object id is not received', status=400)
-
         data = request.body
-        if not data:
-            return HttpResponse('database operation is failed, data not found', status=404)
+        if not (notification_id and data):
+            return HttpResponse('data and object_id are not received', status=400)
 
         user = request.user
         if not user:
@@ -80,19 +76,24 @@ class NotificationView(View):
 
     def post(self, request, notification_id=None):
         """ Method that handles POST request. """
-        if not request.user:
+        user = request.user
+        if not user:
             return HttpResponse('permission denied', status=400)
 
         data = request.body
         if not data:
             return HttpResponse('Invalid data', status=400)
 
+        way = Way.get_by_id(obj_id=data.get('way'))
+        if not (way and way.user == user):
+            return HttpResponse('Invalid way', status=400)
+
         data = {
             'start_time': data.get('start_time'),
             'end_time': data.get('end_time'),
             'week_day': data.get('week_day'),
             'time': data.get('time'),
-            'way': Way.get_by_id(obj_id=data.get('way'))
+            'way': way
         }
 
         # if not notification_data_validator(data):
