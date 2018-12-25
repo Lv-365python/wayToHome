@@ -3,12 +3,15 @@
 from django.db import models, IntegrityError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
+from utils.custom_manager import CustomManager
 
 
 class Way(AbstractModel):
     """Model for user profile entity."""
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='ways')
     name = models.CharField(max_length=128, blank=True)
+
+    objects = CustomManager()
 
     def __str__(self):
         """Method that returns route instance as string."""

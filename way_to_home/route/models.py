@@ -2,6 +2,7 @@
 
 from django.db import models, IntegrityError
 from utils.abstract_models import AbstractModel
+from utils.custom_manager import CustomManager
 from way.models import Way
 from place.models import Place
 
@@ -18,6 +19,8 @@ class Route(AbstractModel):
     time = models.TimeField()
     transport_id = models.PositiveIntegerField(null=True)
     position = models.PositiveSmallIntegerField()
+
+    objects = CustomManager()
 
     def __str__(self):
         """Method that returns route instance as string."""
