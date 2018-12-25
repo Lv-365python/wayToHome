@@ -24,7 +24,6 @@ class RouteView(View):
         """ Method that handles GET request. """
         user = request.user
         way = Way.get_by_id(way_id)
-        print(way_id, route_id)
 
         if not way:
             return HttpResponse('way is not found', status=400)
