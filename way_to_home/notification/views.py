@@ -17,7 +17,7 @@ class NotificationView(View):
     Notification view that handles GET, POST, PUT, DELETE requests and provides
     appropriate operations with notification model.
     """
-    def get(self, request, way_id=None, notification_id=None):
+    def get(self, request, way_id, notification_id=None):
         """ Method that handles GET request. """
         user = request.user
         way = Way.get_by_id(way_id)
@@ -41,7 +41,7 @@ class NotificationView(View):
 
         return JsonResponse(notification.to_dict(), status=200)
 
-    def put(self, request, way_id=None, notification_id=None):  # pylint: disable=R0201
+    def put(self, request, way_id, notification_id=None):  # pylint: disable=R0201
         """ Method that handles PUT request. """
         user = request.user
         data = request.body
@@ -75,7 +75,7 @@ class NotificationView(View):
 
         return HttpResponse('database is updated', status=200)
 
-    def post(self, request, way_id=None, notification_id=None):
+    def post(self, request, way_id, notification_id=None):
         """ Method that handles POST request. """
         user = request.user
         data = request.body
@@ -104,7 +104,7 @@ class NotificationView(View):
 
         return JsonResponse(notification.to_dict(), status=201)
 
-    def delete(self, request, way_id=None, notification_id=None):  # pylint: disable=R0201
+    def delete(self, request, way_id, notification_id=None):  # pylint: disable=R0201
         """ Method that handles DELETE request. """
         user = request.user
         way = Way.get_by_id(obj_id=way_id)
