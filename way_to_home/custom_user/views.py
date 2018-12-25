@@ -75,7 +75,7 @@ def auth_google(request):
     data = google.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
         return redirect(data)
-    return HttpResponse("Failed", status=400)
+    return HttpResponse("Access denied", status=400)
 
 
 @require_http_methods(["GET"])
@@ -85,7 +85,7 @@ def signin_google(request):
     try:
         code = request.GET["code"]
     except ValueError:
-        return HttpResponse("Failed", status=400)
+        return HttpResponse("There is no code in request", status=400)
     google.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET, code=code,
                        authorization_response='/api/v1/user/sign_in')
     user_data = google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
@@ -98,4 +98,4 @@ def signin_google(request):
         login(request, user=user)
         return HttpResponse("User was successfully created", status=201)
 
-    return HttpResponse("Failed", status=400)
+    return HttpResponse("User's data is empty", status=400)
