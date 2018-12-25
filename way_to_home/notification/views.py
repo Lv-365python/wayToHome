@@ -53,7 +53,7 @@ class NotificationView(View):
         notification = Notification.get_by_id(obj_id=notification_id)
 
         if not (notification or way):
-            return HttpResponse('failed, obj not found', status=404)
+            return HttpResponse('failed, obj not found', status=400)
 
         if not (way == notification.way or user == way.user):
             return HttpResponse('permission denied', status=403)
@@ -102,7 +102,7 @@ class NotificationView(View):
         if not notification:
             return HttpResponse('Notification is not created', status=400)
 
-        return JsonResponse(notification.to_dict(), status=200)
+        return JsonResponse(notification.to_dict(), status=201)
 
     def delete(self, request, way_id=None, notification_id=None):  # pylint: disable=R0201
         """ Method that handles DELETE request. """
@@ -115,7 +115,7 @@ class NotificationView(View):
         notification = Notification.get_by_id(obj_id=notification_id)
 
         if not (notification or way):
-            return HttpResponse('failed, obj not found', status=404)
+            return HttpResponse('failed, obj not found', status=400)
 
         if not (way == notification.way or user == way.user):
             return HttpResponse('permission denied', status=403)

@@ -17,6 +17,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('api/v1/user/', include('custom_user.urls')),
-    path('api/v1/notification/', include('notification.urls')),
-    path('api/v1/place/', include('place.urls'))
+    path('api/v1/place/', include('place.urls')),
+    path('api/v1/way/', include('way.urls'))
 ]
