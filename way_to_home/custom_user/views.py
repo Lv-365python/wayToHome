@@ -9,7 +9,7 @@ from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
 from way_to_home.settings import (DOMAIN, CLIENT_ID, CLIENT_SECRET,
-                                  REDIRECT_URL, AUTH_URI, TOKEN_URI, SCOPE, STATE)
+                                  REDIRECT_URI, AUTH_URL, TOKEN_URL, SCOPE, STATE)
 
 
 @require_http_methods(["POST"])
@@ -71,32 +71,31 @@ def log_in(request):
 @require_http_methods(["GET"])
 def auth_google(request):
     """Function that provides getting url for confirmation access to user's data."""
-    google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URL, state=STATE, scope=SCOPE)
-    data = google.authorization_url(url=AUTH_URI, state=STATE)[0]
+    google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI, state=STATE, scope=SCOPE)
+    data = google.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
         return redirect(data)
-    return HttpResponse(status=400)
+    return HttpResponse("Failed", status=400)
 
 
 @require_http_methods(["GET"])
 def signin_google(request):
     """Function that provides user registration or authorization via google."""
-    google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URL, state=STATE, scope=SCOPE)
+    google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI, state=STATE, scope=SCOPE)
     try:
         code = request.GET["code"]
     except ValueError:
-        return HttpResponse(status=400)
-    google.fetch_token(token_url=TOKEN_URI, client_secret=CLIENT_SECRET, code=code,
+        return HttpResponse("Failed", status=400)
+    google.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET, code=code,
                        authorization_response='/api/v1/user/sign_in')
     user_data = google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
         if user:
             login(request, user=user)
-            return HttpResponse(status=200)
-        user = CustomUser().create(email=user_data.get("email"), password='via_google')
-        user.save()
+            return HttpResponse('User was successfully activated', status=200)
+        user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
         login(request, user=user)
-        return HttpResponse(status=201)
+        return HttpResponse("User was successfully created", status=201)
 
-    return HttpResponse(status=400)
+    return HttpResponse("Failed", status=400)

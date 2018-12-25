@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'middlewares.login_required.LoginRequiredMiddleware',
+    'middlewares.login_required.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'way_to_home.urls'
@@ -134,9 +134,9 @@ STATIC_URL = '/static/'
 
 CLIENT_ID = '886654959108-v5nocnpcdjsgrovcthsb7o11uuf7g0am.apps.googleusercontent.com'
 CLIENT_SECRET = 'FwcIUXjKIzr4TEDmrXU4_7BS'
-REDIRECT_URL = 'http://localhost:8000/api/v1/user/signin_via_google'
-AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
-TOKEN_URI = 'https://www.googleapis.com/oauth2/v3/token'
+REDIRECT_URI = 'http://localhost:8000/api/v1/user/signin_via_google'
+AUTH_URL = 'https://accounts.google.com/o/oauth2/auth'
+TOKEN_URL = 'https://www.googleapis.com/oauth2/v3/token'
 SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me']
 STATE = 'way_to_home'
 
