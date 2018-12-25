@@ -6,5 +6,5 @@ from .views import RouteView
 
 
 urlpatterns = [
-    re_path('(?P<route_id>\d+)?', RouteView.as_view(), name='route'),
+    re_path("(?P<route_id>\d+)?/?$", RouteView.as_view(), name='route'),
 ]
