@@ -31,12 +31,12 @@ class Place(AbstractModel):
         }
 
     @classmethod
-    def create(cls, address, longitude, latitude, name='', user=None, stop_id=None):  # pylint: disable=arguments-differ
+    def create(cls, address, longitude, latitude, name=None, user=None, stop_id=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
         place = cls()
         place.longitude = longitude
         place.latitude = latitude
-        place.name = name
+        place.name = name if name is not None else ''
         place.address = address
         place.stop_id = stop_id
 
