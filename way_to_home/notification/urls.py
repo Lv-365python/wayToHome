@@ -6,5 +6,5 @@ from .views import NotificationView
 
 
 urlpatterns = [
-    re_path("(?P<notification_id>\d+/)?$", NotificationView.as_view(), name='notification'),
+    re_path("(?P<notification_id>\d+)?/?$", NotificationView.as_view(), name='notification'),
 ]
