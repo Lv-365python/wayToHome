@@ -122,6 +122,37 @@ class WayView(View):
             return HttpResponse('Way was deleted', status=200)
         return HttpResponse('Way was not deleted', status=400)
 
+    def put(self, request, way_id):  # pylint: disable=R0201
+        """
+        Method for HTTP PUT request
+
+        :param request: client HttpRequest. Is required
+        :type request: HttpRequest
+        :param way_id: id of Way model
+        :type way_id: int
+
+        :return HTTPResponse with status 200 if parameters are good or
+                HttpRequest with error if parameters are bad
+        """
+        data = request.body
+
+        way = Way.get_by_id(obj_id=way_id)
+        if not way:
+            return HttpResponse('Object not found', status=404)
+
+        user = request.user
+        if user.id != way.user_id:
+            return HttpResponse('Access denied for non-owner user', status=403)
+
+        data = {'name': data.get('name')}
+        # if not way_data_validator(data):
+        # return HttpResponse('Database operation has failed', status=400)
+
+        if not way.update(**data):
+            return HttpResponse('Database operation has failed', status=400)
+
+        return HttpResponse('Object was successfully updated', status=200)
+
 
 def make_route_dict(step):
     """
