@@ -10,13 +10,46 @@ from route.models import Route
 
 class WayView(View):
     """Class-based view for way model."""
+    def get(self, request, way_id=None):  # pylint: disable=R0201
+        """
+        Method for HTTP GET request
+
+        :param request: client HttpRequest. Is required
+        :type request: HttpRequest
+        :param way_id: id of Way model
+        :type way_id: int
+
+        :return JsonResponse with way data and list with routes and status 200
+                if parameters are good and way_id is specified,
+                JsonResponse with all ways data and their lists of routes and staatus 200
+                for request user if way_id is not specified
+                or HttpRequest with error if parameters are bad.
+        """
+        if not way_id:
+            data = []
+
+            user = request.user
+
+            ways = user.ways.all()
+            for way in ways:
+                data.append(way.get_way_with_routes())
+
+            return JsonResponse(data, status=200, safe=False)
+
+        way = Way.get_by_id(way_id)
+        if not way:
+            return HttpResponse('Object not found', status=404)
+
+        data = way.get_way_with_routes()
+        return JsonResponse(data, status=200)
+
     def post(self, request, way_id):  # pylint: disable=R0201
         """
         Method for HTTP POST request
 
         :param request: client HttpRequest. Is required
         :type request: HttpRequest
-        :param way_id: id of Comment model
+        :param way_id: id of Way model
         :type way_id: int
 
         :return JsonResponse within way data and list with routes with status 200
@@ -71,7 +104,7 @@ class WayView(View):
 
         :param request: client HttpRequest. Is required
         :type request: HttpRequest
-        :param way_id: id of Comment model
+        :param way_id: id of Way model
         :type way_id: int
 
         :return HTTPResponse with status 200 if parameters are good or

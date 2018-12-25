@@ -22,6 +22,12 @@ class Way(AbstractModel):
             'user_id': self.user.id
         }
 
+    def get_way_with_routes(self):
+        """Method that retruns dicitonary with way's info, and all of the way's routes"""
+        way = self.to_dict()
+        way['routes'] = [route.to_dict() for route in self.routes.all()]
+        return way
+
     @classmethod
     def create(cls, user, name=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
