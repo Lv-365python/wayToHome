@@ -7,5 +7,5 @@
     background: rgba(197, 197, 197, 0.685);
     border-radius: 5%;
     text-align: center;
-    display: none;
+    display: block;
 }

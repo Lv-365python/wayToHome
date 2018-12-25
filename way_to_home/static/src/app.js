@@ -4,20 +4,18 @@ import ReactDOM from 'react-dom';
 import {
     StartBtn,
     RouteSearchForm,
-    LogInBtn,
+    LoginBtn,
     ResultForm,
-    LoginForm,
     SignupForm,
 } from './components'
 
 ReactDOM.render(
     <div>
-        <StartBtn></StartBtn>
-        <RouteSearchForm></RouteSearchForm>
-        <LogInBtn></LogInBtn>
-        <ResultForm></ResultForm>
-        <LoginForm></LoginForm>
-        <SignupForm></SignupForm>
+        <StartBtn/>
+        <RouteSearchForm/>
+        <LoginBtn/>
+        <ResultForm/>
+        <SignupForm/>
     </div>,
     document.querySelector('#root')
 );
