@@ -9,6 +9,7 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 
 from route.models import Route
+from way.models import Way
 
 
 class RouteView(View):
@@ -22,7 +23,7 @@ class RouteView(View):
     def get(self, request, way_id, route_id=None):
         """ Method that handles GET request. """
         user = request.user
-        way = user.ways.get_by_id(obj_id=way_id)
+        way = user.ways.filter(id=way_id).first()
 
         if not way:
             return HttpResponse('way is not found', status=400)
@@ -31,7 +32,7 @@ class RouteView(View):
             data = [route.to_dict() for route in way.routes.all().order_by('position')]
             return JsonResponse(data, status=200, safe=False)
 
-        route = way.routes.get_by_id(obj_id=route_id)
+        route = way.routes.filter(id=route_id).first()
         if not route:
             return HttpResponse('database operation is failed, route not found', status=400)
 
@@ -41,7 +42,7 @@ class RouteView(View):
         """ Method that handles PUT request. """
         user = request.user
         data = request.body
-        way = user.ways.get_by_id(obj_id=way_id)
+        way = user.ways.filter(id=way_id).first()
 
         if not way:
             return HttpResponse('way is not found', status=400)
@@ -49,7 +50,7 @@ class RouteView(View):
         if not route_id:
             return HttpResponse('obj_id are not received', status=400)
 
-        route = way.routes.get_by_id(obj_id=route_id)
+        route = way.routes.filter(id=route_id).first()
         if not route:
             return HttpResponse('database operation is failed, route not found', status=404)
 
@@ -72,7 +73,7 @@ class RouteView(View):
         """ Method that handles POST request. """
         user = request.user
         data = request.data
-        way = user.ways.get_by_id(obj_id=way_id)
+        way = user.ways.filter(id=way_id).first()
 
         if not way:
             return HttpResponse('way is not found', status=400)
@@ -95,7 +96,7 @@ class RouteView(View):
     def delete(self, request, way_id, route_id=None):  # pylint: disable=R0201
         """ Method that handles DELETE request. """
         user = request.user
-        way = user.ways.get_by_id(obj_id=way_id)
+        way = user.ways.filter(id=way_id).first()
 
         if not way:
             return HttpResponse('way is not found', status=400)
@@ -103,7 +104,11 @@ class RouteView(View):
         if not route_id:
             return HttpResponse('route_id are not received', status=400)
 
-        is_deleted = way.routes.delete_by_id(obj_id=route_id)
+        route = way.routes.filter(id=route_id).first()
+        if not route:
+            return HttpResponse('way is not found', status=400)
+
+        is_deleted = Way.delete_by_id(obj_id=way_id)
         if not is_deleted:
             return HttpResponse('database operation is failed', status=400)
 
