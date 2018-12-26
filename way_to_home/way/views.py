@@ -25,20 +25,17 @@ class WayView(View):
                 for request user if way_id is not specified
                 or HttpRequest with error if parameters are bad.
         """
+        user = request.user
         if not way_id:
-            data = []
 
-            user = request.user
-
-            ways = user.ways.all()
-            for way in ways:
-                data.append(way.get_way_with_routes())
+            data = [way.get_way_with_routes() for way in user.ways.all()]
 
             return JsonResponse(data, status=200, safe=False)
 
-        way = Way.get_by_id(way_id)
+        way = user.ways.filter(id=way_id).first()
+
         if not way:
-            return HttpResponse('Object not found', status=404)
+            return HttpResponse('Object not found', status=400)
 
         data = way.get_way_with_routes()
         return JsonResponse(data, status=200)
@@ -134,21 +131,19 @@ class WayView(View):
         :return HTTPResponse with status 200 if parameters are good or
                 HttpRequest with error if parameters are bad
         """
+        user = request.user
         data = request.body
 
-        way = Way.get_by_id(obj_id=way_id)
+        way = user.ways.filter(id=way_id).first()
         if not way:
-            return HttpResponse('Object not found', status=404)
-
-        user = request.user
-        if user.id != way.user_id:
-            return HttpResponse('Access denied for non-owner user', status=403)
+            return HttpResponse('Object not found', status=400)
 
         data = {'name': data.get('name')}
         # if not way_data_validator(data):
         # return HttpResponse('Database operation has failed', status=400)
 
-        if not way.update(**data):
+        is_updated = way.update(**data)
+        if not is_updated:
             return HttpResponse('Database operation has failed', status=400)
 
         return HttpResponse('Object was successfully updated', status=200)
