@@ -75,7 +75,7 @@ def auth_google(request):
     data = google.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
         return redirect(data)
-    return HttpResponse("Access denied", status=401)
+    return HttpResponse("Access denied", status=403)
 
 
 @require_http_methods(["GET"])
