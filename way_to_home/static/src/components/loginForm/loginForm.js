@@ -12,38 +12,31 @@ import './loginForm.css'
 class LoginForm extends Component{
 
     state = {
-    open: true,
-  };
+        open: false
+    }
 
-    onClickCancel = () => {
-        this.closeLoginForm();
-        this.openStartBtn();
-        this.openLogInBtn();
+    onClickSignup = () => {
+        console.log('click on sign up button');
+    }
+
+    onClickConfirm = () => {
+        console.log('click on confirm button');
+    }
+
+    handleClose = () => {
         this.setState({ open: false });
-    }
-    onClickSignUp = () => {
-        this.closeLoginForm();
-        this.openSignupForm();
-    }
+        console.log('login form was closed');
+    };
 
-//    closeLoginForm = () => {
-//        document.getElementsByClassName('LoginFormDiv')[0].style.display = 'none'
-//    }
-//    openStartBtn = () => {
-//        document.getElementsByClassName('StartBtnDiv')[0].style.display = 'block'
-//    }
-//    openSignupForm = () => {
-//        document.getElementsByClassName('SignupFormDiv')[0].style.display = 'block'
-//    }
-//    closeLoginBtn = () => {
-//        document.getElementsByClassName('LoginBtnDiv')[0].style.display = 'none'
-//    }
-//    openLogInBtn = () => {
-//        document.getElementsByClassName('LogInBtnDiv')[0].style.display = 'block'
-//    }
+    handleOpen = () => {
+        this.setState({ open: true });
+        console.log('open handle');
+    };
 
     render(){
+        console.log('rendering login form')
         return(
+        <Modal open={this.state.open} onClose={this.handleClose}>
           <div style={{marginTop: '80px'}} className='LoginFormDiv'>
               <Avatar>
                 <LockIcon />
@@ -66,21 +59,20 @@ class LoginForm extends Component{
                   variant="filled"/>
               <div><FormControlLabel control={<Checkbox value="checkedC" />} label="Remember me" /></div>
 
-              <div><Button color="primary" onClick={this.onClickSignUp}> sign up </Button></div>
+              <div><Button color="primary" onClick={this.onClickSignup}> sign up </Button></div>
 
-              <Button variant='contained' color='primary' size='medium'> confirm </Button>
+              <Button variant='contained' color='primary' size='medium' onClick={this.onClickConfirm}> confirm </Button>
 
               <Button
                   variant='contained'
                   color='secondary'
                   size='medium'
                   className='Btn'
-                  onClick={this.onClickCancel}>
+                  onClick={this.handleClose}>
                 cancel
               </Button>
-
           </div>
-
+        </Modal>
         )
     }
 };
