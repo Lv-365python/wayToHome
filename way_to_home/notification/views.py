@@ -9,7 +9,6 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 
 from notification.models import Notification
-from way.models import Way
 
 
 class NotificationView(View):
@@ -26,7 +25,9 @@ class NotificationView(View):
             return HttpResponse('way is not found', status=400)
 
         if not notification_id:
-            data = [notification.to_dict() for notification in way.notifications.all().order_by('week_day')]
+            way_data = way.notifications.all().order_by('week_day')
+            data = [notification.to_dict() for notification in way_data]
+
             return JsonResponse(data, status=200, safe=False)
 
         notification = way.notifications.filter(id=notification_id).first()
