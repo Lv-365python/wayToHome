@@ -56,8 +56,7 @@ class NotificationView(View):
             'start_time': data.get('start_time'),
             'end_time': data.get('end_time'),
             'week_day': data.get('week_day'),
-            'time': data.get('time'),
-            'way': way
+            'time': data.get('time')
         }
 
         # if not notification_data_validator(data, update=True):
