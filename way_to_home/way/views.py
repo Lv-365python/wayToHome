@@ -76,7 +76,7 @@ class WayView(View):
                 routes.append(route)
 
         return JsonResponse({'way': way.to_dict(),
-                             'routes': routes}, status=200)
+                             'routes': routes}, status=201)
 
     def delete(self, request, way_id):  # pylint: disable=R0201
         """
@@ -90,15 +90,15 @@ class WayView(View):
         :return HTTPResponse with status 200 if parameters are good or
                 HttpRequest with error if parameters are bad
         """
-        way = Way.get_by_id(obj_id=way_id)
+        user = request.user
+        way = user.ways.filter(id=way_id).first()
 
         if not way:
             return HttpResponse('Way not found', status=400)
 
-        if way.user != request.user:
-            return HttpResponse('Access denied', status=403)
+        is_deleted = Way.delete_by_id(obj_id=way_id)
 
-        if Way.delete_by_id(obj_id=way_id):
+        if is_deleted:
             return HttpResponse('Way was deleted', status=200)
         return HttpResponse('Way was not deleted', status=400)
 
@@ -181,7 +181,7 @@ def create_route(way, position, **kwargs):
     end_place = Place.create(longitude=places['end_place']['longitude'],
                              latitude=places['end_place']['latitude'])
 
-    if not start_place and not end_place:
+    if not (start_place or end_place):
         return False
 
     time = kwargs.get('time')
