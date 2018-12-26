@@ -70,8 +70,9 @@ def log_in(request):
 @require_http_methods(["GET"])
 def auth_google(request):
     """Function that provides getting url for confirmation access to user's data."""
-    google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI, state=STATE, scope=SCOPE)
-    data = google.authorization_url(url=AUTH_URL, state=STATE)[0]
+    google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
+                                   state=STATE, scope=SCOPE)
+    data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
         return redirect(data)
     return HttpResponse("Access denied", status=403)
@@ -80,13 +81,14 @@ def auth_google(request):
 @require_http_methods(["GET"])
 def signin_google(request):
     """Function that provides user registration or authorization via google."""
-    google = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI, state=STATE, scope=SCOPE)
-    try:
-        code = request.GET["code"]
-    except ValueError:
-        return HttpResponse("Havent code", status=400)
-    google.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET, code=code)
-    user_data = google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
+    google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
+                                   state=STATE, scope=SCOPE)
+    authorization_code = request.GET.get("code")
+    if not authorization_code:
+        return HttpResponse("Code doesn't exist", status=400)
+    google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
+                               code=authorization_code)
+    user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
         if user:
