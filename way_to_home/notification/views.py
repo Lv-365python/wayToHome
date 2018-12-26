@@ -25,8 +25,8 @@ class NotificationView(View):
             return HttpResponse('way is not found', status=400)
 
         if not notification_id:
-            way_data = way.notifications.all().order_by('week_day')
-            data = [notification.to_dict() for notification in way_data]
+            data = [notification.to_dict() for notification
+                    in way.notifications.all().order_by('week_day')]
 
             return JsonResponse(data, status=200, safe=False)
 
