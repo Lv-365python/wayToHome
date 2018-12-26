@@ -71,28 +71,11 @@ class WayView(View):
             for step in steps:
                 # Add validators
                 route = make_route_dict(step)
+                was_created = create_route(way, position, **route)
 
-                places = {'start_place': route.get('start_place'),
-                          'end_place': route.get('end_place')}
-
-                start_place = Place.create(longitude=places['start_place']['longitude'],
-                                           latitude=places['start_place']['latitude'])
-                end_place = Place.create(longitude=places['end_place']['longitude'],
-                                         latitude=places['end_place']['latitude'])
-
-                if not start_place and not end_place:
+                if not was_created:
                     return HttpResponse('Bad request', status=400)
-
-                time = route.get('time')
-                transport_id = route.get('transport_id')
-                route_obj = Route.create(way=way, start_place=start_place, end_place=end_place,
-                                         time=time, position=position, transport_id=transport_id)
-
-                if not route_obj:
-                    return HttpResponse('Bad request', status=400)
-
                 position += 1
-
                 routes.append(route)
 
         return JsonResponse({'way': way.to_dict(),
@@ -156,7 +139,7 @@ class WayView(View):
 
 def make_route_dict(step):
     """
-    Method for HTTP POST request
+    Function for creation dict from step data
 
     :param step: Step data. Is required
     :type step: dict
@@ -179,3 +162,38 @@ def make_route_dict(step):
         route['transport_id'] = transport_id
 
     return route
+
+
+def create_route(way, position, **kwargs):
+    """
+        Function for route creation
+
+        :param way: Way object. Is required
+        :type way: object
+        :param position: route position. Is required
+        :type position: Int
+        :param kwargs: Dict with route information.
+        :type kwargs: dict
+
+        :return True if route was created successfully or
+                False if it was not
+    """
+    places = {'start_place': kwargs.get('start_place'),
+              'end_place': kwargs.get('end_place')}
+
+    start_place = Place.create(longitude=places['start_place']['longitude'],
+                               latitude=places['start_place']['latitude'])
+    end_place = Place.create(longitude=places['end_place']['longitude'],
+                             latitude=places['end_place']['latitude'])
+
+    if not start_place and not end_place:
+        return False
+
+    time = kwargs.get('time')
+    transport_id = kwargs.get('transport_id')
+    route_obj = Route.create(way=way, start_place=start_place, end_place=end_place,
+                             time=time, position=position, transport_id=transport_id)
+
+    if not route_obj:
+        return False
+    return True
