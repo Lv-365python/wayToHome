@@ -11,7 +11,6 @@ from utils.send_email import send_email
 from way_to_home.settings import (DOMAIN, CLIENT_ID, CLIENT_SECRET,
                                   REDIRECT_URI, AUTH_URL, TOKEN_URL, SCOPE, STATE)
 
-
 @require_http_methods(["POST"])
 def signup(request):
     """Function that provides user registration"""
@@ -85,9 +84,8 @@ def signin_google(request):
     try:
         code = request.GET["code"]
     except ValueError:
-        return HttpResponse("There is no code in request", status=400)
-    google.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET, code=code,
-                       authorization_response='/api/v1/user/sign_in')
+        return HttpResponse("Havent code", status=400)
+    google.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET, code=code)
     user_data = google.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
