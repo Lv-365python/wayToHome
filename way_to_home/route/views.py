@@ -48,7 +48,7 @@ class RouteView(View):
             return HttpResponse('way is not found', status=400)
 
         if not route_id:
-            return HttpResponse('obj_id are not received', status=400)
+            return HttpResponse('route_id is not received', status=400)
 
         route = way.routes.filter(id=route_id).first()
         if not route:
@@ -60,7 +60,6 @@ class RouteView(View):
             'position': data.get('position'),
             'start_place': data.get('start_place'),
             'end_place': data.get('end_place'),
-            'way': way,
         }
 
         is_updated = route.update(**data)
@@ -102,7 +101,7 @@ class RouteView(View):
             return HttpResponse('way is not found', status=400)
 
         if not route_id:
-            return HttpResponse('route_id are not received', status=400)
+            return HttpResponse('route_id is not received', status=400)
 
         route = way.routes.filter(id=route_id).first()
         if not route:
