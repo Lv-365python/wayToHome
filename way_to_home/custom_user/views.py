@@ -8,8 +8,14 @@ from requests_oauthlib import OAuth2Session
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
-from way_to_home.settings import (DOMAIN, CLIENT_ID, CLIENT_SECRET,
-                                  REDIRECT_URI, AUTH_URL, TOKEN_URL, SCOPE, STATE)
+from way_to_home.settings import (DOMAIN,
+                                  CLIENT_ID,
+                                  CLIENT_SECRET,
+                                  REDIRECT_URI,
+                                  AUTH_URL,
+                                  TOKEN_URL,
+                                  SCOPE,
+                                  STATE)
 
 @require_http_methods(["POST"])
 def signup(request):

@@ -132,8 +132,8 @@ STATIC_URL = '/static/'
 
 # Required settings for authorization via google
 
-CLIENT_ID = '886654959108-v5nocnpcdjsgrovcthsb7o11uuf7g0am.apps.googleusercontent.com'
-CLIENT_SECRET = 'FwcIUXjKIzr4TEDmrXU4_7BS'
+CLIENT_ID = 'CLIENT_ID'
+CLIENT_SECRET = 'CLIENT_SECRET'
 REDIRECT_URI = 'http://localhost:8000/api/v1/user/signin_via_google'
 AUTH_URL = 'https://accounts.google.com/o/oauth2/auth'
 TOKEN_URL = 'https://www.googleapis.com/oauth2/v3/token'
