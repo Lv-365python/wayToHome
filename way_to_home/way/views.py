@@ -67,16 +67,18 @@ class WayView(View):
 
             for step in steps:
                 # Add validators
-                route = make_route_dict(step)
-                was_created = create_route(way, position, **route)
+                route = _make_route_dict(step)
+                was_created = _create_route(way, position, **route)
 
                 if not was_created:
                     return HttpResponse('Bad request', status=400)
                 position += 1
                 routes.append(route)
 
-        return JsonResponse({'way': way.to_dict(),
-                             'routes': routes}, status=201)
+            return JsonResponse({'way': way.to_dict(),
+                                 'routes': routes}, status=201)
+
+        return HttpResponse('Failed to create way', status=400)
 
     def delete(self, request, way_id):  # pylint: disable=R0201
         """
@@ -132,7 +134,7 @@ class WayView(View):
         return HttpResponse('Object was successfully updated', status=200)
 
 
-def make_route_dict(step):
+def _make_route_dict(step):
     """
     Function for creation dict from step data
 
@@ -159,7 +161,7 @@ def make_route_dict(step):
     return route
 
 
-def create_route(way, position, **kwargs):
+def _create_route(way, position, **kwargs):
     """
         Function for route creation
 
