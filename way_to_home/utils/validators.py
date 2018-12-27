@@ -234,6 +234,9 @@ def password_validator(password):
 
 def registration_validate(data):
     """Function that provides registration validation"""
+    required_keys = ['email', 'password']
+    if not required_keys_validator(data, required_keys):
+        return False
     if not (string_validator(data.get('email')) and email_validator(data.get('email'))):
         return False
     if not (string_validator(data.get('password')) and password_validator(data.get('password'))):
@@ -244,6 +247,8 @@ def registration_validate(data):
 def login_validate(data):
     """Function that provides login validation."""
     if not data:
+        return False
+    if not required_keys_validator(data, ['email', 'password']):
         return False
     if not email_validator(data['email']):
         return False
