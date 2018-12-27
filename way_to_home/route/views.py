@@ -23,18 +23,24 @@ class RouteView(View):
     def get(self, request, way_id, route_id=None):
         """ Method that handles GET request. """
         user = request.user
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('way is not found', status=400)
+            return HttpResponse('failed, way not found', status=400)
+
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
 
         if not route_id:
             data = [route.to_dict() for route in way.routes.all().order_by('position')]
             return JsonResponse(data, status=200, safe=False)
 
-        route = way.routes.filter(id=route_id).first()
+        route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return HttpResponse('database operation is failed, route not found', status=400)
+            return HttpResponse('Route not found', status=400)
+
+        if not way == route.way:
+            return HttpResponse('Permission denied', status=403)
 
         return JsonResponse(route.to_dict(), status=200)
 
@@ -42,17 +48,20 @@ class RouteView(View):
         """ Method that handles PUT request. """
         user = request.user
         data = request.body
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
-        if not way:
-            return HttpResponse('way is not found', status=400)
+        if not (way or route_id):
+            return HttpResponse('failed, objects not found', status=400)
 
-        if not route_id:
-            return HttpResponse('route_id is not received', status=400)
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
 
-        route = way.routes.filter(id=route_id).first()
+        route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return HttpResponse('database operation is failed, route not found', status=404)
+            return HttpResponse('Route not found', status=400)
+
+        if not way == route.way:
+            return HttpResponse('Permission denied', status=403)
 
         data = {
             'time': data.get('time'),
@@ -72,10 +81,13 @@ class RouteView(View):
         """ Method that handles POST request. """
         user = request.user
         data = request.data
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('way is not found', status=400)
+            return HttpResponse('failed, way not found', status=400)
+
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
 
         data = {
             'time': data.get('time'),
@@ -95,17 +107,20 @@ class RouteView(View):
     def delete(self, request, way_id, route_id=None):  # pylint: disable=R0201
         """ Method that handles DELETE request. """
         user = request.user
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
-        if not way:
-            return HttpResponse('way is not found', status=400)
+        if not (way or route_id):
+            return HttpResponse('failed, objects not found', status=400)
 
-        if not route_id:
-            return HttpResponse('route_id is not received', status=400)
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
 
-        route = way.routes.filter(id=route_id).first()
+        route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return HttpResponse('way is not found', status=400)
+            return HttpResponse('Route not found', status=400)
+
+        if not way == route.way:
+            return HttpResponse('Permission denied', status=403)
 
         is_deleted = Way.delete_by_id(obj_id=way_id)
         if not is_deleted:
