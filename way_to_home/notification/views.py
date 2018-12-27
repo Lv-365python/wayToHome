@@ -9,6 +9,7 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 
 from notification.models import Notification
+from way.models import Way
 
 
 class NotificationView(View):
@@ -19,10 +20,13 @@ class NotificationView(View):
     def get(self, request, way_id, notification_id=None):
         """ Method that handles GET request. """
         user = request.user
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
             return HttpResponse('way is not found', status=400)
+
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
 
         if not notification_id:
             data = [notification.to_dict() for notification
@@ -30,9 +34,12 @@ class NotificationView(View):
 
             return JsonResponse(data, status=200, safe=False)
 
-        notification = way.notifications.filter(id=notification_id).first()
+        notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
             return HttpResponse('Notification not found', status=400)
+
+        if not way == notification.way:
+            return HttpResponse('Permission denied', status=403)
 
         return JsonResponse(notification.to_dict(), status=200)
 
@@ -40,17 +47,23 @@ class NotificationView(View):
         """ Method that handles PUT request. """
         user = request.user
         data = request.body
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
             return HttpResponse('failed, way not found', status=400)
 
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
+
         if not notification_id:
             return HttpResponse('notification_id is not received', status=400)
 
-        notification = way.notifications.filter(id=notification_id).first()
+        notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return HttpResponse('failed, notification not found', status=400)
+            return HttpResponse('Notification not found', status=400)
+
+        if not way == notification.way:
+            return HttpResponse('Permission denied', status=403)
 
         data = {
             'start_time': data.get('start_time'),
@@ -58,9 +71,6 @@ class NotificationView(View):
             'week_day': data.get('week_day'),
             'time': data.get('time')
         }
-
-        # if not notification_data_validator(data, update=True):
-        #     return HttpResponse('invalid data', status=400)
 
         is_updated = notification.update(**data)
         if not is_updated:
@@ -72,10 +82,13 @@ class NotificationView(View):
         """ Method that handles POST request. """
         user = request.user
         data = request.body
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('way is not found', status=400)
+            return HttpResponse('failed, way not found', status=400)
+
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
 
         data = {
             'start_time': data.get('start_time'),
@@ -84,9 +97,6 @@ class NotificationView(View):
             'time': data.get('time'),
             'way': way,
         }
-
-        # if not notification_data_validator(data):
-        #     return HttpResponse('invalid data', status=400)
 
         notification = Notification.create(**data)
         if not notification:
@@ -97,17 +107,23 @@ class NotificationView(View):
     def delete(self, request, way_id, notification_id=None):  # pylint: disable=R0201
         """ Method that handles DELETE request. """
         user = request.user
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
             return HttpResponse('failed, way not found', status=400)
 
+        if not user == way.user:
+            return HttpResponse('Permission denied', status=403)
+
         if not notification_id:
             return HttpResponse('obj_ids are not received', status=400)
 
-        notification = way.notifications.filter(id=notification_id).first()
+        notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return HttpResponse('failed, notification not found', status=400)
+            return HttpResponse('Notification not found', status=400)
+
+        if not way == notification.way:
+            return HttpResponse('Permission denied', status=403)
 
         is_deleted = Notification.delete_by_id(notification_id)
         if not is_deleted:
