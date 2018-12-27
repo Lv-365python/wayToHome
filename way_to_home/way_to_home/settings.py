@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = False
 
 # Application definition
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'custom_user.CustomUser'
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,6 +129,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Required settings for sending email.
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'EMAIL_HOST_USER@gmail.com'
+EMAIL_HOST_PASSWORD = 'EMAIL_HOST_PASSWORD'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'DEFAULT_FROM_EMAIL'
+
+# JWT Token required settings.
+
+JWT_TOKEN_KEY = 'any secret word'
+JWT_ALGORITHM = 'HS384'
+
+DOMAIN = 'localhost:8000'
 
 try:
     from way_to_home.local_settings import *

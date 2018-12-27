@@ -16,3 +16,4 @@ requests==2.21.0
 protobuf==3.6.1
 gtfs-realtime-bindings==0.0.5
 idna==2.8
+PyJWT==1.7.1 
