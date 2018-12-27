@@ -6,37 +6,39 @@ import Checkbox from '@material-ui/core/Checkbox';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import Modal from '@material-ui/core/Modal';
-import './loginForm.css'
+import './loginForm.css';
+import SignupForm from '../signupForm/signupForm';
 
 
 class LoginForm extends Component{
 
     state = {
         open: false
-    }
+    };
 
     onClickSignup = () => {
+        this.setState({ open: false });
+        this.refs.child.signupFormOpen();  // ????????
         console.log('click on sign up button');
-    }
+    };
 
     onClickConfirm = () => {
         console.log('click on confirm button');
-    }
-
-    handleClose = () => {
-        this.setState({ open: false });
-        console.log('login form was closed');
     };
 
-    handleOpen = () => {
+    loginFormOpen = () => {
         this.setState({ open: true });
-        console.log('open handle');
+        console.log('login form is open');
+    };
+
+    loginFormClose = () => {
+        this.setState({ open: false });
+        console.log('login form is close');
     };
 
     render(){
-        console.log('rendering login form')
         return(
-        <Modal open={this.state.open} onClose={this.handleClose}>
+        <Modal open={this.state.open} onClose={this.loginFormClose}>
           <div style={{marginTop: '80px'}} className='LoginFormDiv'>
               <Avatar>
                 <LockIcon />
@@ -49,7 +51,6 @@ class LoginForm extends Component{
                   autoComplete="email"
                   margin="normal"
                   variant="filled"/>
-
               <TextField
                   id="filled-password-input"
                   label="Password"
@@ -57,24 +58,29 @@ class LoginForm extends Component{
                   autoComplete="current-password"
                   margin="normal"
                   variant="filled"/>
-              <div><FormControlLabel control={<Checkbox value="checkedC" />} label="Remember me" /></div>
-
-              <div><Button color="primary" onClick={this.onClickSignup}> sign up </Button></div>
-
-              <Button variant='contained' color='primary' size='medium' onClick={this.onClickConfirm}> confirm </Button>
-
+              <div>
+                <FormControlLabel control={<Checkbox value="checkedC" />} label="Remember me" />
+              </div>
+              <div>
+                  <Button color="primary" onClick={this.onClickSignup}>
+                    sign up
+                  </Button>
+              </div>
+              <Button variant='contained' color='primary' size='medium' onClick={this.onClickConfirm}>
+                confirm
+              </Button>
               <Button
                   variant='contained'
                   color='secondary'
                   size='medium'
                   className='Btn'
-                  onClick={this.handleClose}>
+                  onClick={this.loginFormClose}>
                 cancel
               </Button>
           </div>
         </Modal>
         )
-    }
+    };
 };
 
 export default LoginForm
