@@ -130,6 +130,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Required settings for authorization via google
+
+CLIENT_ID = 'CLIENT_ID'
+CLIENT_SECRET = 'CLIENT_SECRET'
+REDIRECT_URI = 'http://localhost:8000/api/v1/user/signin_via_google'
+AUTH_URL = 'https://accounts.google.com/o/oauth2/auth'
+TOKEN_URL = 'https://www.googleapis.com/oauth2/v3/token'
+SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me']
+STATE = 'way_to_home'
+
 # Required settings for sending email.
 
 EMAIL_HOST = 'smtp.gmail.com'

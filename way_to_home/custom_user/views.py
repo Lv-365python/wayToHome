@@ -2,12 +2,20 @@
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
+from django.shortcuts import redirect
+from requests_oauthlib import OAuth2Session
 
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
-from way_to_home.settings import DOMAIN
-
+from way_to_home.settings import (DOMAIN,
+                                  CLIENT_ID,
+                                  CLIENT_SECRET,
+                                  REDIRECT_URI,
+                                  AUTH_URL,
+                                  TOKEN_URL,
+                                  SCOPE,
+                                  STATE)
 
 @require_http_methods(["POST"])
 def signup(request):
@@ -63,3 +71,37 @@ def log_in(request):
         return HttpResponse('invalid credentials', status=400)
     login(request, user=user)
     return HttpResponse('operation was successful provided', status=200)
+
+
+@require_http_methods(["GET"])
+def auth_google(request):
+    """Function that provides getting url for confirmation access to user's data."""
+    google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
+                                   state=STATE, scope=SCOPE)
+    data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
+    if data:
+        return redirect(data)
+    return HttpResponse("Access denied", status=403)
+
+
+@require_http_methods(["GET"])
+def signin_google(request):
+    """Function that provides user registration or authorization via google."""
+    google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
+                                   state=STATE, scope=SCOPE)
+    authorization_code = request.GET.get("code")
+    if not authorization_code:
+        return HttpResponse("Code doesn't exist", status=400)
+    google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
+                               code=authorization_code)
+    user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
+    if user_data:
+        user = CustomUser.get_by_email(user_data['email'])
+        if user:
+            login(request, user=user)
+            return HttpResponse('User was successfully activated', status=200)
+        user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
+        login(request, user=user)
+        return HttpResponse("User was successfully created", status=201)
+
+    return HttpResponse("User's data is empty", status=400)
