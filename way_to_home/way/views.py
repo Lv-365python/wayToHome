@@ -27,15 +27,17 @@ class WayView(View):
         """
         user = request.user
         if not way_id:
-
             data = [way.get_way_with_routes() for way in user.ways.all()]
 
             return JsonResponse(data, status=200, safe=False)
 
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
             return HttpResponse('Object not found', status=400)
+
+        if not way.user == user:
+            return HttpResponse("Permission denied", status=403)
 
         data = way.get_way_with_routes()
         return JsonResponse(data, status=200)
@@ -93,16 +95,19 @@ class WayView(View):
                 HttpRequest with error if parameters are bad
         """
         user = request.user
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
 
         if not way:
             return HttpResponse('Way not found', status=400)
 
-        is_deleted = Way.delete_by_id(obj_id=way_id)
+        if not way.user == user:
+            return HttpResponse("Permission denied", status=403)
 
-        if is_deleted:
-            return HttpResponse('Way was deleted', status=200)
-        return HttpResponse('Way was not deleted', status=400)
+        is_deleted = Way.delete_by_id(obj_id=way_id)
+        if not is_deleted:
+            return HttpResponse('Way was not deleted', status=400)
+
+        return HttpResponse('Way was deleted', status=200)
 
     def put(self, request, way_id):  # pylint: disable=R0201
         """
@@ -119,11 +124,16 @@ class WayView(View):
         user = request.user
         data = request.body
 
-        way = user.ways.filter(id=way_id).first()
+        way = Way.get_by_id(obj_id=way_id)
+
         if not way:
             return HttpResponse('Object not found', status=400)
 
+        if not way.user == user:
+            return HttpResponse("Permission denied", status=403)
+
         data = {'name': data.get('name')}
+
         # if not way_data_validator(data):
         # return HttpResponse('Database operation has failed', status=400)
 
