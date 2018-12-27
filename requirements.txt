@@ -17,3 +17,4 @@ protobuf==3.6.1
 gtfs-realtime-bindings==0.0.5
 idna==2.8
 PyJWT==1.7.1 
+requests-oauthlib==1.0.0
