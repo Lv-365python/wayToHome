@@ -218,7 +218,7 @@ def email_validator(email):
         validate_email(email)
         return True
     except (ValidationError, AttributeError):
-        pass
+        return False
 
 
 def password_validator(password):
@@ -227,8 +227,9 @@ def password_validator(password):
         template = re.compile(PASSWORD_REG_EXP)
         if template.match(password):
             return True
+        return False
     except (TypeError, AttributeError):
-        pass
+        return False
 
 
 def registration_validate(data):
