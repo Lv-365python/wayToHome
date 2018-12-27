@@ -49,14 +49,11 @@ class NotificationView(View):
         data = request.body
         way = Way.get_by_id(obj_id=way_id)
 
-        if not way:
-            return HttpResponse('failed, way not found', status=400)
+        if not (way and notification_id):
+            return HttpResponse('failed, objects not found', status=400)
 
         if not user == way.user:
             return HttpResponse('Permission denied', status=403)
-
-        if not notification_id:
-            return HttpResponse('notification_id is not received', status=400)
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
@@ -109,14 +106,11 @@ class NotificationView(View):
         user = request.user
         way = Way.get_by_id(obj_id=way_id)
 
-        if not way:
-            return HttpResponse('failed, way not found', status=400)
+        if not (way and notification_id):
+            return HttpResponse('failed, objects not found', status=400)
 
         if not user == way.user:
             return HttpResponse('Permission denied', status=403)
-
-        if not notification_id:
-            return HttpResponse('obj_ids are not received', status=400)
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
