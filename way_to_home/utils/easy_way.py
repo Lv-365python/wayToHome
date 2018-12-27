@@ -14,14 +14,17 @@ def compile_file(file_gtfs):
     try:
         with open(file_gtfs, 'rb') as file:
             content = file.read()
-    except FileNotFoundError:
+    except (FileNotFoundError, PermissionError):
         return False
 
     feed.ParseFromString(content)
     json_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
 
-    with open('vehicle_data.json', 'w') as file:
-        file.write(json_data)
+    try:
+        with open('vehicle_data.json', 'w') as file:
+            file.write(json_data)
+    except PermissionError:
+        return False
 
     return True
 
@@ -49,10 +52,7 @@ def get_route(file_json, route_id):
     try:
         with open(file_json, 'r') as file:
             data = json.loads(file.read())
-    except FileNotFoundError:
+    except (FileNotFoundError, PermissionError):
         return None
 
-    route = data.get(route_id)
-    return route
-
-compile_file('./vehicle_position')
+    return data.get(route_id)

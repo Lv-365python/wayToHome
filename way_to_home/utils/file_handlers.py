@@ -24,9 +24,9 @@ def unzip_file(path_to_file, unzip_to='./'):
         with ZipFile(path_to_file, 'r') as zip_file:
             try:
                 zip_file.extractall(unzip_to)
-            except (ValueError, BadZipFile):
+            except (ValueError, BadZipFile, PermissionError):
                 return False
-    except FileNotFoundError:
+    except (FileNotFoundError, PermissionError):
         return False
 
     return True
@@ -40,8 +40,11 @@ def load_file(url, save_to='./'):
     if not request.status_code == 200:
         return False
 
-    with open(f'{save_to}/{file_name}', 'wb') as file:
-        file.write(request.content)
+    try:
+        with open(f'{save_to}/{file_name}', 'wb') as file:
+            file.write(request.content)
+    except PermissionError:
+        return False
 
     return True
 
@@ -68,7 +71,7 @@ def parse_csv_file(path_to_file, required_fields):
 
                 parsed_data.append(item)
 
-    except FileNotFoundError:
+    except (FileNotFoundError, PermissionError):
         return None
 
     return parsed_data
@@ -79,7 +82,7 @@ def pickle_data(data, path_to_file):
     with open(path_to_file, 'wb') as file:
         try:
             pickle.dump(data, file)
-        except pickle.PicklingError:
+        except (pickle.PicklingError, PermissionError):
             return False
 
     return True
@@ -93,7 +96,7 @@ def unpickle_data(path_to_file):
                 data = pickle.load(file)
             except pickle.UnpicklingError:
                 return None
-    except FileNotFoundError:
+    except (FileNotFoundError, PermissionError):
         return None
 
     return data
