@@ -3,24 +3,22 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Modal from '@material-ui/core/Modal';
 import './signupForm.css';
 
 
 class SignupForm extends Component{
 
     state = {
-        open: false
-    };
+        display: 'block'
+    }
 
     signupFormOpen = () => {
-        this.setState({ open: true });
         console.log('signup form is open');
     };
 
     signupFormClose = () => {
-        this.setState({ open: false });
         console.log('signup form is close');
+        this.setState({display: 'none'});
     };
 
     onClickConfirm = () => {
@@ -28,13 +26,12 @@ class SignupForm extends Component{
     };
 
     onClickGoogle = () => {
-        console.log('click on signup with google')
+        console.log('click on signup with google');
     };
 
     render(){
         return(
-        <Modal open={this.state.open} onClose={this.signupFormClose}>
-          <div style={{marginTop: '80px'}} className='SignupFormDiv'>
+          <div style={{marginTop: '80px', display: this.state.display}} className='SignupFormDiv'>
               <TextField id="standard-dense" label="Firstname" margin="dense"/>
               <TextField id="standard-dense" label="Lastname" margin="dense"/>
               <TextField id="standard-dense" label="Mobile" margin="dense"/>
@@ -69,11 +66,10 @@ class SignupForm extends Component{
                   color='secondary'
                   size='medium'
                   className='Btn'
-                  onClick={this.signupFormClose}>
+                  onClick={this.props.action}>
                 cancel
               </Button>
           </div>
-        </Modal>
         )
     };
 };

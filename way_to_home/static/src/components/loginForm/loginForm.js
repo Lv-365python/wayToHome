@@ -5,21 +5,22 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import Avatar from '@material-ui/core/Avatar';
-import Modal from '@material-ui/core/Modal';
 import './loginForm.css';
-import SignupForm from '../signupForm/signupForm';
+import LoginBtn from '../loginBtn/loginBtn';
+import SignupForm from '../signupForm/signupForm.js';
 
 
 class LoginForm extends Component{
 
     state = {
-        open: false
-    };
+        display: 'block',
+    }
 
     onClickSignup = () => {
-        this.setState({ open: false });
-        this.refs.child.signupFormOpen();  // ????????
         console.log('click on sign up button');
+        this.setState({display: 'none'});
+        this.setState({open: 'false'});
+
     };
 
     onClickConfirm = () => {
@@ -27,19 +28,17 @@ class LoginForm extends Component{
     };
 
     loginFormOpen = () => {
-        this.setState({ open: true });
         console.log('login form is open');
     };
 
     loginFormClose = () => {
-        this.setState({ open: false });
         console.log('login form is close');
+        this.setState({display: 'none'});
     };
 
     render(){
         return(
-        <Modal open={this.state.open} onClose={this.loginFormClose}>
-          <div style={{marginTop: '80px'}} className='LoginFormDiv'>
+          <div style={{marginTop: '80px', display: this.state.display}} className='LoginFormDiv'>
               <Avatar>
                 <LockIcon />
               </Avatar>
@@ -66,19 +65,21 @@ class LoginForm extends Component{
                     sign up
                   </Button>
               </div>
-              <Button variant='contained' color='primary' size='medium' onClick={this.onClickConfirm}>
-                confirm
+              <Button variant='contained'
+                color='primary'
+                size='medium'
+                onClick={this.onClickConfirm}>
+                    confirm
               </Button>
               <Button
                   variant='contained'
                   color='secondary'
                   size='medium'
                   className='Btn'
-                  onClick={this.loginFormClose}>
-                cancel
+                  onClick={this.props.action}>
+                    cancel
               </Button>
           </div>
-        </Modal>
         )
     };
 };
