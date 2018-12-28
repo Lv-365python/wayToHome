@@ -10,6 +10,7 @@ from django.http import HttpResponse, JsonResponse
 
 from notification.models import Notification
 from way.models import Way
+from utils.validators import notification_data_validator
 
 
 class NotificationView(View):
@@ -43,7 +44,7 @@ class NotificationView(View):
 
         return JsonResponse(notification.to_dict(), status=200)
 
-    def put(self, request, way_id, notification_id=None):  # pylint: disable=R0201
+    def put(self, request, way_id, notification_id=None):  # pylint: disable=R0201, R0911
         """ Method that handles PUT request. """
         user = request.user
         data = request.body
@@ -69,6 +70,9 @@ class NotificationView(View):
             'time': data.get('time')
         }
 
+        if not notification_data_validator(data, update=True):
+            return HttpResponse('Invalid data', status=400)
+
         is_updated = notification.update(**data)
         if not is_updated:
             return HttpResponse('Notification is not updated', status=400)
@@ -82,7 +86,7 @@ class NotificationView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('failed, way not found', status=400)
+            return HttpResponse('Way not found', status=400)
 
         if not user == way.user:
             return HttpResponse('Permission denied', status=403)
@@ -94,6 +98,9 @@ class NotificationView(View):
             'time': data.get('time'),
             'way': way,
         }
+
+        if not notification_data_validator(data):
+            return HttpResponse('Invalid data', status=400)
 
         notification = Notification.create(**data)
         if not notification:

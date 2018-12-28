@@ -10,6 +10,7 @@ from django.http import HttpResponse, JsonResponse
 
 from route.models import Route
 from way.models import Way
+from utils.validators import route_data_validator
 
 
 class RouteView(View):
@@ -44,7 +45,7 @@ class RouteView(View):
 
         return JsonResponse(route.to_dict(), status=200)
 
-    def put(self, request, way_id, route_id=None):  # pylint: disable=R0201
+    def put(self, request, way_id, route_id=None):  # pylint: disable=R0201, R0911
         """ Method that handles PUT request. """
         user = request.user
         data = request.body
@@ -70,6 +71,9 @@ class RouteView(View):
             'start_place': data.get('start_place'),
             'end_place': data.get('end_place'),
         }
+
+        if not route_data_validator(data, update=True):
+            return HttpResponse('Invalid data', status=400)
 
         is_updated = route.update(**data)
         if not is_updated:
@@ -97,6 +101,9 @@ class RouteView(View):
             'end_place': data.get('end_place'),
             'way': way,
         }
+
+        if not route_data_validator(data):
+            return HttpResponse('Invalid data', status=400)
 
         route = Route.create(**data)
         if not route:
