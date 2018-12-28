@@ -5,6 +5,20 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth2Session
 
+from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_200_ACTIVATED,
+                                  RESPONSE_498_INVALID_TOKEN,
+                                  RESPONSE_400_INVALID_EMAIL,
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_400_INVALID_EMAIL_OR_PASSWORD,
+                                  RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_201_ACTIVATE,
+                                  RESPONSE_400_EMPTY_JSON,
+                                  RESPONSE_400_NO_CODE,
+                                  RESPONSE_200_OK,
+                                  RESPONSE_201_CREATED)
+
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
@@ -28,12 +42,12 @@ def signup(request):
     }
 
     if not registration_validator(credentials):
-        return HttpResponse('invalid data', status=400)
+        return RESPONSE_400_INVALID_DATA
 
     user = CustomUser.create(**credentials)
 
     if not user:
-        return HttpResponse('received email is already exist', status=400)
+        return RESPONSE_400_EXISTED_EMAIL
 
     token = create_token(data={'email': user.email})
 
@@ -42,25 +56,24 @@ def signup(request):
     send_email(mail_subject, message, (user.email,))
     msg = 'Please confirm your email address to complete the registration'
 
-    return HttpResponse(msg, status=201)
-
+    return RESPONSE_201_ACTIVATE
 
 @require_http_methods(["GET"])
 def registration_confirm(request, token):
     """Function that provides user activation"""
     data = decode_token(token)
     if not data:
-        return HttpResponse('invalid or expired token', status=498)
+        return RESPONSE_498_INVALID_TOKEN
 
     user = CustomUser.get_by_email(email=data.get('email'))
     if not user:
-        return HttpResponse('received email is not valid', status=400)
+        return RESPONSE_400_INVALID_EMAIL
 
     is_updated = user.update(is_active=True)
     if not is_updated:
-        return HttpResponse('database operations is failed', status=400)
+        return RESPONSE_400_DB_OPERATION_FAILED
 
-    return HttpResponse('user was successfully activated', status=200)
+    return RESPONSE_200_ACTIVATED
 
 
 @require_http_methods(["POST"])
@@ -74,13 +87,13 @@ def log_in(request):
     }
 
     if not login_validator(credentials):
-        return HttpResponse('invalid data', status=400)
+        return RESPONSE_400_INVALID_DATA
 
     user = authenticate(**credentials)
     if not user:
-        return HttpResponse('invalid credentials', status=400)
+        return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
     login(request, user=user)
-    return HttpResponse('operation was successful provided', status=200)
+    return RESPONSE_200_OK
 
 
 @require_http_methods(["GET"])
@@ -91,7 +104,7 @@ def auth_google(request):
     data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
         return redirect(data)
-    return HttpResponse("Access denied", status=403)
+    return RESPONSE_403_ACCESS_DENIED
 
 
 @require_http_methods(["GET"])
@@ -101,7 +114,7 @@ def signin_google(request):
                                    state=STATE, scope=SCOPE)
     authorization_code = request.GET.get("code")
     if not authorization_code:
-        return HttpResponse("Code doesn't exist", status=400)
+        return RESPONSE_400_NO_CODE
     google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
                                code=authorization_code)
     user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
@@ -109,9 +122,9 @@ def signin_google(request):
         user = CustomUser.get_by_email(user_data['email'])
         if user:
             login(request, user=user)
-            return HttpResponse('User was successfully activated', status=200)
+            return RESPONSE_200_ACTIVATED
         user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
         login(request, user=user)
-        return HttpResponse("User was successfully created", status=201)
+        return RESPONSE_201_CREATED
 
-    return HttpResponse("User's data is empty", status=400)
+    return RESPONSE_400_EMPTY_JSON
