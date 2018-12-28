@@ -209,7 +209,6 @@ def email_validator(email):
     if not string_validator(email, max_length=64):
         return False
     try:
-        email = email.lower().strip()
         validate_email(email)
     except (ValidationError, AttributeError):
         return False
@@ -229,7 +228,7 @@ def password_validator(password):
     return True
 
 
-def registration_validate(data):
+def registration_validator(data):
     """Function that provides registration validation"""
     required_keys = ['email', 'password']
     if not required_keys_validator(data, required_keys):
@@ -241,7 +240,7 @@ def registration_validate(data):
     return True
 
 
-def login_validate(data):
+def login_validator(data):
     """Function that provides login validation"""
     required_keys = ['email', 'password']
     if not required_keys_validator(data, required_keys):

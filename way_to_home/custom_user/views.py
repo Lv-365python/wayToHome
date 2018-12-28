@@ -8,6 +8,7 @@ from requests_oauthlib import OAuth2Session
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
+from utils.validators import registration_validator, login_validator
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -21,12 +22,15 @@ from way_to_home.settings import (DOMAIN,
 def signup(request):
     """Function that provides user registration"""
     data = request.body
-    email = data.get('email').lower().strip()
-    password = data.get('password')
-    user = CustomUser.create(
-        email=email,
-        password=password
-    )
+    credentials = {
+        'email': data.get('email').lower().strip(),
+        'password': data.get('password')
+    }
+
+    if not registration_validator(credentials):
+        return HttpResponse('invalid data', status=400)
+
+    user = CustomUser.create(**credentials)
 
     if not user:
         return HttpResponse('received email is already exist', status=400)
@@ -64,9 +68,15 @@ def log_in(request):
     """Login of the existing user. Handles post and get requests."""
 
     data = request.body
-    email = data.get('email').lower().strip()
-    password = data.get('password')
-    user = authenticate(email=email, password=password)
+    credentials = {
+        'email': data.get('email').lower().strip(),
+        'password': data.get('password')
+    }
+
+    if not login_validator(credentials):
+        return HttpResponse('invalid data', status=400)
+
+    user = authenticate(**credentials)
     if not user:
         return HttpResponse('invalid credentials', status=400)
     login(request, user=user)

@@ -3,6 +3,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 
+from utils.validators import place_data_validator
 from .models import Place
 
 
@@ -23,8 +24,8 @@ class PlaceView(View):
             'stop_id': data.get('stop_id')
         }
 
-        # if not place_data_validator(data):
-        #     return HttpResponse('invalid data', status=400)
+        if not place_data_validator(data):
+            return HttpResponse('invalid data', status=400)
 
         place = Place.create(user=request.user, **data)
         if not place:
@@ -54,7 +55,7 @@ class PlaceView(View):
         place = place.to_dict()
         return JsonResponse(place, status=200)
 
-    def put(self, request, place_id=None):  # pylint: disable=R0201
+    def put(self, request, place_id=None):  # pylint: disable=R0201, R0911
         """Handle the request to update an existing place object with appropriate id."""
         user = request.user
 
@@ -81,8 +82,8 @@ class PlaceView(View):
             'stop_id': data.get('stop_id')
         }
 
-        # if not place_data_validator(data, update=True):
-        #     return HttpResponse('invalid data', status=400)
+        if not place_data_validator(data, update=True):
+            return HttpResponse('invalid data', status=400)
 
         is_updated = place.update(**data)
         if not is_updated:
