@@ -21,7 +21,7 @@ class Route(AbstractModel):
 
     def __str__(self):
         """Method that returns route instance as string."""
-        return f'route from: {self.start_place_id} to {self.end_place_id}'
+        return f'route from: {self.start_place.id} to {self.end_place.id}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
