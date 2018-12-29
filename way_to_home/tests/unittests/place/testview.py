@@ -24,7 +24,7 @@ class PlaceViewTest(TestCase):
         login = self.client.login(email='mymail@icloud.com', password='qwerty12345')
         self.assertTrue(login)
 
-        Place.objects.create(
+        self.place = Place.objects.create(
             id=11,
             longitude=49.842601,
             latitude=23.968448,
@@ -34,7 +34,7 @@ class PlaceViewTest(TestCase):
             user=custom_user
         )
 
-        Place.objects.create(
+        self.place2 = Place.objects.create(
             id=12,
             longitude=48.842601,
             latitude=21.968423,
@@ -57,7 +57,7 @@ class PlaceViewTest(TestCase):
             'user_id': 2
         }
 
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(json.dumps(expected_data), json.loads(response.content))
@@ -103,7 +103,7 @@ class PlaceViewTest(TestCase):
         another_user.save()
         self.client.login(email='another_user@mail.com', password='qwerty12345')
 
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
@@ -169,7 +169,7 @@ class PlaceViewTest(TestCase):
             'name': 'Work'
         }
 
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
@@ -179,7 +179,7 @@ class PlaceViewTest(TestCase):
         data = {
             'stop_id': "asd",
         }
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -193,7 +193,7 @@ class PlaceViewTest(TestCase):
         data = {
             'longitude': 12.842601
         }
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 403)
 
@@ -219,7 +219,7 @@ class PlaceViewTest(TestCase):
     def test_delete_success(self):
         """Method that tests successful delete request"""
 
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, 200)
@@ -239,7 +239,7 @@ class PlaceViewTest(TestCase):
         another_user.save()
         self.client.login(email='another_user2@mail.com', password='qwerty12345')
 
-        url = reverse('place', kwargs={'place_id': 11})
+        url = reverse('place', kwargs={'place_id': self.place.id})
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, 403)
