@@ -74,15 +74,32 @@ class RouteModelTestCase(TestCase):
 
         self.assertEqual(expected_string, actual_string)
 
-    # def test_create(self):
-    #     """Provide tests for `create` method of Route model."""
-    #     way = Way.objects.get(id=1)
-    #     start_place = Place.objects.get(id=1)
-    #     end_place = Place.objects.get(id=2)
-    #
-    #     route = Route.create(way=way, time='01:01:01', position=0, start_place=start_place, end_place=end_place)
-    #     self.assertIsInstance(route, Route)
-    #     self.assertIsNotNone(Route.object.get(route.id))
-    #
-    #     route = Route.create(way=way, time='01:01:01', position=0, start_place=start_place, end_place=end_place)
-    #     self.assertNone(Route.object.get(route.id))
+    def test_create(self):
+        """Provide tests for `create` method of Route model."""
+        way = Way.objects.get(id=100)
+        start_place = Place.objects.get(id=100)
+        end_place = Place.objects.get(id=200)
+
+        route = Route.create(way=way, time='01:02:03', position=1, start_place=start_place, end_place=end_place)
+        self.assertIsInstance(route, Route)
+        self.assertIsNotNone(Route.objects.get(id=route.id))
+
+        route = Route.create(way=Way(), time='', position=-1, start_place=Place(), end_place=Place())
+        self.assertIsNone(route)
+
+    def test_update(self):
+        """Provide tests for `update` method of certain Route instance."""
+        new_time = '01:02:03'
+        new_position = 99
+        is_updated = self.route.update(time=new_time, position=new_position)
+        self.assertTrue(is_updated)
+
+        route = Route.objects.get(id=self.route.id)
+        self.assertEqual(route.position, new_position)
+        self.assertEqual(route.time.strftime('%H:%M:%S'), new_time)
+
+        new_position = -1
+        is_updated = self.route.update(position=new_position)
+        self.assertFalse(is_updated)
+        route = Route.objects.get(id=self.route.id)
+        self.assertNotEqual(route.position, new_position)
