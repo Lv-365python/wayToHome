@@ -1,5 +1,7 @@
 """This module provides tests for Route model."""
 
+import datetime
+
 from django.test import TestCase
 
 from custom_user.models import CustomUser
@@ -49,11 +51,11 @@ class RouteModelTestCase(TestCase):
 
     def test_to_dict(self):
         """Provide tests for `to_dict` method of certain Route instance."""
-        route = Route.get_by_id(obj_id=self.route.id)
+        route = Route.object.get(id=self.route.id)
 
         expected_dict = {
             'id': 100,
-            'time':  '23:58:59',
+            'time':  datetime.time(23, 58, 59),
             'transport_id': None,
             'position': 0,
             'way': 100,
@@ -65,7 +67,7 @@ class RouteModelTestCase(TestCase):
 
     def test_str(self):
         """Provide tests for `__str__` method of certain Route instance."""
-        route = Route.get_by_id(obj_id=self.route.id)
+        route = Route.objects.get(id=self.route.id)
 
         expected_string = 'route from: 100 to 200'
         actual_string = route.__str__()
@@ -87,14 +89,14 @@ class RouteModelTestCase(TestCase):
 
     def test_update(self):
         """Provide tests for `update` method of certain Route instance."""
-        new_time = '01:02:03'
+        new_time = datetime.time(1, 2, 3)
         new_position = 99
         is_updated = self.route.update(time=new_time, position=new_position)
         self.assertTrue(is_updated)
 
         route = Route.objects.get(id=self.route.id)
         self.assertEqual(route.position, new_position)
-        self.assertEqual(route.time.strftime('%H:%M:%S'), new_time)
+        self.assertEqual(route.time, new_time)
 
         new_position = -1
         is_updated = self.route.update(position=new_position)
