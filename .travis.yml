@@ -5,6 +5,13 @@ python:
 install:
   - pip install -r requirements.txt
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE travis_db;" -U postgres
+
 script:
   - cd way_to_home
   - pylint --rcfile=.pylintrc *
+  - coverage run manage.py test
