@@ -27,7 +27,7 @@ class Route(AbstractModel):
         """Method that returns dict with object's attributes."""
         return {
             'id': self.id,
-            'time': self.time,
+            'time': self.time.strftime('%H:%M:%S'),
             'transport_id': self.transport_id,
             'position': self.position,
             'way': self.way.id,
