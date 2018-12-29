@@ -18,3 +18,4 @@ gtfs-realtime-bindings==0.0.5
 idna==2.8
 PyJWT==1.7.1 
 requests-oauthlib==1.0.0
+coverage==4.5.2

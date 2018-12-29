@@ -51,7 +51,7 @@ class RouteModelTestCase(TestCase):
 
     def test_to_dict(self):
         """Provide tests for `to_dict` method of certain Route instance."""
-        route = Route.object.get(id=self.route.id)
+        route = Route.objects.get(id=self.route.id)
 
         expected_dict = {
             'id': 100,
