@@ -15,15 +15,15 @@ class RouteModelTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Route model's features."""
-        user = CustomUser.objects.create(id=1, email='testuser@mail.com', password='testpassword', is_active=True)
-        way = Way.objects.create(id=1, user=user)
-        start_place = Place.objects.create(id=1, longitude=111.123456, latitude=222.123456)
-        end_place = Place.objects.create(id=2, longitude=222.123456, latitude=111.123456)
+        user = CustomUser.objects.create(id=100, email='testuser@mail.com', password='testpassword', is_active=True)
+        way = Way.objects.create(id=100, user=user)
+        start_place = Place.objects.create(id=100, longitude=111.123456, latitude=222.123456)
+        end_place = Place.objects.create(id=200, longitude=222.123456, latitude=111.123456)
 
         Route.objects.create(
             id=100,
             way=way,
-            time='01:01:01',
+            time='23:58:59',
             position=0,
             start_place=start_place,
             end_place=end_place
@@ -48,3 +48,41 @@ class RouteModelTestCase(TestCase):
 
         is_deleted = Route.delete_by_id(obj_id=999)
         self.assertFalse(is_deleted)
+
+    def test_to_dict(self):
+        """Provide tests for `to_dict` method of certain Route instance."""
+        route = Route.get_by_id(obj_id=self.route.id)
+
+        expected_dict = {
+            'id': 100,
+            'time':  '23:58:59',
+            'transport_id': None,
+            'position': 0,
+            'way': 100,
+            'start_place': 100,
+            'end_place': 200,
+        }
+        actual_dict = route.to_dict()
+        self.assertDictEqual(expected_dict, actual_dict)
+
+    def test_str(self):
+        """Provide tests for `__str__` method of certain Route instance."""
+        route = Route.get_by_id(obj_id=self.route.id)
+
+        expected_string = 'route from: 100 to 200'
+        actual_string = route.__str__()
+
+        self.assertEqual(expected_string, actual_string)
+
+    # def test_create(self):
+    #     """Provide tests for `create` method of Route model."""
+    #     way = Way.objects.get(id=1)
+    #     start_place = Place.objects.get(id=1)
+    #     end_place = Place.objects.get(id=2)
+    #
+    #     route = Route.create(way=way, time='01:01:01', position=0, start_place=start_place, end_place=end_place)
+    #     self.assertIsInstance(route, Route)
+    #     self.assertIsNotNone(Route.object.get(route.id))
+    #
+    #     route = Route.create(way=way, time='01:01:01', position=0, start_place=start_place, end_place=end_place)
+    #     self.assertNone(Route.object.get(route.id))
