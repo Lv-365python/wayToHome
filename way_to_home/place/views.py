@@ -1,16 +1,17 @@
 """This module that provides base logic for CRUD of place`s model objects."""
 
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views import View
 
 from utils.validators import place_data_validator
-from utils.responsehelper import (RESPONSE_400_INVALID_DATA,
-                                  RESPONSE_404_OBJECT_NOT_FOUND,
-                                  RESPONSE_403_ACCESS_DENIED,
+from utils.responsehelper import (RESPONSE_200_UPDATED,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_DB_OPERATION_FAILED,
-                                  RESPONSE_200_UPDATED,
                                   RESPONSE_400_OBJECT_NOT_RECEIVED,
-                                  RESPONSE_200_DELETED)
+                                  RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  )
 from .models import Place
 
 
@@ -63,6 +64,9 @@ class PlaceView(View):
         """Handle the request to update an existing place object with appropriate id."""
         user = request.user
         data = request.body
+
+        if not data:
+            return RESPONSE_400_INVALID_DATA
 
         if not place_id:
             return RESPONSE_400_OBJECT_NOT_RECEIVED
