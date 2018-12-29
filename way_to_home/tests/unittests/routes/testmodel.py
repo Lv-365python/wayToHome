@@ -1,7 +1,5 @@
 """This module provides tests for Route model."""
 
-import datetime
-
 from django.test import TestCase
 
 from custom_user.models import CustomUser
