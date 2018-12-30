@@ -19,8 +19,7 @@ class PlaceViewTest(TestCase):
         custom_user.save()
 
         self.client = Client()
-        login = self.client.login(email='mymail@icloud.com', password='qwerty12345')
-        self.assertTrue(login)
+        self.client.login(email='mymail@icloud.com', password='qwerty12345')
 
         self.place = Place.objects.create(
             id=11,
@@ -34,12 +33,12 @@ class PlaceViewTest(TestCase):
 
     def test_get_by_id(self):
         """Provide tests for `get_by_id` method of certain Place instance."""
-        expected_route = Place.objects.get(id=self.place.id)
-        actual_route = Place.get_by_id(obj_id=self.place.id)
-        self.assertEqual(expected_route, actual_route)
+        expected_place = Place.objects.get(id=self.place.id)
+        actual_place = Place.get_by_id(obj_id=self.place.id)
+        self.assertEqual(expected_place, actual_place)
 
-        unexisting_route = Place.get_by_id(obj_id=111)
-        self.assertIsNone(unexisting_route)
+        unexisting_place = Place.get_by_id(obj_id=111)
+        self.assertIsNone(unexisting_place)
         self.assertRaises(Place.DoesNotExist, Place.objects.get, id=111)
 
     def test_delete_by_id(self):
@@ -79,7 +78,7 @@ class PlaceViewTest(TestCase):
     def test_create(self):
         """Provide tests for `create` method of Place model."""
         user = CustomUser.objects.get(id=2)
-        is_created = Place.create(
+        place = Place.create(
             longitude=49.842601,
             latitude=23.968448,
             name='Дім',
@@ -87,11 +86,11 @@ class PlaceViewTest(TestCase):
             user=user
         )
 
-        self.assertIsInstance(is_created, Place)
+        self.assertIsInstance(place, Place)
         self.assertIsNotNone(Place.objects.get(id=self.place.id))
 
-        is_created = Place.create(longitude=Decimal(), latitude=Decimal(), name='', user=CustomUser())
-        self.assertIsNone(is_created)
+        place = Place.create(longitude=Decimal(), latitude=Decimal(), name='', user=CustomUser())
+        self.assertIsNone(place)
 
     def test_update(self):
         """Provide tests for `update` method of certain Place instance."""
@@ -107,5 +106,5 @@ class PlaceViewTest(TestCase):
         new_stop_id = -1
         is_updated = self.place.update(stop_id=new_stop_id)
         self.assertFalse(is_updated)
-        route = Place.objects.get(id=self.place.id)
-        self.assertNotEqual(route.latitude, new_stop_id)
+        place = Place.objects.get(id=self.place.id)
+        self.assertNotEqual(place.latitude, new_stop_id)

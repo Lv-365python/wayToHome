@@ -21,8 +21,7 @@ class PlaceViewTest(TestCase):
         custom_user.save()
 
         self.client = Client()
-        login = self.client.login(email='mymail@icloud.com', password='qwerty12345')
-        self.assertTrue(login)
+        self.client.login(email='mymail@icloud.com', password='qwerty12345')
 
         self.place = Place.objects.create(
             id=11,
@@ -111,7 +110,6 @@ class PlaceViewTest(TestCase):
         """Method that tests the success post request for creating place."""
 
         data = {
-            'id': 13,
             'longitude': 12.842601,
             'latitude': 23.968448,
             'name': 'Дім',
@@ -119,16 +117,22 @@ class PlaceViewTest(TestCase):
             'stop_id': None
         }
 
+        expected_data = {
+            'id': 3,
+            'longitude': 12.842601,
+            'latitude': 23.968448,
+            'name': 'Дім',
+            'address': 'Суха 3, 79052',
+            'stop_id': None,
+            'user_id': 2
+        }
+
         url = reverse('place', args=[])
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         response_dict = json.loads(response.content)
+
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response_dict['user_id'], 2)
-        self.assertEqual(response_dict['longitude'], 12.842601)
-        self.assertEqual(response_dict['latitude'], 23.968448)
-        self.assertEqual(response_dict['name'], 'Дім')
-        self.assertEqual(response_dict['address'], 'Суха 3, 79052')
-        self.assertEqual(response_dict['stop_id'], None)
+        self.assertDictEqual(response_dict, expected_data)
 
     def test_post_data_not_required(self):
         """The method that tests unsuccessful post request without fields that required"""

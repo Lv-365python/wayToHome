@@ -9,6 +9,7 @@ from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_400_OBJECT_NOT_RECEIVED,
+                                  RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_404_OBJECT_NOT_FOUND,
                                   )
@@ -21,6 +22,8 @@ class PlaceView(View):
     def post(self, request, place_id=None):
         """Handle the request to create a new place object."""
         data = request.body
+        if not data:
+            return RESPONSE_400_EMPTY_JSON
 
         data = {
             'longitude': data.get('longitude'),
@@ -66,7 +69,7 @@ class PlaceView(View):
         data = request.body
 
         if not data:
-            return RESPONSE_400_INVALID_DATA
+            return RESPONSE_400_EMPTY_JSON
 
         if not place_id:
             return RESPONSE_400_OBJECT_NOT_RECEIVED
