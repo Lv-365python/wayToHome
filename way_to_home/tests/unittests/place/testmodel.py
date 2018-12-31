@@ -10,16 +10,13 @@ from django.test import TestCase, Client
 from place.models import Place
 
 
-class PlaceViewTest(TestCase):
+class PlaceModelTest(TestCase):
     """TestCase for providing Place model testing"""
     def setUp(self):
         """Method that provides preparation before testing Place model features."""
         custom_user = CustomUser.objects.create(id=2, email='mymail@icloud.com', is_active=True)
         custom_user.set_password('qwerty12345')
         custom_user.save()
-
-        self.client = Client()
-        self.client.login(email='mymail@icloud.com', password='qwerty12345')
 
         self.place = Place.objects.create(
             id=11,

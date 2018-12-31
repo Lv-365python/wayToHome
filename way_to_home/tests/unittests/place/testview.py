@@ -177,16 +177,6 @@ class PlaceViewTest(TestCase):
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-    def test_put_invalid_data(self):
-        """Method that tests unsuccessful put request with invalid data."""
-
-        data = {
-            'stop_id': "asd",
-        }
-        url = reverse('place', kwargs={'place_id': self.place.id})
-        response = self.client.post(url, json.dumps(data), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-
     def test_put_non_owner(self):
         """Method that tests for request to update non owner Place instance."""
         another_user = CustomUser(id=102, email='another_user1@mail.com', is_active=True)
@@ -220,6 +210,27 @@ class PlaceViewTest(TestCase):
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
+    def test_put_non_id(self):
+        """Method that tests request to update object without id."""
+
+        data = {
+            'stop_id': 15,
+        }
+
+        url = reverse('place')
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_put_invalid_data(self):
+        """Method that tests unsuccessful put request with invalid data."""
+
+        data = {
+            'stop_id': "asd",
+        }
+        url = reverse('place', kwargs={'place_id': self.place.id})
+        response = self.client.put(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
     def test_delete_success(self):
         """Method that tests successful delete request"""
 
@@ -247,3 +258,11 @@ class PlaceViewTest(TestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, 403)
+
+    def test_delete_non_id(self):
+        """Method that tests request to delete object without id."""
+
+        url = reverse('place')
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400)
+
