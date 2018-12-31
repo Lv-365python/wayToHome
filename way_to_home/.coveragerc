@@ -1,0 +1,20 @@
+# .coveragerc to control coverage.py
+
+[run]
+
+source =
+    custom_user
+    middlewares
+    notification
+    place
+    route
+    user_profile
+    utils
+    way
+
+omit =
+    *migrations*
+    *apps.py*
+    *urls.py*
+    *__init__.py*
+    
