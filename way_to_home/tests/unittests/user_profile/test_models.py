@@ -21,8 +21,9 @@ class UserProfileTestCase(TestCase):
             is_active=True
         )
         custom_user.save()
-        self.user_profile = UserProfile(
-            id=2,
+
+        self.user_profile = UserProfile.objects.create(
+            id=1,
             first_name='userName',
             last_name='userSurname',
             user_id=custom_user.id,
@@ -31,19 +32,74 @@ class UserProfileTestCase(TestCase):
 
     def test_str(self):
         """ Test of the __str__() method """
-        user_profile = UserProfile.get_by_id(obj_id=self.user_profile.id)
-        returned_string = str(user_profile)
-        expected_string = f'{user_profile.first_name} {user_profile.last_name}'
+        user_profile = UserProfile.objects.get(id=self.user_profile.id)
+        returned_string = user_profile.__str__()
+        expected_string = f'{self.user_profile.first_name} {self.user_profile.last_name}'
         self.assertEqual(returned_string, expected_string)
 
     def test_to_dict(self):
-        """ Test for checking dictionary that 'to_dict' method return"""
-        user_profile = UserProfile.get_by_id(obj_id=self.user_profile.id)
+        """ Test for checking dictionary that 'to_dict' method return """
+        user_profile = UserProfile.objects.get(id=self.user_profile.id)
         returned_dict = user_profile.to_dict()
         expected_dict = {
-            'id': self.user_profile.id,
-            'first_name': self.user_profile.first_name,
-            'last_name': self.user_profile.last_name,
-            'user_id': self.user_profile.user_id
+            'id': user_profile.id,
+            'first_name': user_profile.first_name,
+            'last_name': user_profile.last_name,
+            'user_id': user_profile.user_id
         }
         self.assertDictEqual(returned_dict, expected_dict)
+
+    def test_create(self):
+        """ Provide tests for 'create' method of certain UserProfile instance """
+        custom_user = CustomUser.objects.get(id=1)
+        created_user_profile = UserProfile.create(
+            user=custom_user,
+            first_name='userName',
+            last_name='userSurname',
+        )
+
+        # self.assertIsInstance(created_user_profile, UserProfile)
+        # self.assertIsNotNone(UserProfile.objects.get(id=1))
+        #
+        # created_user_profile = UserProfile.create(
+        #     user=None,
+        #     first_name='userName',
+        #     last_name='userSurname',
+        # )
+        self.assertIsNone(created_user_profile)
+
+    def test_get_by_id(self):
+        """ Provide tests for 'get_by_id' method of certain UserProfile instance """
+        expected_user_profile = UserProfile.objects.get(id=self.user_profile.id)
+        returned_user_profile = UserProfile.get_by_id(obj_id=self.user_profile.id)
+        self.assertEqual(expected_user_profile, returned_user_profile)
+
+        nonexistent_user = UserProfile.get_by_id(obj_id=100)
+        self.assertIsNone(nonexistent_user)
+        self.assertRaises(UserProfile.DoesNotExist, UserProfile.objects.get, id=100)
+
+    def test_delete_by_id(self):
+        """Provide tests for 'delete_by_id' method of certain UserProfile instance."""
+        is_deleted = UserProfile.delete_by_id(obj_id=self.user_profile.id)
+        self.assertTrue(is_deleted)
+        self.assertRaises(UserProfile.DoesNotExist, UserProfile.objects.get, id=self.user_profile.id)
+
+        is_deleted = UserProfile.delete_by_id(obj_id=100)
+        self.assertFalse(is_deleted)
+
+    def test_update(self):
+        """Provide tests for 'update' method of certain UserProfile instance."""
+        new_first_name = 'new_userName'
+        new_last_name = 'new_userSurname'
+        is_updated = self.user_profile.update(first_name=new_first_name, last_name=new_last_name)
+        self.assertTrue(is_updated)
+
+        user_profile = UserProfile.objects.get(id=self.user_profile.id)
+        self.assertEqual(user_profile.first_name, new_first_name)
+        self.assertEqual(user_profile.last_name, new_last_name)
+
+        new_first_name = 0
+        is_updated = self.user_profile.update(first_name=new_first_name)
+        # self.assertFalse(is_updated)
+        user_profile = UserProfile.objects.get(id=self.user_profile.id)
+        self.assertNotEqual(user_profile.first_name, new_first_name)
