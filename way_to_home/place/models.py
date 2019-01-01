@@ -10,13 +10,13 @@ class Place(AbstractModel):
     longitude = models.DecimalField(decimal_places=6, max_digits=9)
     latitude = models.DecimalField(decimal_places=6, max_digits=9)
     name = models.CharField(max_length=64, blank=True)
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
     stop_id = models.PositiveSmallIntegerField(null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='places')
 
     def __str__(self):
         """Method that returns route instance as string."""
-        return self.name
+        return f'{self.longitude}, {self.latitude}'
 
     def to_dict(self):
         """Method that returns dict with object's attributes."""
@@ -31,13 +31,13 @@ class Place(AbstractModel):
         }
 
     @classmethod
-    def create(cls, address, longitude, latitude, name='', user=None, stop_id=None):  # pylint: disable=arguments-differ
+    def create(cls, longitude, latitude, address=None, name=None, user=None, stop_id=None):  # pylint: disable=arguments-differ
         """Method for object creation."""
         place = cls()
         place.longitude = longitude
         place.latitude = latitude
-        place.name = name
-        place.address = address
+        place.name = name if name is not None else ''
+        place.address = address if address is not None else ''
         place.stop_id = stop_id
 
         try:

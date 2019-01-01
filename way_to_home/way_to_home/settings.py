@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = False
 
 # Application definition
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'custom_user.CustomUser'
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,10 +85,11 @@ WSGI_APPLICATION = 'way_to_home.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'localhost',
-        'USER': '<Your User Name>',
-        'PASSWORD': '<Your Password>',
-        'NAME': '<DB Name>',
+        'NAME': 'travis',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -127,6 +130,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Required settings for authorization via google
+
+CLIENT_ID = 'CLIENT_ID'
+CLIENT_SECRET = 'CLIENT_SECRET'
+REDIRECT_URI = 'http://localhost:8000/api/v1/user/signin_via_google'
+AUTH_URL = 'https://accounts.google.com/o/oauth2/auth'
+TOKEN_URL = 'https://www.googleapis.com/oauth2/v3/token'
+SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me']
+STATE = 'way_to_home'
+
+# Required settings for sending email.
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'EMAIL_HOST_USER@gmail.com'
+EMAIL_HOST_PASSWORD = 'EMAIL_HOST_PASSWORD'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'DEFAULT_FROM_EMAIL'
+
+# JWT Token required settings.
+
+JWT_TOKEN_KEY = 'any secret word'
+JWT_ALGORITHM = 'HS384'
+
+DOMAIN = 'localhost:8000'
 
 try:
     from way_to_home.local_settings import *
