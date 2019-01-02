@@ -15,15 +15,22 @@ class UserProfileTestCase(TestCase):
     def setUp(self):
         """ Method that provides preparation before testing UserProfile model's features. """
         custom_user = CustomUser.objects.create(
-            id=1,
+            id=111,
             email='user@mail.com',
             password='1111',
             is_active=True
         )
         custom_user.save()
 
+        CustomUser.objects.create(  # this object use in 'test_create' function
+            id=222,
+            email='seconduser@mail.com',
+            password='2222',
+            is_active=True
+        ).save()
+
         self.user_profile = UserProfile.objects.create(
-            id=1,
+            id=333,
             first_name='userName',
             last_name='userSurname',
             user_id=custom_user.id,
@@ -51,21 +58,21 @@ class UserProfileTestCase(TestCase):
 
     def test_create(self):
         """ Provide tests for 'create' method of certain UserProfile instance """
-        custom_user = CustomUser.objects.get(id=1)
+        custom_user = CustomUser.objects.get(id=222)
         created_user_profile = UserProfile.create(
             user=custom_user,
             first_name='userName',
             last_name='userSurname',
         )
 
-        # self.assertIsInstance(created_user_profile, UserProfile)
-        # self.assertIsNotNone(UserProfile.objects.get(id=1))
-        #
-        # created_user_profile = UserProfile.create(
-        #     user=None,
-        #     first_name='userName',
-        #     last_name='userSurname',
-        # )
+        self.assertIsInstance(created_user_profile, UserProfile)
+        self.assertIsNotNone(UserProfile.objects.get(id=created_user_profile.id))
+
+        created_user_profile = UserProfile.create(
+            user=None,
+            first_name='userName',
+            last_name='userSurname',
+        )
         self.assertIsNone(created_user_profile)
 
     def test_get_by_id(self):
@@ -97,9 +104,3 @@ class UserProfileTestCase(TestCase):
         user_profile = UserProfile.objects.get(id=self.user_profile.id)
         self.assertEqual(user_profile.first_name, new_first_name)
         self.assertEqual(user_profile.last_name, new_last_name)
-
-        new_first_name = 0
-        is_updated = self.user_profile.update(first_name=new_first_name)
-        # self.assertFalse(is_updated)
-        user_profile = UserProfile.objects.get(id=self.user_profile.id)
-        self.assertNotEqual(user_profile.first_name, new_first_name)
