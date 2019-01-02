@@ -3,6 +3,7 @@
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models, IntegrityError
+from django.core.exceptions import ValidationError
 
 
 class CustomUser(AbstractBaseUser):
@@ -41,7 +42,7 @@ class CustomUser(AbstractBaseUser):
         try:
             self.save()
             return True
-        except ValueError:
+        except (ValueError, ValidationError):
             return False
 
     @classmethod
