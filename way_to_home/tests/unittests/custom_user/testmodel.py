@@ -14,13 +14,13 @@ class CustomUserTestCase(TestCase):
     def setUp(self):
         """ Method that provides preparation before testing CustomUser model's features. """
         self.custom_user = CustomUser.objects.create(
-            id=1,
+            id=111,
+            password='1111',
             email='user@mail.com',
-            google_token={'clientId': '123', 'userKey': 'testuser'},
-            phone_number='+380111111111',
+            google_token='example_google_token_1111',
+            phone_number='+3801111',
             is_active=True
         )
-        self.custom_user.set_password('1111')
         self.custom_user.save()
 
     def test_str(self):
@@ -43,24 +43,22 @@ class CustomUserTestCase(TestCase):
 
     def test_create(self):
         """ Provide tests for 'create' method of certain CustomUser instance """
-        custom_user = CustomUser.objects.get(id=self.custom_user.id)
         created_user = CustomUser.create(
-            email=custom_user.email,
-            password='',
-            google_token=custom_user.google_token,
-            phone_number=custom_user.phone_number
+            email='created_user@mail.com',
+            password='2222',
+            google_token='example_google_token_2222',
+            phone_number='+3802222'
         )
-        # created_user.set_password('2222')
 
-        # self.assertIsInstance(created_user, CustomUser)
-        # self.assertIsNotNone(CustomUser.objects.get(id=1))
-        #
-        # created_user = CustomUser.create(
-        #     email=None,
-        #     password='',
-        #     google_token=custom_user.google_token,
-        #     phone_number=custom_user.phone_number
-        # )
+        self.assertIsInstance(created_user, CustomUser)
+        self.assertIsNotNone(CustomUser.objects.get(id=created_user.id))
+
+        created_user = CustomUser.create(
+            email=None,
+            password='',
+            google_token='example_google_token_2222',
+            phone_number='+3802222'
+        )
         self.assertIsNone(created_user)
 
     def test_get_by_email(self):
@@ -75,24 +73,20 @@ class CustomUserTestCase(TestCase):
 
     def test_update(self):
         """Provide tests for 'update' method of certain CustomUser instance."""
-        new_password = '2222'
-        new_google_token = {'clientId': '222', 'userKey': 'testuser2'}
-        new_phone_number = '+380222222222'
+        new_password = '3333'
+        new_google_token = 'example_google_token_3333'
+        new_phone_number = '+3803333'
+        new_is_active = False
 
         is_updated = self.custom_user.update(
             password=new_password,
             google_token=new_google_token,
-            phone_number=new_phone_number
+            phone_number=new_phone_number,
+            is_active=new_is_active
         )
         self.assertTrue(is_updated)
 
-        custom_user = CustomUser.objects.get(id=self.custom_user.id)
-        # self.assertEqual(custom_user.password, new_password)
-        # self.assertEqual(custom_user.google_token, new_google_token)
-        self.assertEqual(custom_user.phone_number, new_phone_number)
-
-        new_phone_number = 0
-        is_updated = self.custom_user.update(phone_number=new_phone_number)
-        # self.assertFalse(is_updated)
-        custom_user = CustomUser.objects.get(id=self.custom_user.id)
-        self.assertNotEqual(custom_user.phone_number, new_phone_number)
+        is_updated = self.custom_user.update(
+            is_active=3
+        )
+        self.assertFalse(is_updated)
