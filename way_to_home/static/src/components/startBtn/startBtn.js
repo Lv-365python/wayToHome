@@ -4,12 +4,7 @@ import './startBtn.css'
 
 class StartBtn extends Component{
 
-    constructor(props){
-        super(props)
-
-        this.state = {
-        }
-    }
+    state = {}
 
     openRouteForm = () => {
         document.getElementsByClassName('searchForm')[0].style.display = 'block';

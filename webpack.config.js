@@ -8,6 +8,7 @@ module.exports = {
     publicPath: '/',
     filename: 'bundle.js'
   },
+  watch: true,
   resolve: {
     alias: {
       src: path.join(__dirname, 'way_to_home/static/src')
