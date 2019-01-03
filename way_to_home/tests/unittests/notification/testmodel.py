@@ -29,7 +29,7 @@ class NotificationModelTestCase(TestCase):
             start_time=aware_start_date,
             end_time=aware_end_date,
             week_day=6,
-            time=datetime.time(23, 58, 59),
+            time=datetime.time(23, 58, 59)
         )
         self.notification = Notification.objects.get(id=100)
 
