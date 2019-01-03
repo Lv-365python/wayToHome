@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import ResultForm from '../routeResult/routeResult.js';
 import './routeForm.css'
 
 class TextFields extends Component {
@@ -43,31 +44,21 @@ class RouteSearchForm extends Component {
     super(props);
 
     this.state = {
-      pointA: undefined,
-      pointB: undefined,
+        pointA: undefined,
+        pointB: undefined,
+        isRouteResult: false
     }
   }
 
   onClick = () => {
-    this.sendRequest();
-    this.openResultForm();
+    this.setState((state) => ({
+        isRouteResult: !state.isRouteResult
+    }));
   }
 
-  sendRequest = () => {
-    alert(this.state.pointA + ' ' + this.state.pointB)
-  }
-
-  hideForm = () => {
-    document.getElementsByClassName('searchForm')[0].style.display = 'none'
-  }
-  
-  openResultForm = () => {
-    document.getElementsByClassName('resultForm')[0].style.display = 'block'
-  }
-
-  getCurrentPosition = () => {
-    alert('get and write current position')
-  }
+   getCurrentPosition = () => {
+     alert('get and write current position')
+   }
 
   setPointA = (value) => {
     this.setState({pointA: value})
@@ -77,7 +68,14 @@ class RouteSearchForm extends Component {
     this.setState({pointB: value})
   }
 
+  closeRouteResult = () =>{
+      this.setState({
+             isRouteResult: false
+         });
+  }
+
     render() {
+      const { isRouteResult } = this.state;
 
       return (
         <div className='searchForm'>
@@ -86,12 +84,13 @@ class RouteSearchForm extends Component {
           <div style={{marginTop: '50px'}}></div>
           <TextFields name='Point B' onChange={this.setPointB}/>
           <div style={{marginTop: '60px'}}></div>
-          <Button variant='contained' color='primary' size='medium' onClick={this.onClick} className='Btn'>
-            ПОШУК
-          </Button>
-          <button onClick={this.hideForm} className="hideBtn">X</button>
-          <button onClick={this.getCurrentPosition} className="currPosBtn_1">O</button>
-          <button onClick={this.getCurrentPosition} className="currPosBtn_2">O</button>
+            <Button variant='contained' color='primary' size='medium' onClick={this.onClick} className='Btn'>
+              ПОШУК
+            </Button>
+            <button onClick={this.props.onClose} className="hideBtn">X</button>
+            <button onClick={this.getCurrentPosition} className="currPosBtn_1">O</button>
+            <button onClick={this.getCurrentPosition} className="currPosBtn_2">O</button>
+            { isRouteResult && <ResultForm onClose={this.closeRouteResult}/>}
         </div>
         )
     }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import './routeResult.css'
 
 class ResultForm extends Component {
@@ -7,33 +7,37 @@ class ResultForm extends Component {
     super(props);
 
     this.state = {
+        show: true
     }
   }
 
   hideForm = () => {
-      document.getElementsByClassName('resultForm')[0].style.display = 'none'
+            this.setState({
+             show: false
+         });
   }
 
-  
 
     render() {
-
+    const {show} = this.state
       return (
-        <div className='resultForm'>
-            <div className='resultMess'>
-                <p>ТИП  |  МАРШРУТ  |   ПРИБУТТЯ ЧЕРЕЗ</p>
-            </div>
-            <div className='routeResult'>
-                <p>&nbsp;A&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00:02:30</p>
-            </div>
-            <div className='routeResult'>
-                <p>&nbsp;B&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00:03:20</p>
-            </div>
-            <div className='routeResult'>
-                <p>&nbsp;A&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00:05:20</p>
-            </div>
-            <button onClick={this.hideForm} className="hideBtnR">X</button>
-        </div>
+          <Fragment>
+              {show  && <div className='resultForm'>
+                <div className='resultMess'>
+                    <p>ТИП  |  МАРШРУТ  |   ПРИБУТТЯ ЧЕРЕЗ</p>
+                </div>
+                <div className='routeResult'>
+                    <p> A   |     5     |      00:02:30</p>
+                </div>
+                <div className='routeResult'>
+                    <p> B   |     4     |      00:02:30</p>
+                </div>
+                <div className='routeResult'>
+                    <p> A   |     3     |      00:02:30</p>
+                </div>
+                <button onClick={this.hideForm} className="hideBtnR">X</button>
+            </div>}
+          </Fragment>
         )
     }
 }
