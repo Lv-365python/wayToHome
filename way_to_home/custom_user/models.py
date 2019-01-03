@@ -42,7 +42,7 @@ class CustomUser(AbstractBaseUser):
         try:
             self.save()
             return True
-        except (ValueError, ValidationError):
+        except (ValueError, ValidationError) as e:
             return False
 
     @classmethod
@@ -50,6 +50,14 @@ class CustomUser(AbstractBaseUser):
         """Method for returns user by email"""
         try:
             return cls.objects.get(email=email)
+        except (ValueError, cls.DoesNotExist):
+            pass
+
+    @classmethod
+    def get_by_id(cls, obj_id):
+        """Method for returns user by id"""
+        try:
+            return cls.objects.get(id=obj_id)
         except (ValueError, cls.DoesNotExist):
             pass
 
