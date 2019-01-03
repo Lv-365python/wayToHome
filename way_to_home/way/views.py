@@ -7,12 +7,12 @@ from way.models import Way
 from place.models import Place
 from route.models import Route
 
-from utils.responsehelper import (RESPONSE_404_OBJECT_NOT_FOUND,
-                                  RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_400_INVALID_DATA,
+from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_404_OBJECT_NOT_FOUND,
                                   RESPONSE_400_DB_OPERATION_FAILED,
-                                  RESPONSE_200_UPDATED,
-                                  RESPONSE_200_DELETED)
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_200_UPDATED)
 
 from utils.validators import way_data_validator
 
