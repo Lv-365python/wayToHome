@@ -17,6 +17,7 @@ from way_to_home.settings import (DOMAIN,
                                   SCOPE,
                                   STATE)
 
+
 @require_http_methods(["POST"])
 def signup(request):
     """Function that provides user registration"""
