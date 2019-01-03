@@ -2,8 +2,8 @@
     position: relative;
     margin: 10% auto;
     z-index: 10;
+    height: auto;
     width: 250px;
-    height: 330px;
     background: rgba(197, 197, 197, 0.685);
     border-radius: 5%;
     text-align: center;
