@@ -3,6 +3,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from utils.responsehelper import (RESPONSE_200_UPDATED,
+                                  RESPONSE_200_DELETED,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_403_ACCESS_DENIED,
@@ -93,13 +94,13 @@ class UserProfileView(View):
         profile = UserProfile.get_by_id(user_profile_id)
 
         if not profile:
-            return HttpResponse('object not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if profile.user and profile.user != user:
-            return HttpResponse('access denied for non-owner user', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         is_deleted = UserProfile.delete_by_id(user_profile_id)
         if not is_deleted:
-            return HttpResponse('database operation is failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('object was successfully deleted', status=204)
+        return RESPONSE_200_DELETED
