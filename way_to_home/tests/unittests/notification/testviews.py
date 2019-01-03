@@ -129,3 +129,196 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
+    def test_post_success(self):
+        """Method that tests the success post request for creating notification."""
+
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+
+        expected_data = {
+            'id': 4,
+            'way': 100,
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        response_dict = json.loads(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertDictEqual(response_dict, expected_data)
+
+    def test_post_data_not_required(self):
+        """The method that tests unsuccessful post request for creating notification without fields that required"""
+        data = {
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_invalid_data(self):
+        """Method that tests unsuccessful post request for creating notification with invalid post data."""
+        data = {
+            'week_day': 'd',
+            'time': 'd'
+        }
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_empty_json(self):
+        """Method that tests unsuccessful post request with empty JSON data."""
+
+        data = {}
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_post_from_another_way(self):
+        """Provide tests post request for creating notification with another `way_id`."""
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+        url = reverse('notification', kwargs={'way_id': 908, 'notification_id': self.notification.id})
+        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_put_success(self):
+        """Method that test success put request for the updating Notification"""
+
+        data = {
+            'time': '23:58:53'
+        }
+
+        url = reverse('notification', kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_put_non_owner(self):
+        """Method that tests for request to update non owner Notification instance."""
+        another_user = CustomUser(id=1067, email='another_user1@mail.com', is_active=True)
+        another_user.set_password('testpassword')
+        another_user.save()
+        self.client.login(email='another_user1@mail.com', password='testpassword')
+
+        data = {
+            'week_day': 3
+        }
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_put_failed_wrong_id(self):
+        """Method that tests request to update non existent object."""
+
+        data = {
+            'time': '23:38:54'
+        }
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': 6778})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_put_from_another_way(self):
+        """Provide tests post request for updating notification with another `way_id`."""
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+        url = reverse('notification', kwargs={'way_id': 543, 'notification_id': self.notification.id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_put_non_id(self):
+        """Method that tests request to update object without notification id."""
+
+        data = {
+            'time': '23:38:54'
+        }
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_put_invalid_data(self):
+        """Method that tests unsuccessful put request with invalid data."""
+
+        data = {
+            'start_time': '201-10-29'
+        }
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_delete_success(self):
+        """Method that tests successful delete request"""
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_failed_wrong_id(self):
+        """Method that tests request to delete non existent object."""
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': 87876})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_delete_non_owner(self):
+        """Method that tests for request to delete non owner Place instance."""
+        another_user = CustomUser(id=134, email='another_user2@mail.com', is_active=True)
+        another_user.set_password('qwerty12345')
+        another_user.save()
+        self.client.login(email='another_user2@mail.com', password='qwerty12345')
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': 87876})
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_from_another_way(self):
+        """Provide tests post request for deleting notification with another `way_id`."""
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+        url = reverse('notification', kwargs={'way_id': 543, 'notification_id': self.notification.id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_delete_non_id(self):
+        """Method that tests request to delete object without id."""
+
+        url = reverse('notification', kwargs={'way_id': self.notification.way_id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400)

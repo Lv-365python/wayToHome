@@ -50,7 +50,7 @@ class NotificationView(View):
         data = request.body
         way = Way.get_by_id(obj_id=way_id)
 
-        if not (way or notification_id):
+        if not (way and notification_id):
             return HttpResponse('failed, objects not found', status=400)
 
         if not user == way.user:
@@ -113,7 +113,7 @@ class NotificationView(View):
         user = request.user
         way = Way.get_by_id(obj_id=way_id)
 
-        if not (way or notification_id):
+        if not (way and notification_id):
             return HttpResponse('failed, objects not found', status=400)
 
         if not user == way.user:
