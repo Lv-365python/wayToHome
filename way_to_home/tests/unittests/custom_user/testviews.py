@@ -115,12 +115,3 @@ class CustomProfileViewTest(TestCase):
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-
-    def test_log_in_no_password(self):
-        """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
-        test_data = {
-            'email': 'user@mail.com',
-        }
-        url = reverse('login_user')
-        response = self.client.post(url, json.dumps(test_data), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
