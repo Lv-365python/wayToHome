@@ -29,3 +29,25 @@ class UserProfileView(View):
             return RESPONSE_400_DB_OPERATION_FAILED
 
         return JsonResponse(profile.to_dict(), status=201)
+
+    def get(self, request, user_profile_id=None):
+        """Handle the request to retrieve a user_profile object."""
+        user = request.user
+
+        if not user_profile_id:
+            profile = user.user_profile
+
+            if not profile:
+                return RESPONSE_404_OBJECT_NOT_FOUND
+
+            return JsonResponse(profile.to_dict, status=200)
+
+        profile = UserProfile.get_by_id(user_profile_id)
+
+        if not profile:
+            return RESPONSE_404_OBJECT_NOT_FOUND
+
+        if profile.user and profile.user != user:
+            return RESPONSE_403_ACCESS_DENIED
+
+        return JsonResponse(profile.to_dict, status=200)
