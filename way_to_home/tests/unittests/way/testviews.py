@@ -14,7 +14,7 @@ class WayViewsTestCase(TestCase):
     def setUp(self):
         """Method that provides preparation before testing Way views."""
         user = CustomUser(id=100, email='mail@gmail.com', is_active=True)
-        user.set_password('password')
+        user.set_password('Password1234')
         user.save()
 
 
@@ -26,22 +26,23 @@ class WayViewsTestCase(TestCase):
 
         Way.objects.create(
             id=101,
-            name='test_name',
+            name='new_test_name',
             user=user
         )
 
         self.way = Way.objects.get(id=100)
         self.client = Client()
-        self.client.login(email='mail@gmail.com', password='password')
+        self.client.login(email='mail@gmail.com', password='Password1234')
 
     def test_get_one(self):
         """Provide tests for request to retrieve certain Way instance."""
         expected_response = {
             "id": 100,
             'name': 'test_name',
-            'user': 100
+            'user_id': 100,
+            'routes': []
         }
-        url = reverse('way', kwargs={'way_id': self.route.way_id})
+        url = reverse('way', kwargs={'way_id': self.way.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(json.dumps(expected_response), json.loads(response.content))
@@ -50,15 +51,18 @@ class WayViewsTestCase(TestCase):
         """Provide tests for request to retrieve all user Ways"""
         expected_response = [
             {
-                "id": 100,
-                'name': 'test_name',
-                'user': 100
+                'id': 101,
+                "name": 'new_test_name',
+                "user_id": 100,
+                'routes': []
             },
             {
-                'id':101,
-                "name": 'new_test_name',
-                "user": 100
+                "id": 100,
+                'name': 'test_name',
+                'user_id': 100,
+                'routes':[]
             }
+
         ]
         url = reverse('way', args=[])
         response = self.client.get(url)
@@ -88,13 +92,44 @@ class WayViewsTestCase(TestCase):
 
         data = {
             'name': 'test_name',
-            'user': 100
+            "gmaps_response":[{
+                "travel_mode": "WALKING",
+                "start_location": {
+                    "lat": 41.8507300,
+                    "lng": -87.6512600
+                },
+                "end_location": {
+                    "lat": 41.8525800,
+                    "lng": -87.6514100
+                },
+                "polyline": {
+                    "points": "a~l~Fjk~uOwHJy@P"
+                },
+                "duration": {
+                    "value": "00:00:19",
+                    "text": "1 min"
+                },
+                "html_instructions": "",
+                "distance": {
+                    "value": 207,
+                    "text": "0.1 mi"
+                }
+            }]
         }
 
         expected_data = {
-            'id': 3,
-            'name': 'test_name',
-            'user': 100
+            'way': {
+                'id': 2,
+                'name': 'test_name',
+                'user_id': 100
+            },
+            'routes': [
+                {
+                    'end_place': {'latitude': 41.85258, 'longitude': -87.65141},
+                    'start_place': {'latitude': 41.85073, 'longitude': -87.65126},
+                    'time': '00:00:19'
+                }
+            ]
         }
 
         url = reverse('way', args=[])
@@ -104,22 +139,11 @@ class WayViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertDictEqual(response_dict, expected_data)
 
-    def test_post_data_not_required(self):
-        """The method that tests unsuccessful post request without fields that required"""
-
-        data = {
-            'name': 'name',
-        }
-        url = reverse('name', args=[])
-        response = self.client.post(url, json.dumps(data), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-
     def test_post_invalid_data(self):
         """Method that tests unsuccessful post request with invalid post data."""
 
         data = {
-            'name': 1231,
-            'user': 'sdf'
+            'name': {},
         }
         url = reverse('way', args=[])
         response = self.client.post(url, json.dumps(data), content_type='application/json')
@@ -134,11 +158,10 @@ class WayViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_put_success(self):
+    def test_put(self):
         """Method that test success put request for the updating the certain task."""
-
         data = {
-            'name': 'new_test_name'
+            'name': 'new_name'
         }
 
         url = reverse('way', kwargs={'way_id': self.way.id})

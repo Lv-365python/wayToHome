@@ -137,7 +137,7 @@ def notification_data_validator(data, update=False):
 
 def place_data_validator(data, update=False):
     """Provide data validation before create/update place object"""
-    required_fields = ['longitude', 'latitude', 'address']
+    required_fields = ['longitude', 'latitude']
 
     if not update:
         if not required_keys_validator(data, required_fields):
@@ -197,9 +197,9 @@ def route_data_validator(data, update=False):
     return True
 
 
-def way_data_validator(name):
+def way_data_validator(data):
     """Function that provides way model data validation"""
-    if not string_validator(name, min_length=1, max_length=128):
+    if not string_validator(data.get('name'), min_length=1, max_length=128):
         return False
     return True
 

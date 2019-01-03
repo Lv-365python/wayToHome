@@ -14,6 +14,8 @@ from utils.responsehelper import (RESPONSE_404_OBJECT_NOT_FOUND,
                                   RESPONSE_200_UPDATED,
                                   RESPONSE_200_DELETED)
 
+from utils.validators import way_data_validator
+
 
 class WayView(View):
     """Class-based view for way model."""
@@ -61,12 +63,15 @@ class WayView(View):
         :return JsonResponse within way data and list with routes with status 200
                 if parameters are good or HttpRequest with error if parameters are bad
         """
-        # Add validator
         steps = request.body.get('gmaps_response')
 
         with transaction.atomic():
-            # Add validator
-            way = Way.create(user=request.user, name=request.body.get('name'))
+            data = request.body
+
+            if not way_data_validator(data):
+                return RESPONSE_400_INVALID_DATA
+
+            way = Way.create(user=request.user, name=data.get('name'))
 
             if not way:
                 return RESPONSE_400_DB_OPERATION_FAILED
@@ -75,8 +80,11 @@ class WayView(View):
             position = 0
 
             for step in steps:
-                # Add validators
                 route = _make_route_dict(step)
+
+                # if not route_data_validator(route.get('time'), position):
+                #     return RESPONSE_400_INVALID_DATA
+
                 was_created = _create_route(way, position, **route)
 
                 if not was_created:
@@ -141,8 +149,8 @@ class WayView(View):
 
         data = {'name': data.get('name')}
 
-        # if not way_data_validator(data):
-        # return RESPONSE_400_DB_OPERATION_FAILED
+        if not way_data_validator(data):
+            return RESPONSE_400_DB_OPERATION_FAILED
 
         is_updated = way.update(**data)
         if not is_updated:
@@ -194,6 +202,14 @@ def _create_route(way, position, **kwargs):
     """
     places = {'start_place': kwargs.get('start_place'),
               'end_place': kwargs.get('end_place')}
+
+    # if not place_data_validator({places['start_place'].get('longitude'),
+    #                              places['start_place'].get('latitude')}):
+    #     return RESPONSE_400_INVALID_DATA
+    #
+    # if not place_data_validator({places['end_place'].get('longitude'),
+    #                              places['end_place'].get('latitude')}):
+    #     return RESPONSE_400_INVALID_DATA
 
     start_place = Place.create(longitude=places['start_place']['longitude'],
                                latitude=places['start_place']['latitude'])

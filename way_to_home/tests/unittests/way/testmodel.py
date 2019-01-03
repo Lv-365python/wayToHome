@@ -15,7 +15,7 @@ class WayModelTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Way model's features."""
-        user = CustomUser.objects.create(id=100, email='mail@gmail.com', password='password', is_active=True)
+        user = CustomUser.objects.create(id=100, email='mail@gmail.com', password='Password1234', is_active=True)
         start_place = Place.objects.create(id=100, longitude=111.123456, latitude=222.123456)
         end_place = Place.objects.create(id=200, longitude=222.123456, latitude=111.123456)
 
@@ -62,7 +62,7 @@ class WayModelTestCase(TestCase):
         expected_dict = {
             'id': 100,
             'name': 'test_name',
-            'user':100
+            'user_id': 100
         }
         actual_dict = way.to_dict()
         self.assertDictEqual(expected_dict, actual_dict)
@@ -92,16 +92,21 @@ class WayModelTestCase(TestCase):
         way = Way.objects.get(id=self.way.id)
 
         expected_dict = {
-            'id' : 100,
-            'name' : 'test_name',
-            'user' : 100,
-            'routes' : {
-                'id': 100,
-                'time': datetime.time(23, 58, 59),
-                'position': 0,
-                'start_place': 100,
-                'end_place': 200
-            }
+            'id': 100,
+            'name': 'test_name',
+            'user_id': 100,
+            'routes': [
+                {
+                    'id': 100,
+                    'time': datetime.time(23, 58, 59),
+                    'transport_id': None,
+                    'position': 0,
+                    'way': 100,
+                    'start_place': 100,
+                    'end_place': 200
+                }
+            ]
+
         }
 
         actual_dict = way.get_way_with_routes()
