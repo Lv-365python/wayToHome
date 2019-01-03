@@ -6,11 +6,17 @@ This module that provides base logic for CRUD of route`s model objects.
 """
 
 from django.views import View
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 from route.models import Route
 from way.models import Way
 from utils.validators import route_data_validator
+from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_200_UPDATED)
 
 
 class RouteView(View):
@@ -27,10 +33,10 @@ class RouteView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('failed, way not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         if not route_id:
             data = [route.to_dict() for route in way.routes.all().order_by('position')]
@@ -38,10 +44,10 @@ class RouteView(View):
 
         route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return HttpResponse('Route not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way == route.way:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         return JsonResponse(route.to_dict(), status=200)
 
@@ -52,17 +58,17 @@ class RouteView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not (way or route_id):
-            return HttpResponse('failed, objects not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return HttpResponse('Route not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way == route.way:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = {
             'time': data.get('time'),
@@ -73,13 +79,13 @@ class RouteView(View):
         }
 
         if not route_data_validator(data, update=True):
-            return HttpResponse('Invalid data', status=400)
+            return RESPONSE_400_INVALID_DATA
 
         is_updated = route.update(**data)
         if not is_updated:
-            return HttpResponse('database was not updated', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('database is updated', status=200)
+        return RESPONSE_200_UPDATED
 
     def post(self, request, way_id, route_id=None):
         """ Method that handles POST request. """
@@ -88,10 +94,10 @@ class RouteView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('failed, way not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = {
             'time': data.get('time'),
@@ -103,11 +109,11 @@ class RouteView(View):
         }
 
         if not route_data_validator(data):
-            return HttpResponse('Invalid data', status=400)
+            return RESPONSE_400_INVALID_DATA
 
         route = Route.create(**data)
         if not route:
-            return HttpResponse('database operation in failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
         return JsonResponse(route.to_dict(), status=201)
 
@@ -117,20 +123,20 @@ class RouteView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not (way or route_id):
-            return HttpResponse('failed, objects not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return HttpResponse('Route not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way == route.way:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         is_deleted = Way.delete_by_id(obj_id=way_id)
         if not is_deleted:
-            return HttpResponse('database operation is failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('route is deleted', status=200)
+        return RESPONSE_200_DELETED
