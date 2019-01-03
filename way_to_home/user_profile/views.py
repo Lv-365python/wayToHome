@@ -82,3 +82,24 @@ class UserProfileView(View):
             return RESPONSE_400_DB_OPERATION_FAILED
 
         return RESPONSE_200_UPDATED
+
+    def delete(self, request, user_profile_id=None):  # pylint: disable=R0201
+        """Handle the request to delete user_profile object with appropriate id."""
+        user = request.user
+
+        if not user_profile_id:
+            return HttpResponse('object id is not received', status=400)
+
+        profile = UserProfile.get_by_id(user_profile_id)
+
+        if not profile:
+            return HttpResponse('object not found', status=400)
+
+        if profile.user and profile.user != user:
+            return HttpResponse('access denied for non-owner user', status=403)
+
+        is_deleted = UserProfile.delete_by_id(user_profile_id)
+        if not is_deleted:
+            return HttpResponse('database operation is failed', status=400)
+
+        return HttpResponse('object was successfully deleted', status=204)
