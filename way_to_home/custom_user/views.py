@@ -7,6 +7,14 @@ from requests_oauthlib import OAuth2Session
 
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
+from utils.responsehelper import (RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_400_EXISTED_EMAIL,
+                                  RESPONSE_498_INVALID_TOKEN,
+                                  RESPONSE_400_INVALID_EMAIL,
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_200_ACTIVATED,
+                                  RESPONSE_400_INVALID_EMAIL_OR_PASSWORD,
+                                  RESPONSE_200_OK)
 from utils.send_email import send_email
 from utils.validators import registration_validator, login_validator
 from way_to_home.settings import (DOMAIN,
@@ -29,12 +37,12 @@ def signup(request):
     }
 
     if not registration_validator(credentials):
-        return HttpResponse('invalid data', status=400)
+        return RESPONSE_400_INVALID_DATA
 
     user = CustomUser.create(**credentials)
 
     if not user:
-        return HttpResponse('received email is already exist', status=400)
+        return RESPONSE_400_EXISTED_EMAIL
 
     token = create_token(data={'email': user.email})
 
@@ -51,17 +59,17 @@ def registration_confirm(request, token):
     """Function that provides user activation"""
     data = decode_token(token)
     if not data:
-        return HttpResponse('invalid or expired token', status=498)
+        return RESPONSE_498_INVALID_TOKEN
 
     user = CustomUser.get_by_email(email=data.get('email'))
     if not user:
-        return HttpResponse('received email is not valid', status=400)
+        return RESPONSE_400_INVALID_EMAIL
 
     is_updated = user.update(is_active=True)
     if not is_updated:
-        return HttpResponse('database operations is failed', status=400)
+        return RESPONSE_400_DB_OPERATION_FAILED
 
-    return HttpResponse('user was successfully activated', status=200)
+    return RESPONSE_200_ACTIVATED
 
 
 @require_http_methods(["POST"])
@@ -75,13 +83,13 @@ def log_in(request):
     }
 
     if not login_validator(credentials):
-        return HttpResponse('invalid data', status=400)
+        return RESPONSE_400_INVALID_DATA
 
     user = authenticate(**credentials)
     if not user:
-        return HttpResponse('invalid credentials', status=400)
+        return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
     login(request, user=user)
-    return HttpResponse('operation was successful provided', status=200)
+    return RESPONSE_200_OK
 
 
 @require_http_methods(["GET"])
