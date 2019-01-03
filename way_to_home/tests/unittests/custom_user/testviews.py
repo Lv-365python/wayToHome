@@ -8,7 +8,6 @@ import json
 from django.urls import reverse
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
-from django.core.exceptions import ValidationError
 from utils.jwttoken import create_token
 
 
@@ -20,7 +19,6 @@ class CustomProfileViewTest(TestCase):
         self.custom_user = CustomUser.objects.create(
             id=1001,
             email='user@mail.com',
-            google_token={'clientId': '123', 'userKey': 'testuser'},
             phone_number='+380111111111',
             is_active=True
         )
@@ -30,7 +28,6 @@ class CustomProfileViewTest(TestCase):
         self.inactive_user = CustomUser.objects.create(
             id=1111,
             email='user22@mail.com',
-            google_token={'clientId': '123', 'userKey': 'testuser'},
             phone_number='+380111111111',
         )
         self.inactive_user.set_password('2222Bb')
@@ -48,7 +45,7 @@ class CustomProfileViewTest(TestCase):
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
-    def test_sign_up_taken(self):
+    def test_sign_up_already_exists(self):
         """Provides test for a (POST) request to sign up a user with taken email in request body."""
         test_data = {
             'email': 'user@mail.com',
@@ -112,8 +109,26 @@ class CustomProfileViewTest(TestCase):
     def test_log_in_fail(self):
         """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
         test_data = {
-            'email': 'wrong_email',
-            'password': 'random_password'
+            'email': 'wrong_email@mail.com',
+            'password': 'Random_password123'
+        }
+        url = reverse('login_user')
+        response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_log_in_no_password(self):
+        """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
+        test_data = {
+            'email': 'user@mail.com',
+        }
+        url = reverse('login_user')
+        response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_log_in_no_email(self):
+        """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
+        test_data = {
+            'password': '1111Bb',
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')

@@ -5,6 +5,12 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth2Session
 
+
+from custom_user.models import CustomUser
+from utils.jwttoken import create_token, decode_token
+from utils.send_email import send_email
+from utils.validators import registration_validator, login_validator
+
 from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_200_ACTIVATED,
@@ -15,14 +21,9 @@ from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EMPTY_JSON,
-                                  RESPONSE_400_NO_CODE,
                                   RESPONSE_200_OK,
                                   RESPONSE_201_CREATED)
 
-from custom_user.models import CustomUser
-from utils.jwttoken import create_token, decode_token
-from utils.send_email import send_email
-from utils.validators import registration_validator, login_validator
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -54,9 +55,9 @@ def signup(request):
     message = f'http://{DOMAIN}/api/v1/user/activate/{token}'
     mail_subject = 'Activate account'
     send_email(mail_subject, message, (user.email,))
-    msg = 'Please confirm your email address to complete the registration'
 
     return RESPONSE_201_ACTIVATE
+
 
 @require_http_methods(["GET"])
 def registration_confirm(request, token):
@@ -114,7 +115,7 @@ def signin_google(request):
                                    state=STATE, scope=SCOPE)
     authorization_code = request.GET.get("code")
     if not authorization_code:
-        return RESPONSE_400_NO_CODE
+        return HttpResponse("Code not received", status=400)
     google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
                                code=authorization_code)
     user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()

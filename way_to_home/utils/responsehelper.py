@@ -11,7 +11,8 @@ RESPONSE_200_OK = HttpResponse('operation was successful provided', status=200)
 RESPONSE_200_UPDATED = HttpResponse('object was successfully updated', status=200)
 RESPONSE_200_DELETED = HttpResponse('object was successfully deleted', status=200)
 RESPONSE_200_ACTIVATED = HttpResponse('user was successfully activated', status=200)
-RESPONSE_201_ACTIVATE = HttpResponse('Please confirm your email address to complete the registration', status=201)
+RESPONSE_201_ACTIVATE = HttpResponse('Please confirm your email address '
+                                     'to complete the registration', status=201)
 RESPONSE_201_CREATED = HttpResponse('object was successfully created', status=201)
 
 # status code 4xx
@@ -23,10 +24,8 @@ RESPONSE_400_EXISTED_EMAIL = HttpResponse('received email already exists', statu
 RESPONSE_400_INVALID_PASSWORD = HttpResponse('received password is not valid', status=400)
 RESPONSE_400_INVALID_HTTP_METHOD = HttpResponse('invalid HTTP method', status=400)
 RESPONSE_400_DB_OPERATION_FAILED = HttpResponse('database operation failed', status=400)
-RESPONSE_400_NO_CODE = HttpResponse("Code not received", status=400)
 RESPONSE_403_ACCESS_DENIED = HttpResponse('access denied', status=403)
 RESPONSE_403_USER_NOT_ACTIVE = HttpResponse('user has not active status', status=403)
 RESPONSE_403_USER_NOT_AUTHENTICATED = HttpResponse('user is not authenticated', status=403)
 RESPONSE_404_OBJECT_NOT_FOUND = HttpResponse('object not found', status=404)
 RESPONSE_498_INVALID_TOKEN = HttpResponse('invalid or expired token', status=498)
-
