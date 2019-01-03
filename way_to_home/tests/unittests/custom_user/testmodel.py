@@ -71,6 +71,16 @@ class CustomUserTestCase(TestCase):
         self.assertIsNone(nonexistent_user)
         self.assertRaises(CustomUser.DoesNotExist, CustomUser.objects.get, email='some_mail@ukr.net')
 
+    def test_get_by_id(self):
+        """ Provide tests for 'get_by_id' method of certain CustomUser instance """
+        expected_user = CustomUser.objects.get(id=self.custom_user.id)
+        returned_user = CustomUser.get_by_id(obj_id=self.custom_user.id)
+        self.assertEqual(expected_user, returned_user)
+
+        unexisting_user = CustomUser.get_by_id(obj_id=50)
+        self.assertIsNone(unexisting_user)
+        self.assertRaises(CustomUser.DoesNotExist, CustomUser.objects.get, id=50)
+
     def test_update(self):
         """Provide tests for 'update' method of certain CustomUser instance."""
         new_password = '3333'

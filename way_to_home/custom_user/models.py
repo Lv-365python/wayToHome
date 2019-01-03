@@ -54,6 +54,14 @@ class CustomUser(AbstractBaseUser):
             pass
 
     @classmethod
+    def get_by_id(cls, obj_id):
+        """Method for returns user by id"""
+        try:
+            return cls.objects.get(id=obj_id)
+        except (ValueError, cls.DoesNotExist):
+            pass
+
+    @classmethod
     def create(cls, email, password, google_token='', phone_number=''):
         """Method for object creation."""
         user = cls()
