@@ -60,7 +60,7 @@ class WayViewsTestCase(TestCase):
                 "id": 100,
                 'name': 'test_name',
                 'user_id': 100,
-                'routes':[]
+                'routes': []
             }
 
         ]

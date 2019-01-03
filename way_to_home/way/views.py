@@ -119,6 +119,7 @@ class WayView(View):
             return RESPONSE_403_ACCESS_DENIED
 
         is_deleted = Way.delete_by_id(obj_id=way_id)
+
         if not is_deleted:
             return RESPONSE_400_DB_OPERATION_FAILED
 
