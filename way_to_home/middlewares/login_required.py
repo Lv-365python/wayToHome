@@ -28,7 +28,7 @@ class LoginRequiredMiddleware:  # pylint: disable=too-few-public-methods
 
     def __call__(self, request):
         """Provide JSON check and authentication validations."""
-        if request.method in ['POST', 'PATCH', 'PUT']:
+        if request.method in ['POST', 'PUT']:
             try:
                 request._body = json.loads(request.body)  # pylint: disable=protected-access
             except json.JSONDecodeError:
