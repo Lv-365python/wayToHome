@@ -95,7 +95,6 @@ class RouteView(View):
 
         if not way:
             return RESPONSE_404_OBJECT_NOT_FOUND
-
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
 

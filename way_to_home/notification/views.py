@@ -30,7 +30,7 @@ class NotificationView(View):
         """ Method that handles GET request. """
 
         user = request.user
-        way = Way.get_by_id(obj_id=way_id)
+        way = Way.get_by_id(way_id)
 
         if not way:
             return RESPONSE_404_OBJECT_NOT_FOUND
@@ -93,7 +93,6 @@ class NotificationView(View):
         user = request.user
         data = request.body
         way = Way.get_by_id(obj_id=way_id)
-
         if not way:
             return RESPONSE_404_OBJECT_NOT_FOUND
 
