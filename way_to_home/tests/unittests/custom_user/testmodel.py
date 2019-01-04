@@ -63,7 +63,7 @@ class CustomUserTestCase(TestCase):
 
     def test_get_by_email(self):
         """ Provide tests for 'get_by_email' method of certain CustomUser instance """
-        expected_user = CustomUser.objects.get(id=self.custom_user.id)
+        expected_user = CustomUser.objects.get(email=self.custom_user.email)
         returned_user = CustomUser.get_by_email(email=self.custom_user.email)
         self.assertEqual(expected_user, returned_user)
 

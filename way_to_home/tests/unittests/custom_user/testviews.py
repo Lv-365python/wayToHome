@@ -9,9 +9,15 @@ from django.urls import reverse
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token
+from requests_oauthlib import OAuth2Session
+from way_to_home.settings import (CLIENT_ID,
+                                  REDIRECT_URI,
+                                  AUTH_URL,
+                                  SCOPE,
+                                  STATE)
 
 
-class CustomProfileViewTest(TestCase):
+class CustomUserViewTest(TestCase):
     """TestCase for providing CustomUser's view testing."""
 
     def setUp(self):

@@ -9,7 +9,7 @@ from custom_user.models import CustomUser
 from user_profile.models import UserProfile
 
 
-class UserProfileTestCase(TestCase):
+class UserProfileModelTestCase(TestCase):
     """ TestCase for providing UserProfile model testing """
 
     def setUp(self):
@@ -33,7 +33,7 @@ class UserProfileTestCase(TestCase):
             id=333,
             first_name='userName',
             last_name='userSurname',
-            user_id=custom_user.id,
+            user=custom_user
         )
         self.user_profile.save()
 

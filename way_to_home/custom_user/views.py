@@ -1,10 +1,8 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth2Session
-
 
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
@@ -103,8 +101,10 @@ def auth_google(request):
     google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
                                    state=STATE, scope=SCOPE)
     data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
+    print(data)
     if data:
         return redirect(data)
+
     return RESPONSE_403_ACCESS_DENIED
 
 
@@ -115,7 +115,7 @@ def signin_google(request):
                                    state=STATE, scope=SCOPE)
     authorization_code = request.GET.get("code")
     if not authorization_code:
-        return HttpResponse("Code not received", status=400)
+        return RESPONSE_400_INVALID_DATA
     google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
                                code=authorization_code)
     user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
