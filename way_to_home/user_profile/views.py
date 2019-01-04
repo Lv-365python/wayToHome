@@ -14,23 +14,6 @@ from .models import UserProfile
 class UserProfileView(View):
     "Class that handle HTTP requests for user_profile model."""
 
-    def post(self, request, user_profile_id=None):
-        """Handle the request to create a new user_profile object."""
-        data = request.body
-        if not data:
-            return RESPONSE_400_EMPTY_JSON
-
-        data = {
-            'first_name': data.get('first_name'),
-            'last_name': data.get('last_name')
-        }
-
-        profile = UserProfile.create(user=request.user, **data)
-        if not profile:
-            return RESPONSE_400_DB_OPERATION_FAILED
-
-        return JsonResponse(profile.to_dict(), status=201)
-
     def get(self, request, user_profile_id=None):
         """Handle the request to retrieve a user_profile object."""
         user = request.user
