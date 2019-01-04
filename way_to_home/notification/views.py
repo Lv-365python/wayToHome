@@ -5,12 +5,20 @@ Notification view module
 This module that provides base logic for CRUD of notification`s model objects.
 """
 
+from django.http import JsonResponse
 from django.views import View
-from django.http import HttpResponse, JsonResponse
 
 from notification.models import Notification
-from way.models import Way
+
 from utils.validators import notification_data_validator
+from utils.responsehelper import (RESPONSE_200_UPDATED,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  )
+from way.models import Way
 
 
 class NotificationView(View):
@@ -20,14 +28,15 @@ class NotificationView(View):
     """
     def get(self, request, way_id, notification_id=None):
         """ Method that handles GET request. """
+
         user = request.user
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('way is not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         if not notification_id:
             data = [notification.to_dict() for notification
@@ -37,10 +46,10 @@ class NotificationView(View):
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return HttpResponse('Notification not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way == notification.way:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         return JsonResponse(notification.to_dict(), status=200)
 
@@ -51,17 +60,17 @@ class NotificationView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not (way and notification_id):
-            return HttpResponse('failed, objects not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return HttpResponse('Notification not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way == notification.way:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = {
             'start_time': data.get('start_time'),
@@ -71,13 +80,13 @@ class NotificationView(View):
         }
 
         if not notification_data_validator(data, update=True):
-            return HttpResponse('Invalid data', status=400)
+            return RESPONSE_400_INVALID_DATA
 
         is_updated = notification.update(**data)
         if not is_updated:
-            return HttpResponse('Notification is not updated', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('database is updated', status=200)
+        return RESPONSE_200_UPDATED
 
     def post(self, request, way_id, notification_id=None):
         """ Method that handles POST request. """
@@ -86,10 +95,10 @@ class NotificationView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('Way not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = {
             'start_time': data.get('start_time'),
@@ -100,11 +109,11 @@ class NotificationView(View):
         }
 
         if not notification_data_validator(data):
-            return HttpResponse('Invalid data', status=400)
+            return RESPONSE_400_INVALID_DATA
 
         notification = Notification.create(**data)
         if not notification:
-            return HttpResponse('Notification is not created', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
         return JsonResponse(notification.to_dict(), status=201)
 
@@ -114,20 +123,20 @@ class NotificationView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not (way and notification_id):
-            return HttpResponse('failed, objects not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return HttpResponse('Notification not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way == notification.way:
-            return HttpResponse('Permission denied', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         is_deleted = Notification.delete_by_id(notification_id)
         if not is_deleted:
-            return HttpResponse('database operation is failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('notification is deleted', status=200)
+        return RESPONSE_200_DELETED
