@@ -66,18 +66,3 @@ class LoginRequiredTestCase(TestCase):
 
         response = self.guest_client.patch(path, data, content_type='application/json')
         self.assertEqual(response.status_code, 403)
-
-    def test_success_request_for_guest(self):
-        """Provide tests successful requests for guest."""
-        path = reverse('login_user')
-        credentials = {'email': 'testuser@mail.com', 'password': 'testpassword'}
-
-        response = self.guest_client.post(path, credentials, content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-
-    def test_success_request_for_user(self):
-        """Provide tests successful requests for authenticated user."""
-        path = reverse('place')
-
-        response = self.user_client.get(path)
-        self.assertEqual(response.status_code, 200)
