@@ -12,13 +12,13 @@ class LoginRequiredTestCase(TestCase):
     def setUp(self):
         """Provide preparation before testing middleware."""
         user = CustomUser(id=100, email='testuser@mail.com', is_active=True)
-        user.set_password('testpassword')
+        user.set_password('Testpassword123')
         user.save()
 
         self.guest_client = Client()
 
         self.user_client = Client()
-        self.user_client.login(email='testuser@mail.com', password='testpassword')
+        self.user_client.login(email='testuser@mail.com', password='Testpassword123')
 
     def test_post_with_invalid_json(self):
         """Provide tests for POST request with invalid JSON data."""
@@ -37,13 +37,13 @@ class LoginRequiredTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_forbidden_request_for_user(self):
-        """Provide tests for user`s GET requests with paths that available only for guests."""
+        """Provide tests for user`s GET requests with paths that are available only for guests."""
         for path in GUESTS_PATHS:
             response = self.user_client.get(path)
             self.assertEqual(response.status_code, 403)
 
     def test_forbidden_request_for_guest(self):
-        """Provide tests for guest`s requests with path that available only for users."""
+        """Provide tests for guest`s requests with path that are available only for users."""
         path = '/api/'
 
         response = self.guest_client.get(path)
