@@ -157,6 +157,11 @@ JWT_ALGORITHM = 'HS384'
 
 DOMAIN = 'localhost:8000'
 
+# Required setting for NEXMO
+
+NEXMO_API_KEY = 'Nexmo API KEY'
+NEXMO_API_SECRET = 'Nexmo API SECRET'
+
 try:
     from way_to_home.local_settings import *
 except ImportError:
