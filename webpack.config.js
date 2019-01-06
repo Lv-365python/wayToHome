@@ -33,6 +33,8 @@ module.exports = {
   ],
   devServer: {
     contentBase: './way_to_home/static/public',
+    watchContentBase: true,
+    compress: true,
     hot: true
   }
 };
