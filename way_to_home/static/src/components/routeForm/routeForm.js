@@ -46,13 +46,13 @@ class RouteSearchForm extends Component {
     this.state = {
         pointA: undefined,
         pointB: undefined,
-        isRouteResult: false
+        open: false
     }
   }
 
   onClick = () => {
     this.setState((state) => ({
-        isRouteResult: !state.isRouteResult
+        open: !state.open
     }));
   }
 
@@ -70,12 +70,12 @@ class RouteSearchForm extends Component {
 
   closeRouteResult = () =>{
       this.setState({
-             isRouteResult: false
+            open: false
          });
   }
 
     render() {
-      const { isRouteResult } = this.state;
+      const { open } = this.state;
 
       return (
         <div className='searchForm'>
@@ -90,7 +90,7 @@ class RouteSearchForm extends Component {
             <button onClick={this.props.onClose} className="hideBtn">X</button>
             <button onClick={this.getCurrentPosition} className="currPosBtn_1">O</button>
             <button onClick={this.getCurrentPosition} className="currPosBtn_2">O</button>
-            { isRouteResult && <ResultForm onClose={this.closeRouteResult}/>}
+            { open && <ResultForm onClose={this.closeRouteResult}/>}
         </div>
         )
     }

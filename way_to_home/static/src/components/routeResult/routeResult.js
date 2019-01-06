@@ -7,22 +7,22 @@ class ResultForm extends Component {
     super(props);
 
     this.state = {
-        show: true
+       open: true
     }
   }
 
   hideForm = () => {
             this.setState({
-             show: false
+             open: false
          });
   }
 
 
     render() {
-    const {show} = this.state
+    const {open} = this.state
       return (
           <Fragment>
-              {show  && <div className='resultForm'>
+              {open  && <div className='resultForm'>
                 <div className='resultMess'>
                     <p>ТИП  |  МАРШРУТ  |   ПРИБУТТЯ ЧЕРЕЗ</p>
                 </div>
