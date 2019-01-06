@@ -11,7 +11,6 @@ import './loginForm.css';
 class LoginForm extends Component {
 
     state = {
-        display: 'block',
         request_type: 'login',
         change_button: 'sign up',
         repeat_display: 'none',
@@ -28,6 +27,7 @@ class LoginForm extends Component {
 
         let button_text = this.state.change_button === 'sign up' ? 'login': 'sign up';
         this.setState({change_button: button_text});
+
         let type = this.state.request_type === 'register' ? 'login': 'register';
         this.setState({request_type: type});
     };
@@ -102,7 +102,7 @@ class LoginForm extends Component {
 
     render() {
         return (
-            <div style={{marginTop: '10rem', paddingBottom: '16px', display: this.state.display}}
+            <div style={{marginTop: '10rem', paddingBottom: '16px'}}
                  className='LoginFormDiv'>
                 <TextField
                     error={this.state.email_error}
