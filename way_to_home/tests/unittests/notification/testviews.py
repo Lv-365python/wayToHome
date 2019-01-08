@@ -198,6 +198,25 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
+    def test_post_non_owner(self):
+        """Method that tests for request to update non owner Notification instance."""
+        another_user = CustomUser(id=1067, email='another_user1@mail.com', is_active=True)
+        another_user.set_password('testpassword')
+        another_user.save()
+        self.client.login(email='another_user1@mail.com', password='testpassword')
+
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
     def test_put_success(self):
         """Method that test success put request for the updating Notification"""
 
