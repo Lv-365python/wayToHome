@@ -12,7 +12,7 @@ from .models import UserProfile
 
 
 class UserProfileView(View):
-    "Class that handle HTTP requests for user_profile model."""
+    "Class that handles HTTP requests for user_profile model."""
 
     def get(self, request, user_profile_id=None):
         """Handle the request to retrieve a user_profile object."""

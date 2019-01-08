@@ -5,6 +5,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth2Session
 
+from user_profile.models import UserProfile
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
@@ -57,7 +58,10 @@ def registration_confirm(request, token):
         return HttpResponse('received email is not valid', status=400)
 
     is_updated = user.update(is_active=True)
-    if not is_updated:
+
+    profile = UserProfile.create(user)
+
+    if not (is_updated or profile):
         return HttpResponse('database operations is failed', status=400)
 
     return HttpResponse('user was successfully activated', status=200)
