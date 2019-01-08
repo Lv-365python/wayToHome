@@ -22,6 +22,7 @@ RESPONSE_400_EXISTED_EMAIL = HttpResponse('received email is already exist', sta
 RESPONSE_400_INVALID_PASSWORD = HttpResponse('received password is not valid', status=400)
 RESPONSE_400_INVALID_HTTP_METHOD = HttpResponse('invalid HTTP method', status=400)
 RESPONSE_400_DB_OPERATION_FAILED = HttpResponse('database operation is failed', status=400)
+RESPONSE_400_OBJECT_NOT_RECEIVED = HttpResponse('object id is not received', status=400)
 RESPONSE_403_ACCESS_DENIED = HttpResponse('access denied', status=403)
 RESPONSE_403_USER_NOT_ACTIVE = HttpResponse('user has not active status', status=403)
 RESPONSE_403_USER_NOT_AUTHENTICATED = HttpResponse('user is not authenticated', status=403)
