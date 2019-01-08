@@ -59,7 +59,7 @@ class RouteViewsTestCase(TestCase):
         """Provide tests for request to retrieve certain Route instance."""
         expected_response = {
             "id": 100, "time": "23:58:59", "transport_id": None, "position": 0,
-            "way": 100, "start_place": 100, "end_place": 200
+            "way": 100,  "end_place": 200, "start_place": 100
         }
         url = reverse('route', kwargs={'way_id': self.route.way_id, 'route_id': self.route.id})
         response = self.client.get(url)

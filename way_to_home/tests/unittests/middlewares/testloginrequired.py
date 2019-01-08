@@ -1,6 +1,7 @@
 """This module provides tests for custom LoginRequired middleware."""
 
 from django.test import TestCase, Client
+from django.urls import reverse
 
 from custom_user.models import CustomUser
 from middlewares.login_required import GUESTS_PATHS
@@ -43,8 +44,26 @@ class LoginRequiredTestCase(TestCase):
             self.assertEqual(response.status_code, 403)
 
     def test_forbidden_request_for_guest(self):
-        """Provide tests for guest`s requests with path that are available only for users."""
+        """Provide tests for guest`s requests with path that is available only for users."""
         path = '/api/'
 
         response = self.guest_client.get(path)
         self.assertEqual(response.status_code, 403)
+
+    def test_success_request_for_guest(self):
+        """Provide tests for success guest`s request."""
+        path = reverse('login_user')
+        credentials = {
+            'email': 'testuser@mail.com',
+            'password': 'Testpassword123'
+        }
+
+        response = self.guest_client.post(path, credentials, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_success_request_for_user(self):
+        """Provide tests for success user`s request."""
+        path = reverse('place')
+
+        response = self.user_client.get(path)
+        self.assertEqual(response.status_code, 200)
