@@ -203,14 +203,6 @@ def _create_route(way, position, **kwargs):
     places = {'start_place': kwargs.get('start_place'),
               'end_place': kwargs.get('end_place')}
 
-    # if not place_data_validator({places['start_place'].get('longitude'),
-    #                              places['start_place'].get('latitude')}):
-    #     return RESPONSE_400_INVALID_DATA
-    #
-    # if not place_data_validator({places['end_place'].get('longitude'),
-    #                              places['end_place'].get('latitude')}):
-    #     return RESPONSE_400_INVALID_DATA
-
     start_place = Place.create(longitude=places['start_place']['longitude'],
                                latitude=places['start_place']['latitude'])
     end_place = Place.create(longitude=places['end_place']['longitude'],
