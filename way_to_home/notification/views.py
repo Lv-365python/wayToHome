@@ -59,7 +59,7 @@ class NotificationView(View):
         data = request.body
         way = Way.get_by_id(obj_id=way_id)
 
-        if not (way and notification_id):
+        if not way or not notification_id:
             return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
@@ -121,7 +121,7 @@ class NotificationView(View):
         user = request.user
         way = Way.get_by_id(obj_id=way_id)
 
-        if not (way and notification_id):
+        if not way or not notification_id:
             return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not user == way.user:
