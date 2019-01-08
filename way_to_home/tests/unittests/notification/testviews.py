@@ -1,6 +1,7 @@
 """This module provides tests for Route views."""
 import datetime
 import json
+from unittest import mock
 
 import pytz
 from django.core.serializers.json import DjangoJSONEncoder
@@ -17,9 +18,12 @@ class NotificationViewsTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Notification views."""
-        user = CustomUser(id=100, email='testuser@mail.com', is_active=True)
+        user = CustomUser.objects.create(id=100, email='testuser@mail.com', is_active=True)
         user.set_password('testpassword')
         user.save()
+
+        self.client = Client()
+        self.client.login(email='testuser@mail.com', password='testpassword')
 
         way_first = Way.objects.create(id=100, user=user)
         way_second = Way.objects.create(id=101, user=user)
@@ -200,9 +204,10 @@ class NotificationViewsTestCase(TestCase):
 
     def test_post_non_owner(self):
         """Method that tests for request to update non owner Notification instance."""
-        another_user = CustomUser(id=1067, email='another_user1@mail.com', is_active=True)
+        another_user = CustomUser.objects.create(id=1067, email='another_user1@mail.com', is_active=True)
         another_user.set_password('testpassword')
         another_user.save()
+
         self.client.login(email='another_user1@mail.com', password='testpassword')
 
         data = {
@@ -230,9 +235,10 @@ class NotificationViewsTestCase(TestCase):
 
     def test_put_non_owner(self):
         """Method that tests for request to update non owner Notification instance."""
-        another_user = CustomUser(id=1067, email='another_user1@mail.com', is_active=True)
+        another_user = CustomUser.objects.create(id=1067, email='another_user1@mail.com', is_active=True)
         another_user.set_password('testpassword')
         another_user.save()
+
         self.client.login(email='another_user1@mail.com', password='testpassword')
 
         data = {
@@ -303,6 +309,22 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+    def test_db_creating_put(self):
+        """Method that tests unsuccessful put request when db creating is failed."""
+
+        with mock.patch('utils.abstract_models.AbstractModel.update') as notifiction_update:
+            notifiction_update.return_value = None
+            data = {
+                'start_time': '2019-10-29',
+                'end_time': '2019-12-29',
+                'week_day': 6,
+                'time': '23:58:59'
+            }
+            url = reverse('notification',
+                          kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+            response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+            self.assertEqual(response.status_code, 400)
+
     def test_delete_success(self):
         """Method that tests successful delete request"""
 
@@ -341,9 +363,10 @@ class NotificationViewsTestCase(TestCase):
 
     def test_delete_non_owner(self):
         """Method that tests for request to delete non owner Place instance."""
-        another_user = CustomUser(id=134, email='another_user2@mail.com', is_active=True)
+        another_user = CustomUser.objects.create(id=134, email='another_user2@mail.com', is_active=True)
         another_user.set_password('qwerty12345')
         another_user.save()
+
         self.client.login(email='another_user2@mail.com', password='qwerty12345')
 
         url = reverse('notification',
@@ -359,3 +382,13 @@ class NotificationViewsTestCase(TestCase):
         url = reverse('notification', kwargs={'way_id': self.notification.way_id})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 404)
+
+    def test_error_db_deleting_post(self):
+        """Method that tests unsuccessful delete request when db deleting is failed."""
+
+        with mock.patch('utils.abstract_models.AbstractModel.delete_by_id') as notification_delete:
+            notification_delete.return_value = None
+            url = reverse('notification',
+                          kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+            response = self.client.delete(url)
+            self.assertEqual(response.status_code, 400)
