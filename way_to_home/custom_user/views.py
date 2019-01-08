@@ -1,5 +1,5 @@
 """Authentication views module"""
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
@@ -17,6 +17,10 @@ from way_to_home.settings import (DOMAIN,
                                   TOKEN_URL,
                                   SCOPE,
                                   STATE)
+
+
+TTL_USER_ID_COOKIE = 60 * 60 * 24 * 14
+
 
 @require_http_methods(["POST"])
 def signup(request):
@@ -79,8 +83,28 @@ def log_in(request):
     user = authenticate(**credentials)
     if not user:
         return HttpResponse('invalid credentials', status=400)
+
     login(request, user=user)
-    return HttpResponse('operation was successful provided', status=200)
+    response = HttpResponse('operation was successful provided', status=200)
+
+    if data.get('save_cookies'):
+        response.set_cookie('user_id', user.id, max_age=TTL_USER_ID_COOKIE)
+
+    return response
+
+
+@require_http_methods(['GET'])
+def logout_user(request):
+    """
+    Logout of the existing user. Handles post and get requests.
+    :param request: request from the website
+    :return: status 200
+    """
+
+    logout(request)
+    response = HttpResponse('operation was successful provided', status=200)
+    response.delete_cookie('user_id')
+    return response
 
 
 @require_http_methods(["GET"])
