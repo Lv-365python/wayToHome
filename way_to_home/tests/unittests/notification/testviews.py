@@ -353,7 +353,7 @@ class NotificationViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_delete_another_way_id(self):
-        """Method that tests request to delete non existent object."""
+        """Provide tests for request to delete Notification instance with another `way_id`."""
 
         url = reverse('notification',
                       kwargs={'way_id': 101, 'notification_id': self.notification.id})
@@ -362,7 +362,7 @@ class NotificationViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_delete_non_owner(self):
-        """Method that tests for request to delete non owner Place instance."""
+        """Method that tests for request to delete non owner Notification instance."""
         another_user = CustomUser.objects.create(id=134, email='another_user2@mail.com', is_active=True)
         another_user.set_password('qwerty12345')
         another_user.save()
@@ -383,7 +383,7 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 404)
 
-    def test_error_db_deleting_post(self):
+    def test_error_db_deleting(self):
         """Method that tests unsuccessful delete request when db deleting is failed."""
 
         with mock.patch('utils.abstract_models.AbstractModel.delete_by_id') as notification_delete:
