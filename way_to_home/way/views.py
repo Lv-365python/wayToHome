@@ -1,11 +1,20 @@
 """This module that provides base logic for CRUD of way`s model objects."""
 
 from django.views.generic import View
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.db import transaction
 from way.models import Way
 from place.models import Place
 from route.models import Route
+
+from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_200_UPDATED)
+
+from utils.validators import way_data_validator
 
 
 class WayView(View):
@@ -34,10 +43,10 @@ class WayView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('Object not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way.user == user:
-            return HttpResponse("Permission denied", status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = way.get_way_with_routes()
         return JsonResponse(data, status=200)
@@ -54,15 +63,20 @@ class WayView(View):
         :return JsonResponse within way data and list with routes with status 200
                 if parameters are good or HttpRequest with error if parameters are bad
         """
-        # Add validator
+        # if not route_data_validator(route.get('time'), position):
+        #     return RESPONSE_400_INVALID_DATA
         steps = request.body.get('gmaps_response')
 
         with transaction.atomic():
-            # Add validator
+            data = request.body
+
+            if not way_data_validator(data):
+                return RESPONSE_400_INVALID_DATA
+
             way = Way.create(user=request.user, name=request.body.get('name'))
 
             if not way:
-                return HttpResponse('Failed to create way', status=400)
+                return RESPONSE_400_DB_OPERATION_FAILED
 
             routes = []
             position = 0
@@ -73,14 +87,14 @@ class WayView(View):
                 was_created = _create_route(way, position, **route)
 
                 if not was_created:
-                    return HttpResponse('Bad request', status=400)
+                    return RESPONSE_400_INVALID_DATA
                 position += 1
                 routes.append(route)
 
             return JsonResponse({'way': way.to_dict(),
                                  'routes': routes}, status=201)
 
-        return HttpResponse('Failed to create way', status=400)
+        return RESPONSE_400_DB_OPERATION_FAILED
 
     def delete(self, request, way_id):  # pylint: disable=R0201
         """
@@ -98,16 +112,17 @@ class WayView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('Way not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way.user == user:
-            return HttpResponse("Permission denied", status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         is_deleted = Way.delete_by_id(obj_id=way_id)
-        if not is_deleted:
-            return HttpResponse('Way was not deleted', status=400)
 
-        return HttpResponse('Way was deleted', status=200)
+        if not is_deleted:
+            return RESPONSE_400_DB_OPERATION_FAILED
+
+        return RESPONSE_200_DELETED
 
     def put(self, request, way_id):  # pylint: disable=R0201
         """
@@ -127,21 +142,21 @@ class WayView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return HttpResponse('Object not found', status=400)
+            return RESPONSE_404_OBJECT_NOT_FOUND
 
         if not way.user == user:
-            return HttpResponse("Permission denied", status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = {'name': data.get('name')}
 
-        # if not way_data_validator(data):
-        # return HttpResponse('Database operation has failed', status=400)
+        if not way_data_validator(data):
+            return RESPONSE_400_DB_OPERATION_FAILED
 
         is_updated = way.update(**data)
         if not is_updated:
-            return HttpResponse('Database operation has failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('Object was successfully updated', status=200)
+        return RESPONSE_200_UPDATED
 
 
 def _make_route_dict(step):
