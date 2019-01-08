@@ -3,6 +3,8 @@ Place view tests
 ===============
 """
 import json
+from unittest import mock
+
 from django.urls import reverse
 
 from custom_user.models import CustomUser
@@ -93,7 +95,7 @@ class PlaceViewTest(TestCase):
         url = reverse('place', args=[1501])
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_non_owner(self):
         """Method that tests for request to retrieve non owner Place instance."""
@@ -208,7 +210,7 @@ class PlaceViewTest(TestCase):
 
         url = reverse('place', kwargs={'place_id': 1100})
         response = self.client.put(url, json.dumps(data), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_put_non_id(self):
         """Method that tests request to update object without id."""
@@ -231,6 +233,19 @@ class PlaceViewTest(TestCase):
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+    def test_put_was_updated(self):
+        """Method that tests when place was not updated"""
+        data = {
+            'stop_id': 15,
+        }
+        url = reverse('place', kwargs={'place_id': self.place.id})
+
+        with mock.patch('place.views.Place.update') as mock_place:
+            mock_place.return_value = False
+            response = self.client.put(url, json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
     def test_delete_success(self):
         """Method that tests successful delete request"""
 
@@ -245,7 +260,7 @@ class PlaceViewTest(TestCase):
         url = reverse('place', kwargs={'place_id': 111})
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete_non_owner(self):
         """Method that tests for request to delete non owner Place instance."""
@@ -266,3 +281,12 @@ class PlaceViewTest(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 400)
 
+    def test_delete_was_deleted(self):
+        """Method that tests when place was not deleted"""
+        url = reverse('place', kwargs={'place_id': self.place.id})
+
+        with mock.patch('place.views.Place.delete_by_id') as mock_place:
+            mock_place.return_value = False
+            response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 400)
