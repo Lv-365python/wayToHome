@@ -19,9 +19,10 @@ class LoginForm extends Component {
         second_pass: '',
         email_error: false,
         pass_error: false,
+        disable_button: true,
     };
 
-    onClickSignup = () => {
+    onClickChangeType = () => {
         let display = this.state.repeat_display === 'inline-flex' ? 'none': 'inline-flex';
         this.setState({repeat_display: display});
 
@@ -30,80 +31,84 @@ class LoginForm extends Component {
 
         let type = this.state.request_type === 'register' ? 'login': 'register';
         this.setState({request_type: type});
+
+        if(type === 'register' && this.state.first_pass !== this.state.second_pass)
+            this.setState({disable_button: true});
     };
 
     onClickConfirm = () => {
         let type = this.state.request_type;
 
-        let email = this.handleEmail(this.state.email);
-        let pass = this.handlePassword(type);
-
-        let is_error = false;
-        if(!email){
-            this.setState({email_error: true});
-            is_error = true;
-        }
-        else
-            this.setState({email_error: false});
-
-        if(!pass){
-            this.setState({pass_error: true});
-            is_error = true;
-        }
-        else
-            this.setState({pass_error: false});
-
-        if(is_error)
-            return;
-
         axios.post('http://127.0.0.1:8000/api/v1/user/' + type, {
-            email: email,
-            password: pass
+            email: this.state.email,
+            password: this.state.first_pass,
+            //save_cookie: this.state.save_cookie,
         })
             .then(function (response) {
                 console.log(response);
-                this.props.action();
+                this.props.close();
             })
             .catch(function (error) {
                 console.log(error);
             });
     };
 
-    handleEmail = (email) => {
-        let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-        if(!regex.test(String(email).toLowerCase()))
-            return false;
-
-        return email;
+    onChangeEmail = (event) => {
+        let email = event.target.value;
+        this.setState({email: email});
+        let email_error = this.handleEmail(email);
+        this.setState({email_error: !email_error});
+        this.handleButton(!email_error, email, this.state.pass_error, this.state.first_pass);
     };
 
-    handlePassword = (request_type) => {
-        let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-        let first_pass = this.state.first_pass;
-        let second_pass = this.state.second_pass;
+    onChangeFirstPassword = (event) => {
+        let first_pass = event.target.value;
+        this.setState({first_pass: first_pass});
+        let pass_error = !this.handlePassword(first_pass);
+        this.setState({pass_error: pass_error});
+        this.handleButton(this.state.email_error, this.state.email, pass_error, first_pass);
+    };
 
-        if(request_type === 'register'){
+    onChangeSecondPassword = (event) => {
+        let second_pass = event.target.value;
+        this.setState({second_pass: second_pass});
+        let pass_error = !this.handlePassword(this.state.first_pass, second_pass);
+        this.setState({pass_error: pass_error});
+        this.handleButton(this.state.email_error, this.state.email, pass_error, this.state.first_pass);
+    };
+
+    handleEmail = (email) => {
+        let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regex.test(String(email).toLowerCase());
+    };
+
+    handlePassword = (first_pass, second_pass) => {
+        let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        let type = this.state.request_type;
+
+        if(type === 'register'){
             if(first_pass !== second_pass)
                 return false;
-            if(!regex.test(first_pass))
-                return false;
-            return first_pass;
+            return regex.test(first_pass);
         }
-
-        else if(request_type === 'login'){
-            if(!regex.test(first_pass))
-                return false;
-            return first_pass;
-        }
+        else if(type === 'login')
+            return regex.test(first_pass);
 
         return false
     };
 
+    handleButton = (email_error, email, pass_error, pass) => {
+        if(email_error || pass_error)
+            this.setState({disable_button: true});
+        else if(!email || !pass)
+            this.setState({disable_button: true});
+        else
+            this.setState({disable_button: false})
+    };
+
     render() {
         return (
-            <div style={{marginTop: '10rem', paddingBottom: '16px'}}
-                 className='LoginFormDiv'>
+            <div className='LoginFormDiv'>
                 <TextField
                     error={this.state.email_error}
                     id="email-input"
@@ -114,7 +119,7 @@ class LoginForm extends Component {
                     margin="normal"
                     variant="filled"
                     value={this.state.email}
-                    onChange={(e) => this.setState({email: e.target.value})}/>
+                    onChange={this.onChangeEmail}/>
                 <TextField
                     error={this.state.pass_error}
                     id="password-input"
@@ -124,7 +129,7 @@ class LoginForm extends Component {
                     margin="normal"
                     variant="filled"
                     value={this.state.first_pass}
-                    onChange={(e) => this.setState({first_pass: e.target.value})}/>
+                    onChange={this.onChangeFirstPassword}/>
                 <TextField
                     error={this.state.pass_error}
                     style={{display: this.state.repeat_display}}
@@ -135,20 +140,21 @@ class LoginForm extends Component {
                     margin="normal"
                     variant="filled"
                     value={this.state.second_pass}
-                    onChange={(e) => this.setState({second_pass: e.target.value})}/>
+                    onChange={this.onChangeSecondPassword}/>
                 <div>
                     <FormControlLabel control={<Checkbox value="checkedC"/>} label="Remember me"/>
                 </div>
                 <div>
-                    <Button color="primary" onClick={this.onClickSignup}>
+                    <Button color="primary" onClick={this.onClickChangeType}>
                         {this.state.change_button}
                     </Button>
                 </div>
-                <div style={{marginTop: '16px'}}>
-                    <Button style={{marginRight: '1rem'}}
+                <div className="loginButtons">
+                    <Button className='confirmButton'
                             variant='contained'
                             color='primary'
                             size='medium'
+                            disabled={this.state.disable_button}
                             onClick={this.onClickConfirm}>
                         {this.state.request_type}
                     </Button>
@@ -157,7 +163,7 @@ class LoginForm extends Component {
                         color='secondary'
                         size='medium'
                         className='Btn'
-                        onClick={this.props.action}>
+                        onClick={this.props.close}>
                         cancel
                     </Button>
                 </div>

@@ -1,6 +1,7 @@
 .LoginFormDiv{
     position: relative;
     margin: 10% auto;
+    padding-bottom: 16px;
     z-index: 10;
     height: auto;
     width: 250px;
@@ -8,4 +9,12 @@
     border-radius: 5%;
     text-align: center;
     display: block;
+}
+
+.loginButtons{
+    margin-top: 16px;
+}
+
+.confirmButton{
+    margin-right: 1rem!important;
 }

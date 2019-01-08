@@ -27,7 +27,7 @@ class LoginBtn extends Component{
                        onClose={this.modalClose}
                        disableAutoFocus="True">
 
-                <LoginForm action={this.modalClose} />
+                <LoginForm close={this.modalClose} />
 
                 </Modal>
                 <Button variant="contained"
