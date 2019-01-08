@@ -186,7 +186,7 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-    def test_post_from_another_way(self):
+    def test_post_wrong_way_id(self):
         """Provide tests post request for creating notification with another `way_id`."""
         data = {
             'start_time': '2019-10-29',
@@ -244,7 +244,7 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 403)
 
-    def test_put_failed_wrong_id(self):
+    def test_put_wrong_notification_id(self):
         """Method that tests request to update non existent object."""
 
         data = {
@@ -256,7 +256,7 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 404)
 
-    def test_put_from_another_way(self):
+    def test_put_wrong_way_id(self):
         """Provide tests post request for updating notification with another `way_id`."""
         data = {
             'start_time': '2019-10-29',
@@ -267,6 +267,18 @@ class NotificationViewsTestCase(TestCase):
         url = reverse('notification', kwargs={'way_id': 543, 'notification_id': self.notification.id})
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 404)
+
+    def test_put_from_another_way(self):
+        """Provide tests post request for updating notification with another `way_id`."""
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+        url = reverse('notification', kwargs={'way_id': 101, 'notification_id': self.notification.id})
+        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+        self.assertEqual(response.status_code, 403)
 
     def test_put_non_id(self):
         """Method that tests request to update object without notification id."""
@@ -317,6 +329,15 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, 404)
+
+    def test_delete_another_way_id(self):
+        """Method that tests request to delete non existent object."""
+
+        url = reverse('notification',
+                      kwargs={'way_id': 101, 'notification_id': self.notification.id})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 403)
 
     def test_delete_non_owner(self):
         """Method that tests for request to delete non owner Place instance."""
