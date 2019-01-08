@@ -281,11 +281,20 @@ class NotificationViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_delete_failed_wrong_id(self):
+    def test_delete_wrong_notification_id(self):
         """Method that tests request to delete non existent object."""
 
         url = reverse('notification',
                       kwargs={'way_id': self.notification.way_id, 'notification_id': 87876})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_wrong_way_id(self):
+        """Method that tests request to delete non existent object."""
+
+        url = reverse('notification',
+                      kwargs={'way_id': 38987, 'notification_id': self.notification.id})
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, 404)
@@ -304,19 +313,7 @@ class NotificationViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_delete_from_another_way(self):
-        """Provide tests post request for deleting notification with another `way_id`."""
-        data = {
-            'start_time': '2019-10-29',
-            'end_time': '2019-12-29',
-            'week_day': 6,
-            'time': '23:58:59'
-        }
-        url = reverse('notification', kwargs={'way_id': 543, 'notification_id': self.notification.id})
-        response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
-
-    def test_delete_non_id(self):
+    def test_delete_non_notification_id(self):
         """Method that tests request to delete object without id."""
 
         url = reverse('notification', kwargs={'way_id': self.notification.way_id})
