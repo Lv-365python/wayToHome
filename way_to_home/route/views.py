@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from route.models import Route
 from way.models import Way
 from utils.validators import route_data_validator
-from utils.responsehelper import (RESPONSE_404_OBJECT_NOT_FOUND,
+from utils.responsehelper import (RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_DB_OPERATION_FAILED,
@@ -33,7 +33,7 @@ class RouteView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
@@ -44,7 +44,7 @@ class RouteView(View):
 
         route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way == route.way:
             return RESPONSE_403_ACCESS_DENIED
@@ -57,15 +57,15 @@ class RouteView(View):
         data = request.body
         way = Way.get_by_id(obj_id=way_id)
 
-        if not (way or route_id):
-            return RESPONSE_404_OBJECT_NOT_FOUND
+        if not way or not route_id:
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
 
         route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way == route.way:
             return RESPONSE_403_ACCESS_DENIED
@@ -94,7 +94,7 @@ class RouteView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
@@ -122,15 +122,15 @@ class RouteView(View):
         user = request.user
         way = Way.get_by_id(obj_id=way_id)
 
-        if not (way or route_id):
-            return RESPONSE_404_OBJECT_NOT_FOUND
+        if not way or not route_id:
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
 
         route = Route.get_by_id(obj_id=route_id)
         if not route:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way == route.way:
             return RESPONSE_403_ACCESS_DENIED
