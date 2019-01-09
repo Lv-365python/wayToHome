@@ -8,7 +8,7 @@ from place.models import Place
 from route.models import Route
 
 from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_200_DELETED,
@@ -43,7 +43,7 @@ class WayView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way.user == user:
             return RESPONSE_403_ACCESS_DENIED
@@ -112,7 +112,7 @@ class WayView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way.user == user:
             return RESPONSE_403_ACCESS_DENIED
@@ -142,7 +142,7 @@ class WayView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way.user == user:
             return RESPONSE_403_ACCESS_DENIED
