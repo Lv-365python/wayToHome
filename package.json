@@ -4,8 +4,9 @@
   "description": "The main idea of project – planning routes and get a notification",
   "main": "index.js",
   "dependencies": {
-    "axios": "^0.18.0",
     "@material-ui/icons": "^3.0.1",
+    "axios": "^0.18.0",
+    "google-maps-react": "^2.0.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3"
   },
