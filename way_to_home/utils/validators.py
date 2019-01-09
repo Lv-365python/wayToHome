@@ -197,9 +197,9 @@ def route_data_validator(data, update=False):
     return True
 
 
-def way_data_validator(name):
+def way_data_validator(data):
     """Function that provides way model data validation"""
-    if not string_validator(name, min_length=1, max_length=128):
+    if not string_validator(data.get('name'), min_length=1, max_length=128):
         return False
     return True
 
