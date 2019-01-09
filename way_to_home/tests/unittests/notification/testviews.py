@@ -311,19 +311,20 @@ class NotificationViewsTestCase(TestCase):
 
     def test_db_creating_put(self):
         """Method that tests unsuccessful put request when db creating is failed."""
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
 
-        with mock.patch('utils.abstract_models.AbstractModel.update') as notifiction_update:
-            notifiction_update.return_value = None
-            data = {
-                'start_time': '2019-10-29',
-                'end_time': '2019-12-29',
-                'week_day': 6,
-                'time': '23:58:59'
-            }
-            url = reverse('notification',
-                          kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        with mock.patch('utils.abstract_models.AbstractModel.update') as notification_update:
+            notification_update.return_value = False
+
             response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-            self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete_success(self):
         """Method that tests successful delete request"""
@@ -386,9 +387,9 @@ class NotificationViewsTestCase(TestCase):
     def test_error_db_deleting(self):
         """Method that tests unsuccessful delete request when db deleting is failed."""
 
-        with mock.patch('utils.abstract_models.AbstractModel.delete_by_id') as notification_delete:
-            notification_delete.return_value = None
-            url = reverse('notification',
-                          kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+        with mock.patch('notification.views.Notification.delete_by_id') as notification_delete:
+            notification_delete.return_value = False
             response = self.client.delete(url)
-            self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)

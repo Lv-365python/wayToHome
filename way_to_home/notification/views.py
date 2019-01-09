@@ -16,7 +16,7 @@ from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  RESPONSE_400_OBJECT_NOT_FOUND,
                                   )
 from way.models import Way
 
@@ -33,7 +33,7 @@ class NotificationView(View):
         way = Way.get_by_id(way_id)
 
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
@@ -46,7 +46,7 @@ class NotificationView(View):
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way == notification.way:
             return RESPONSE_403_ACCESS_DENIED
@@ -60,14 +60,14 @@ class NotificationView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way or not notification_id:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way == notification.way:
             return RESPONSE_403_ACCESS_DENIED
@@ -94,7 +94,7 @@ class NotificationView(View):
         data = request.body
         way = Way.get_by_id(obj_id=way_id)
         if not way:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
@@ -122,14 +122,14 @@ class NotificationView(View):
         way = Way.get_by_id(obj_id=way_id)
 
         if not way or not notification_id:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not user == way.user:
             return RESPONSE_403_ACCESS_DENIED
 
         notification = Notification.get_by_id(obj_id=notification_id)
         if not notification:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if not way == notification.way:
             return RESPONSE_403_ACCESS_DENIED
