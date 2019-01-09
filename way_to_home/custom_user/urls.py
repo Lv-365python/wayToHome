@@ -11,5 +11,5 @@ urlpatterns = [
     path('signin_via_google', signin_google, name='sign_in_google'),
     path('reset_password', reset_password, name='reset_password'),
     re_path(r'^reset_password/(?P<token>.+)$', confirm_reset_password, name='confirm_reset_password'),
-    re_path(r'^(?P<user_id>[0-9]+)/change_password$', change_password, name='change_password'),
+    path('change_password', change_password, name='change_password'),
 ]

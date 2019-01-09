@@ -163,13 +163,9 @@ def confirm_reset_password(request, token):
 
 
 @require_http_methods(["PUT"])
-def change_password(request, user_id):
+def change_password(request):
     """Function that provides change user password"""
-    user = CustomUser.objects.get(id=user_id)
-    if not user:
-        return RESPONSE_400_OBJECT_NOT_FOUND
-    if not user == request.user:
-        return RESPONSE_403_ACCESS_DENIED
+    user = request.user
     data = request.body
     if user.check_password(data["oldPassword"]):
         if password_validator(data["newPassword"]):
