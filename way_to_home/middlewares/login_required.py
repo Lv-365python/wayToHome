@@ -12,7 +12,9 @@ GUESTS_PATHS = [
     '/api/v1/user/register',
     '/api/v1/user/activate',
     '/api/v1/user/auth_via_google',
-    '/api/v1/user/signin_via_google'
+    '/api/v1/user/signin_via_google',
+    '/api/v1/user/reset_password',
+    '/api/v1/user/confirm_reset_password'
 ]
 
 
