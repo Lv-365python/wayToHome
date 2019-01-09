@@ -7,8 +7,12 @@ from requests_oauthlib import OAuth2Session
 
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
+from utils.passwordreseting import send_email_password_update, send_successful_update_email
+from utils.responsehelper import RESPONSE_200_OK, RESPONSE_400_INVALID_DATA, RESPONSE_498_INVALID_TOKEN, \
+    RESPONSE_400_OBJECT_NOT_FOUND, RESPONSE_403_ACCESS_DENIED
 from utils.send_email import send_email
-from utils.validators import registration_validator, login_validator
+from utils.validators import registration_validator, login_validator, update_email_validator, reset_password_validator, \
+    password_validator
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -116,3 +120,61 @@ def signin_google(request):
         return HttpResponse("User was successfully created", status=201)
 
     return HttpResponse("User's data is empty", status=400)
+
+
+@require_http_methods(["POST"])
+def reset_password(request):
+    """Function that provides reset user password"""
+    data = request.body
+    if not update_email_validator(data, 'email'):
+        return False
+    email = data.get('email')
+    user = CustomUser.get_by_email(email=email)
+    if not user:
+        return RESPONSE_400_INVALID_DATA
+    token = create_token(data={'email': user.email})
+    send_email_password_update(user, token)
+    return RESPONSE_200_OK
+
+
+@require_http_methods(['GET', 'PUT'])
+def confirm_reset_password(request, token):
+    """Function that provides confirm reset user password"""
+    confirm = decode_token(token)
+    if not confirm:
+        return RESPONSE_498_INVALID_TOKEN
+    user = CustomUser.get_by_email(email=confirm.get('email'))
+    if not user:
+        return RESPONSE_400_OBJECT_NOT_FOUND
+
+    if request.method == 'GET':
+        return HttpResponse('mail was successfully confirm', status=200)
+
+    if request.method == 'PUT':
+        data = request.body
+        if not reset_password_validator(data, 'new_password'):
+            return False
+        new_password = data.get('new_password')
+        if not user.check_password(new_password):
+            user.update(password=new_password)
+            send_successful_update_email(user)
+            return RESPONSE_200_OK
+        return RESPONSE_400_INVALID_DATA
+
+
+@require_http_methods(["PUT"])
+def change_password(request, user_id):
+    """Function that provides change user password"""
+    user = CustomUser.objects.get(id=user_id)
+    if not user:
+        return RESPONSE_400_OBJECT_NOT_FOUND
+    if not user == request.user:
+        return RESPONSE_403_ACCESS_DENIED
+    data = request.body
+    if user.check_password(data["oldPassword"]):
+        if password_validator(data["newPassword"]):
+            user.update(data["newPassword"])
+            user.save()
+            return RESPONSE_200_OK
+        return RESPONSE_400_INVALID_DATA
+    return RESPONSE_400_INVALID_DATA
