@@ -109,11 +109,11 @@ class NotificationViewsTestCase(TestCase):
         """Provide tests for request to retrieve non existent objects."""
         url = reverse('notification', kwargs={'way_id': 999, 'notification_id': 100})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
         url = reverse('notification', kwargs={'way_id': 100, 'notification_id': 999})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_non_owner(self):
         """Provide tests for request to retrieve non owner Notification instance."""
@@ -200,7 +200,7 @@ class NotificationViewsTestCase(TestCase):
         }
         url = reverse('notification', kwargs={'way_id': 908, 'notification_id': self.notification.id})
         response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_post_non_owner(self):
         """Method that tests for request to update non owner Notification instance."""
@@ -260,7 +260,7 @@ class NotificationViewsTestCase(TestCase):
         url = reverse('notification',
                       kwargs={'way_id': self.notification.way_id, 'notification_id': 6778})
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_put_wrong_way_id(self):
         """Provide tests post request for updating notification with another `way_id`."""
@@ -272,7 +272,7 @@ class NotificationViewsTestCase(TestCase):
         }
         url = reverse('notification', kwargs={'way_id': 543, 'notification_id': self.notification.id})
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_put_from_another_way(self):
         """Provide tests post request for updating notification with another `way_id`."""
@@ -296,7 +296,7 @@ class NotificationViewsTestCase(TestCase):
         url = reverse('notification',
                       kwargs={'way_id': self.notification.way_id})
         response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_put_invalid_data(self):
         """Method that tests unsuccessful put request with invalid data."""
@@ -342,7 +342,7 @@ class NotificationViewsTestCase(TestCase):
                       kwargs={'way_id': self.notification.way_id, 'notification_id': 87876})
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete_wrong_way_id(self):
         """Method that tests request to delete non existent object."""
@@ -351,7 +351,7 @@ class NotificationViewsTestCase(TestCase):
                       kwargs={'way_id': 38987, 'notification_id': self.notification.id})
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete_another_way_id(self):
         """Provide tests for request to delete Notification instance with another `way_id`."""
@@ -382,7 +382,7 @@ class NotificationViewsTestCase(TestCase):
 
         url = reverse('notification', kwargs={'way_id': self.notification.way_id})
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_error_db_deleting(self):
         """Method that tests unsuccessful delete request when db deleting is failed."""
