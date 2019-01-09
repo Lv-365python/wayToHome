@@ -95,11 +95,7 @@ def log_in(request):
 
 @require_http_methods(['GET'])
 def logout_user(request):
-    """
-    Logout of the existing user. Handles post and get requests.
-    :param request: request from the website
-    :return: status 200
-    """
+    """Logout the existing user"""
 
     logout(request)
     response = HttpResponse('operation was successful provided', status=200)
