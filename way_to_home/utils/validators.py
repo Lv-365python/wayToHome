@@ -246,3 +246,19 @@ def login_validator(data):
     if not required_keys_validator(data, required_keys):
         return False
     return True
+
+
+def update_email_validator(data, email):
+    """Function that provide email validation for ResetPassword class"""
+    if not required_keys_validator(data, [email]):
+        return False
+    return True
+
+
+def reset_password_validator(data, new_password):
+    """Function that provide email validation for ResetPassword class"""
+    if not required_keys_validator(data, [new_password]):
+        return False
+    if not password_validator(data.get(new_password)):
+        return False
+    return True
