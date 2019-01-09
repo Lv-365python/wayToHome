@@ -73,7 +73,7 @@ class WayViewsTestCase(TestCase):
 		url = reverse('way', args=[1501])
 		response = self.client.get(url)
 
-		self.assertEqual(response.status_code, 404)
+		self.assertEqual(response.status_code, 400)
 
 	def test_get_non_owner(self):
 		"""Method that tests for request to retrieve non owner Way instance."""
@@ -207,7 +207,7 @@ class WayViewsTestCase(TestCase):
 
 		url = reverse('way', kwargs={'way_id': 1509})
 		response = self.client.put(url, json.dumps(data), content_type='application/json')
-		self.assertEqual(response.status_code, 404)
+		self.assertEqual(response.status_code, 400)
 
 	def test_delete(self):
 		"""Method that tests successful delete request"""
@@ -223,7 +223,7 @@ class WayViewsTestCase(TestCase):
 		url = reverse('way', kwargs={'way_id': 1509})
 		response = self.client.delete(url)
 
-		self.assertEqual(response.status_code, 404)
+		self.assertEqual(response.status_code, 400)
 
 	def test_delete_non_owner(self):
 		"""Method that tests for request to delete non owner Way instance."""

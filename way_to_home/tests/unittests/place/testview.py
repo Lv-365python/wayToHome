@@ -233,7 +233,7 @@ class PlaceViewTest(TestCase):
         response = self.client.put(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-    def test_put_was_updated(self):
+    def test_put_fail_update(self):
         """Method that tests when place was not updated"""
         data = {
             'stop_id': 15,
@@ -281,7 +281,7 @@ class PlaceViewTest(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 400)
 
-    def test_delete_was_deleted(self):
+    def test_delete_fail_delete(self):
         """Method that tests when place was not deleted"""
         url = reverse('place', kwargs={'place_id': self.place.id})
 
