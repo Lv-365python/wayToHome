@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'way',
     'route',
     'notification',
+    'home',
 ]
 
 AUTH_USER_MODEL = 'custom_user.CustomUser'
@@ -55,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middlewares.login_required.LoginRequiredMiddleware',
+    # 'middlewares.login_required.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'way_to_home.urls'
@@ -63,7 +64,7 @@ ROOT_URLCONF = 'way_to_home.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,6 +131,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/public/')
+]
 
 # Required settings for authorization via google
 
