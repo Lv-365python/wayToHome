@@ -1,14 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {StartBtn, RouteSearchForm, LogInBtn, ResultForm} from './components'
+import {Header} from './components'
 
 ReactDOM.render(
     <div>
-        <StartBtn></StartBtn>
-        <RouteSearchForm></RouteSearchForm>
-        <LogInBtn></LogInBtn>
-        <ResultForm></ResultForm>
+        <Header/>
     </div>,
     document.querySelector('#root')
 );
