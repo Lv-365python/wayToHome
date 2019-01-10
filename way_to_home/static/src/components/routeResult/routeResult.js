@@ -3,16 +3,12 @@ import './routeResult.css'
 
 class ResultForm extends Component {
 
-  constructor(props){
-    super(props);
-
-    this.state = {
-       open: true
-    }
+  state = {
+      open: true
   }
 
   hideForm = () => {
-            this.setState({
+      this.setState({
              open: false
          });
   }

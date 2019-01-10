@@ -5,9 +5,9 @@ import './startBtn.css'
 
 class StartBtn extends Component{
 
-        state = {
-            isRouteFormOpen: false
-        }
+    state = {
+        isRouteFormOpen: false
+    }
 
      toggleRouteForm = () => {
          this.setState(prevState => ({
