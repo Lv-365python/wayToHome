@@ -142,7 +142,7 @@ def reset_password(request):
     return RESPONSE_200_OK
 
 
-@require_http_methods(['GET', 'PUT'])
+@require_http_methods(['PUT'])
 def confirm_reset_password(request, token):
     """Function that provides confirm reset user password"""
     confirm = decode_token(token)
@@ -152,15 +152,14 @@ def confirm_reset_password(request, token):
     if not user:
         return RESPONSE_400_OBJECT_NOT_FOUND
 
-    if request.method == 'PUT':
-        data = request.body
-        if not reset_password_validator(data, 'new_password'):
-            return False
-        new_password = data.get('new_password')
-        if not user.check_password(new_password):
-            user.update(password=new_password)
-            send_successful_update_email(user)
-            return RESPONSE_200_OK
+    data = request.body
+    if not reset_password_validator(data, 'new_password'):
+        return False
+    new_password = data.get('new_password')
+    if not user.check_password(new_password):
+        user.update(password=new_password)
+        send_successful_update_email(user)
+        return RESPONSE_200_OK
     return RESPONSE_400_INVALID_DATA
 
 
