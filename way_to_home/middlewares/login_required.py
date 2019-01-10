@@ -13,6 +13,7 @@ GUESTS_PATHS = [
     '/api/v1/user/activate',
     '/api/v1/user/auth_via_google',
     '/api/v1/user/signin_via_google'
+    '/home'
 ]
 
 
