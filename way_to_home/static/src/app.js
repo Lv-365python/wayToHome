@@ -6,8 +6,8 @@ import {GoogleApiWrapper} from './components'
 
 ReactDOM.render(
     <div>
+        <Header/>
         <GoogleApiWrapper/>
-         <Header/>
     </div>,
     document.querySelector('#root')
 );

@@ -5,5 +5,3 @@ export ResultForm from './routeResult/routeResult';
 export LoginForm from './loginForm/loginForm';
 export Header from './header/header';
 export GoogleApiWrapper from './map/map';
-
-
