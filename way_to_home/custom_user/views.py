@@ -8,11 +8,16 @@ from requests_oauthlib import OAuth2Session
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
-from utils.responsehelper import RESPONSE_200_OK, RESPONSE_400_INVALID_DATA, RESPONSE_498_INVALID_TOKEN, \
-    RESPONSE_400_OBJECT_NOT_FOUND, RESPONSE_403_ACCESS_DENIED
+from utils.responsehelper import (RESPONSE_200_OK,
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_498_INVALID_TOKEN,
+                                  RESPONSE_400_OBJECT_NOT_FOUND)
 from utils.send_email import send_email
-from utils.validators import registration_validator, login_validator, update_email_validator, reset_password_validator, \
-    password_validator
+from utils.validators import (registration_validator,
+                              login_validator,
+                              update_email_validator,
+                              reset_password_validator,
+                              password_validator)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -147,9 +152,6 @@ def confirm_reset_password(request, token):
     if not user:
         return RESPONSE_400_OBJECT_NOT_FOUND
 
-    if request.method == 'GET':
-        return HttpResponse('mail was successfully confirm', status=200)
-
     if request.method == 'PUT':
         data = request.body
         if not reset_password_validator(data, 'new_password'):
@@ -159,7 +161,7 @@ def confirm_reset_password(request, token):
             user.update(password=new_password)
             send_successful_update_email(user)
             return RESPONSE_200_OK
-        return RESPONSE_400_INVALID_DATA
+    return RESPONSE_400_INVALID_DATA
 
 
 @require_http_methods(["PUT"])
