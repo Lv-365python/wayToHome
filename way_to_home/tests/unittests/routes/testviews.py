@@ -59,7 +59,7 @@ class RouteViewsTestCase(TestCase):
         """Provide tests for request to retrieve certain Route instance."""
         expected_response = {
             "id": 100, "time": "23:58:59", "transport_id": None, "position": 0,
-            "way": 100, "start_place": 100, "end_place": 200
+            "way": 100,  "end_place": 200, "start_place": 100
         }
         url = reverse('route', kwargs={'way_id': self.route.way_id, 'route_id': self.route.id})
         response = self.client.get(url)
@@ -87,11 +87,11 @@ class RouteViewsTestCase(TestCase):
         """Provide tests for request to retrieve non existent objects."""
         url = reverse('route', kwargs={'way_id': 999, 'route_id': 100})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
         url = reverse('route', kwargs={'way_id': 100, 'route_id': 999})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_non_owner(self):
         """Provide tests for request to retrieve non owner Route instance."""

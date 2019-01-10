@@ -11,7 +11,7 @@ from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_OBJECT_NOT_RECEIVED,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_404_OBJECT_NOT_FOUND,
+                                  RESPONSE_400_OBJECT_NOT_FOUND
                                   )
 from .models import Place
 
@@ -55,7 +55,7 @@ class PlaceView(View):
 
         place = Place.get_by_id(place_id)
         if not place:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if place.user and place.user != user:
             return RESPONSE_403_ACCESS_DENIED
@@ -76,7 +76,7 @@ class PlaceView(View):
 
         place = Place.get_by_id(place_id)
         if not place:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if place.user and place.user != user:
             return RESPONSE_403_ACCESS_DENIED
@@ -105,9 +105,8 @@ class PlaceView(View):
             return RESPONSE_400_OBJECT_NOT_RECEIVED
 
         place = Place.get_by_id(place_id)
-
         if not place:
-            return RESPONSE_404_OBJECT_NOT_FOUND
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if place.user and place.user != user:
             return RESPONSE_403_ACCESS_DENIED
