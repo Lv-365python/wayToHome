@@ -11,13 +11,13 @@ from utils.passwordreseting import send_email_password_update, send_successful_u
 from utils.responsehelper import (RESPONSE_200_OK,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_498_INVALID_TOKEN,
-                                  RESPONSE_400_OBJECT_NOT_FOUND)
+                                  RESPONSE_400_OBJECT_NOT_FOUND,
+                                  RESPONSE_200_UPDATED,
+                                  RESPONSE_400_DB_OPERATION_FAILED)
 from utils.send_email import send_email
 from utils.validators import (registration_validator,
                               login_validator,
-                              update_email_validator,
-                              reset_password_validator,
-                              password_validator)
+                              password_validator,)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -131,12 +131,12 @@ def signin_google(request):
 def reset_password(request):
     """Function that provides reset user password"""
     data = request.body
-    if not update_email_validator(data, 'email'):
-        return False
     email = data.get('email')
+    if not email:
+        return RESPONSE_400_OBJECT_NOT_FOUND
     user = CustomUser.get_by_email(email=email)
     if not user:
-        return RESPONSE_400_INVALID_DATA
+        return RESPONSE_400_OBJECT_NOT_FOUND
     token = create_token(data={'email': user.email})
     send_email_password_update(user, token)
     return RESPONSE_200_OK
@@ -145,21 +145,29 @@ def reset_password(request):
 @require_http_methods(['PUT'])
 def confirm_reset_password(request, token):
     """Function that provides confirm reset user password"""
+    data = request.body
+    new_password = data.get('new_password')
     confirm = decode_token(token)
+
     if not confirm:
         return RESPONSE_498_INVALID_TOKEN
     user = CustomUser.get_by_email(email=confirm.get('email'))
-    if not user:
+
+    if not user or not new_password:
         return RESPONSE_400_OBJECT_NOT_FOUND
 
-    data = request.body
-    if not reset_password_validator(data, 'new_password'):
-        return False
-    new_password = data.get('new_password')
+    if not password_validator(new_password):
+        return RESPONSE_400_INVALID_DATA
+
     if not user.check_password(new_password):
-        user.update(password=new_password)
+        is_updated = user.update(password=new_password)
+
+        if not is_updated:
+            return RESPONSE_400_DB_OPERATION_FAILED
+
         send_successful_update_email(user)
-        return RESPONSE_200_OK
+        return RESPONSE_200_UPDATED
+
     return RESPONSE_400_INVALID_DATA
 
 
@@ -168,10 +176,17 @@ def change_password(request):
     """Function that provides change user password"""
     user = request.user
     data = request.body
-    if user.check_password(data["oldPassword"]):
-        if password_validator(data["newPassword"]):
-            user.update(data["newPassword"])
-            user.save()
-            return RESPONSE_200_OK
+    new_password = data.get('new_password')
+    old_password = data.get('old_password')
+    if not new_password:
+        return RESPONSE_400_OBJECT_NOT_FOUND
+    if not old_password:
+        return RESPONSE_400_OBJECT_NOT_FOUND
+    if user.check_password(old_password):
+        if password_validator(new_password):
+            is_updated = user.update(password=new_password)
+            if not is_updated:
+                return RESPONSE_400_DB_OPERATION_FAILED
+            return RESPONSE_200_UPDATED
         return RESPONSE_400_INVALID_DATA
     return RESPONSE_400_INVALID_DATA

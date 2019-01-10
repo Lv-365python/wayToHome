@@ -1,7 +1,13 @@
 from django.urls import path, re_path
 
-from custom_user.views import signup, registration_confirm, log_in, auth_google, signin_google, reset_password, \
-    confirm_reset_password, change_password
+from custom_user.views import (signup,
+                               registration_confirm,
+                               log_in,
+                               auth_google,
+                               signin_google,
+                               reset_password,
+                               confirm_reset_password,
+                               change_password)
 
 urlpatterns = [
     path('register', signup, name='signup'),
