@@ -178,9 +178,7 @@ def change_password(request):
     data = request.body
     new_password = data.get('new_password')
     old_password = data.get('old_password')
-    if not new_password:
-        return RESPONSE_400_OBJECT_NOT_FOUND
-    if not old_password:
+    if not new_password or not old_password:
         return RESPONSE_400_OBJECT_NOT_FOUND
     if user.check_password(old_password):
         if password_validator(new_password):
