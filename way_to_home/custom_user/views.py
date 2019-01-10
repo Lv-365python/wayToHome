@@ -7,7 +7,7 @@ from requests_oauthlib import OAuth2Session
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.send_email import send_email
-from utils.validators import registration_validator, login_validator
+from utils.validators import credentials_validator
 
 from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
@@ -40,7 +40,7 @@ def signup(request):
         'password': data.get('password')
     }
 
-    if not registration_validator(credentials):
+    if not credentials_validator(credentials):
         return RESPONSE_400_INVALID_DATA
 
     user = CustomUser.create(**credentials)
@@ -85,7 +85,7 @@ def log_in(request):
         'password': data.get('password')
     }
 
-    if not login_validator(credentials):
+    if not credentials_validator(credentials):
         return RESPONSE_400_INVALID_DATA
 
     user = authenticate(**credentials)
@@ -101,7 +101,6 @@ def auth_google(request):
     google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
                                    state=STATE, scope=SCOPE)
     data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
-    print(data)
     if data:
         return redirect(data)
 
@@ -113,7 +112,7 @@ def signin_google(request):
     """Function that provides user registration or authorization via google."""
     google_session = OAuth2Session(client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
                                    state=STATE, scope=SCOPE)
-    authorization_code = request.GET.get("code")
+    authorization_code = request.GET.get('code')
     if not authorization_code:
         return RESPONSE_400_INVALID_DATA
     google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
@@ -124,7 +123,7 @@ def signin_google(request):
         if user:
             login(request, user=user)
             return RESPONSE_200_ACTIVATED
-        user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
+        user = CustomUser.create(email=user_data.get('email'), password=user_data.get('email'))
         login(request, user=user)
         return RESPONSE_201_CREATED
 

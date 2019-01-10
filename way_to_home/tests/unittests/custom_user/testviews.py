@@ -9,12 +9,7 @@ from django.urls import reverse
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token
-from requests_oauthlib import OAuth2Session
-from way_to_home.settings import (CLIENT_ID,
-                                  REDIRECT_URI,
-                                  AUTH_URL,
-                                  SCOPE,
-                                  STATE)
+from unittest import mock
 
 
 class CustomUserViewTest(TestCase):
@@ -102,6 +97,16 @@ class CustomUserViewTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
 
+    def test_signup_db_error(self):
+        token = create_token(data={'email': self.inactive_user.email})
+        url = reverse('confirm_signup', kwargs={'token': token})
+
+        with mock.patch('custom_user.models.CustomUser.update') as update:
+            update.return_value = False
+            response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 400)
+
     def test_log_in(self):
         """Provides test for a (POST) request to log in a registered user with correct credentials."""
         test_data = {
@@ -116,8 +121,34 @@ class CustomUserViewTest(TestCase):
         """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
         test_data = {
             'email': 'wrong_email@mail.com',
-            'password': 'Random_password123'
+            'password': 'Randompassword123'
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_log_in_validator_fail(self):
+        test_data = {
+            'email': 'not_valid_email',
+            'password': 'not_valid_password'
+        }
+        url = reverse('login_user')
+        response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_google_auth_success(self):
+        """Provides test for a (GET) request to authenticate via Google."""
+        url = reverse('auth_google')
+        expected_reverse = reverse('sign_in_google')
+        with mock.patch('requests_oauthlib.OAuth2Session.authorization_url') as authorization_url:
+            authorization_url.return_value = [expected_reverse]
+            response = self.client.get(url, follow=True)
+            self.assertEquals(response.redirect_chain[0], (expected_reverse, 302))
+
+    def test_google_auth_fail(self):
+        """Provides test for a (GET) request to authenticate via Google."""
+        url = reverse('auth_google')
+        with mock.patch('requests_oauthlib.OAuth2Session.authorization_url') as authorization_url:
+            authorization_url.return_value = ['']
+            response = self.client.get(url, follow=True)
+            self.assertEquals(response.status_code, 403)
