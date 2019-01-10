@@ -1,0 +1,10 @@
+.settingsForm{
+    position: fixed;
+    top: 8%;
+    left: 20%;
+    right: 20%;
+    z-index: 10;
+    height: 70%;
+    width: auto;
+    background: rgba(197, 197, 197, 0.685);
+}

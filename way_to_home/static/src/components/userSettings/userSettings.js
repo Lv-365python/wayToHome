@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import Header from "../header/header";
+import SimpleTabs from "../userSettingsForm/userSettingsForm"
 
 export default class UserSettings extends Component{
     render(){
         return(
             <div>
                 <Header/>
-                <h1>USER SETTINGS</h1>
+                <SimpleTabs/>
             </div>
         )
     }
