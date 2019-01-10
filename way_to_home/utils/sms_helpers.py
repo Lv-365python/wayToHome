@@ -2,12 +2,12 @@
 
 import nexmo
 
-from way_to_home.settings import NEXMO_API_KEY, NEXMO_API_SECRET
+from django.conf import settings
 
 
 def send_sms(phone_number, message):
     """Send message to the specific phone number."""
-    client = nexmo.Client(key=NEXMO_API_KEY, secret=NEXMO_API_SECRET)
+    client = nexmo.Client(key=settings.NEXMO_API_KEY, secret=settings.NEXMO_API_SECRET)
     response = client.send_message({
         'from': 'Way to Home',
         'to': phone_number,
