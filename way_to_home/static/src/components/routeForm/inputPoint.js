@@ -1,18 +1,14 @@
 import {Component} from "react";
-import TextField from "src/components/routeForm/routeForm";
+import TextField from '@material-ui/core/TextField';
 import React from "react";
 
 export default class InputPoint extends Component {
 
-  constructor(props){
-    super(props);
-
-    this.state = {
+    state = {
       name: this.props.name,
       value: undefined,
       multiline: 'Controlled',
     }
-  }
 
   handleChange = event => {
       let value = event.target.value;

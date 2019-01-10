@@ -7,15 +7,12 @@ import './routeForm.css';
 
 class RouteSearchForm extends Component {
 
-  constructor(props){
-    super(props);
 
-    this.state = {
+    state = {
         pointA: undefined,
         pointB: undefined,
         open: false
     }
-  }
 
   onClick = () => {
     this.setState((state) => ({

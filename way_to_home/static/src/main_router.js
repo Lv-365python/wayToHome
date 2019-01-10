@@ -1,15 +1,15 @@
 import React from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
-import Home from './components/home/home';
+import {Home, UserSettings} from './components';
 
 
 export default class MainRouter extends React.Component {
     render(){
-        console.log("123")
         return (
             <main>
                 <Switch>
                     <Route path="/home" component={Home}/>
+                    <Route path="/settings" component={UserSettings}/>
                     <Redirect path="*" to="/home"/>
                 </Switch>
             </main>
