@@ -2,14 +2,17 @@
 
 from django.http import JsonResponse
 from django.views import View
+from utils.validators import profile_validator
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_400_DB_OPERATION_FAILED,
-                                  RESPONSE_400_OBJECT_NOT_FOUND,)
+                                  RESPONSE_400_OBJECT_NOT_FOUND,
+                                  RESPONSE_400_INVALID_DATA)
 
 
 class UserProfileView(View):
     "Class that handles HTTP requests for user_profile model."""
+    http_method_names = ['get', 'put']
 
     def get(self, request):
         """Handle the request to retrieve a user_profile object."""
@@ -38,6 +41,9 @@ class UserProfileView(View):
             'first_name': data.get('first_name'),
             'last_name': data.get('last_name')
         }
+
+        if not profile_validator(data):
+            return RESPONSE_400_INVALID_DATA
 
         is_updated = profile.update(**data)
         if not is_updated:

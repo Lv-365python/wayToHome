@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
+from django.db import transaction
 from requests_oauthlib import OAuth2Session
 
 from user_profile.models import UserProfile
@@ -57,18 +58,12 @@ def registration_confirm(request, token):
     user = CustomUser.get_by_email(email=data.get('email'))
     if not user:
         return HttpResponse('received email is not valid', status=400)
+    with transaction.atomic():
+        user.update(is_active=True)
+        UserProfile.create(user)
+        return HttpResponse('user was successfully activated', status=200)
 
-    is_updated = user.update(is_active=True)
-
-    if not is_updated:
-        return HttpResponse('database operations is failed', status=400)
-
-    profile = UserProfile.create(user)
-
-    if not profile:
-        return HttpResponse('database operations is failed', status=400)
-
-    return HttpResponse('user was successfully activated', status=200)
+    return HttpResponse('database operations is failed', status=400)
 
 
 @require_http_methods(["POST"])

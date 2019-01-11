@@ -246,3 +246,12 @@ def login_validator(data):
     if not required_keys_validator(data, required_keys):
         return False
     return True
+
+
+def profile_validator(data):
+    """Function that provides user_profile data validation"""
+    if not string_validator(data.get('first_name'), max_length=50):
+        return False
+    if not string_validator(data.get('last_name'), max_length=50):
+        return False
+    return True
