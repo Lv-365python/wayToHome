@@ -6,7 +6,7 @@ export default class UserSettings extends Component{
     render(){
         return(
             <div>
-                <Header/>
+                {/*<Header/>*/}
                 <SimpleTabs/>
             </div>
         )

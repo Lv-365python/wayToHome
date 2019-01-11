@@ -8,3 +8,7 @@
     width: auto;
     background: rgba(197, 197, 197, 0.685);
 }
+
+.settingsTab{
+    width: 100%;
+}

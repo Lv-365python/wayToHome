@@ -21,8 +21,8 @@ class userSettingsForm extends React.Component {
       <div className="settingsForm">
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChange}>
-            <Tab label="Профіль" />
-            <Tab label="Шляхи" />
+            <Tab label="Профіль" className="settingsTab" />
+            <Tab label="Шляхи" className="settingsTab" />
           </Tabs>
         </AppBar>
           {value === 0 && <div>asdasdas</div>}

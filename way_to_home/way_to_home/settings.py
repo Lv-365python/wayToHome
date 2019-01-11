@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middlewares.login_required.LoginRequiredMiddleware',
+    # 'middlewares.login_required.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'way_to_home.urls'
