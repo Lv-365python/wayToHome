@@ -15,6 +15,7 @@ import json
 class UserProfileViewTest(TestCase):
     """Test Case that provides testing of User Profile view"""
     def setUp(self):
+        """Method that provides preparation before testing User Profile view`s features."""
         self.url = reverse('profile')
 
         self.first_user = CustomUser.objects.create(
@@ -48,6 +49,7 @@ class UserProfileViewTest(TestCase):
         self.second_client.login(email='user2@mail.com', password='2222Bb')
 
     def test_get(self):
+        """Method that tests the successful request to retrieve user_profile"""
         expected_response = {
             'id': 1111,
             'first_name': 'Jhon',
@@ -60,10 +62,12 @@ class UserProfileViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_fail(self):
+        """Method that tests the unsuccessful request to retrieve user_profile"""
         response = self.second_client.get(self.url)
         self.assertEquals(response.status_code, 400)
 
     def test_put_success(self):
+        """Method that tests the successful request to update user_profile"""
         test_data = {
             'first_name': 'new_first_name',
             'last_name': 'new_last_name'
@@ -72,6 +76,7 @@ class UserProfileViewTest(TestCase):
         self.assertEquals(response.status_code, 200)
 
     def test_put_no_profile(self):
+        """Method that tests the unsuccessful request to update user_profile in case when profile is not found"""
         test_data = {
             'first_name': 'new_first_name',
             'last_name': 'new_last_name'
@@ -80,11 +85,13 @@ class UserProfileViewTest(TestCase):
         self.assertEquals(response.status_code, 400)
 
     def test_put_no_data(self):
+        """Method that tests the unsuccessful request to update user_profile in case when new data is not provided"""
         test_data = {}
         response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
         self.assertEquals(response.status_code, 400)
 
     def test_put_db_fail(self):
+        """Method that tests the unsuccessful request to update user_profile in case of database failure"""
         test_data = {
             'first_name': 'new_first_name',
             'last_name': 'new_last_name'

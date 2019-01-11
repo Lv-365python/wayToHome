@@ -60,9 +60,12 @@ def registration_confirm(request, token):
 
     is_updated = user.update(is_active=True)
 
+    if not is_updated:
+        return HttpResponse('database operations is failed', status=400)
+
     profile = UserProfile.create(user)
 
-    if not (is_updated or profile):
+    if not profile:
         return HttpResponse('database operations is failed', status=400)
 
     return HttpResponse('user was successfully activated', status=200)
