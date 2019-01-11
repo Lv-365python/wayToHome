@@ -81,7 +81,7 @@ class UserProfileViewTest(TestCase):
 
     def test_put_no_data(self):
         test_data = {}
-        response = self.second_client.put(self.url, json.dumps(test_data), content_type='application/json')
+        response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
         self.assertEquals(response.status_code, 400)
 
     def test_put_db_fail(self):
@@ -89,7 +89,7 @@ class UserProfileViewTest(TestCase):
             'first_name': 'new_first_name',
             'last_name': 'new_last_name'
         }
-        with mock.patch('utils.abstract_model.update') as update:
+        with mock.patch('utils.abstract_models.AbstractModel.update') as update:
             update.return_value = False
-            response = self.second_client.put(self.url, json.dumps(test_data), content_type='application/json')
+            response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
             self.assertEquals(response.status_code, 400)
