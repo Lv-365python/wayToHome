@@ -1,9 +1,18 @@
 """This module that provides base logic for CRUD of place`s model objects."""
 
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views import View
 
 from utils.validators import place_data_validator
+from utils.responsehelper import (RESPONSE_200_UPDATED,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_400_OBJECT_NOT_RECEIVED,
+                                  RESPONSE_400_EMPTY_JSON,
+                                  RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_400_OBJECT_NOT_FOUND
+                                  )
 from .models import Place
 
 
@@ -14,7 +23,7 @@ class PlaceView(View):
         """Handle the request to create a new place object."""
         data = request.body
         if not data:
-            return HttpResponse('empty json received', status=400)
+            return RESPONSE_400_EMPTY_JSON
 
         data = {
             'longitude': data.get('longitude'),
@@ -25,11 +34,11 @@ class PlaceView(View):
         }
 
         if not place_data_validator(data):
-            return HttpResponse('invalid data', status=400)
+            return RESPONSE_400_INVALID_DATA
 
         place = Place.create(user=request.user, **data)
         if not place:
-            return HttpResponse('database operation is failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
         place = place.to_dict()
         return JsonResponse(place, status=201)
@@ -45,12 +54,11 @@ class PlaceView(View):
             return JsonResponse(data, status=200, safe=False)
 
         place = Place.get_by_id(place_id)
-
         if not place:
-            return HttpResponse('object not found', status=400)
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if place.user and place.user != user:
-            return HttpResponse('access denied for non-owner users', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         place = place.to_dict()
         return JsonResponse(place, status=200)
@@ -58,21 +66,20 @@ class PlaceView(View):
     def put(self, request, place_id=None):  # pylint: disable=R0201, R0911
         """Handle the request to update an existing place object with appropriate id."""
         user = request.user
+        data = request.body
+
+        if not data:
+            return RESPONSE_400_EMPTY_JSON
 
         if not place_id:
-            return HttpResponse('object id is not received', status=400)
-
-        data = request.body
-        if not data:
-            return HttpResponse('empty json received', status=400)
+            return RESPONSE_400_OBJECT_NOT_RECEIVED
 
         place = Place.get_by_id(place_id)
-
         if not place:
-            return HttpResponse('object not found', status=400)
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if place.user and place.user != user:
-            return HttpResponse('access denied for non-owner users', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         data = {
             'longitude': data.get('longitude'),
@@ -83,30 +90,29 @@ class PlaceView(View):
         }
 
         if not place_data_validator(data, update=True):
-            return HttpResponse('invalid data', status=400)
+            return RESPONSE_400_INVALID_DATA
 
         is_updated = place.update(**data)
         if not is_updated:
-            return HttpResponse('database operation is failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('object was successfully updated', status=200)
+        return RESPONSE_200_UPDATED
 
     def delete(self, request, place_id=None):  # pylint: disable=R0201
         """Handle the request to delete place object with appropriate id."""
         user = request.user
         if not place_id:
-            return HttpResponse('object id is not received', status=400)
+            return RESPONSE_400_OBJECT_NOT_RECEIVED
 
         place = Place.get_by_id(place_id)
-
         if not place:
-            return HttpResponse('object not found', status=400)
+            return RESPONSE_400_OBJECT_NOT_FOUND
 
         if place.user and place.user != user:
-            return HttpResponse('access denied for non-owner user', status=403)
+            return RESPONSE_403_ACCESS_DENIED
 
         is_deleted = Place.delete_by_id(place_id)
         if not is_deleted:
-            return HttpResponse('database operation is failed', status=400)
+            return RESPONSE_400_DB_OPERATION_FAILED
 
-        return HttpResponse('object was successfully deleted', status=204)
+        return RESPONSE_200_DELETED

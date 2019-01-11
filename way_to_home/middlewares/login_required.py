@@ -2,7 +2,9 @@
 
 import json
 
-from django.http import HttpResponse
+from utils.responsehelper import (RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_403_USER_NOT_AUTHENTICATED,
+                                  RESPONSE_403_ACCESS_DENIED)
 
 
 GUESTS_PATHS = [
@@ -10,7 +12,8 @@ GUESTS_PATHS = [
     '/api/v1/user/register',
     '/api/v1/user/activate',
     '/api/v1/user/auth_via_google',
-    '/api/v1/user/signin_via_google'
+    '/api/v1/user/signin_via_google',
+    '/home',
 ]
 
 
@@ -26,21 +29,21 @@ class LoginRequiredMiddleware:  # pylint: disable=too-few-public-methods
 
     def __call__(self, request):
         """Provide JSON check and authentication validations."""
-        if request.method in ['POST', 'PATCH', 'PUT']:
+        if request.method in ['POST', 'PUT']:
             try:
                 request._body = json.loads(request.body)  # pylint: disable=protected-access
             except json.JSONDecodeError:
-                return HttpResponse('invalid json received', status=400)
+                return RESPONSE_400_INVALID_DATA
 
         for path in GUESTS_PATHS:
             if request.path_info.startswith(path):
                 if request.user.is_authenticated:
-                    return HttpResponse('access denied for authenticated user', status=400)
+                    return RESPONSE_403_ACCESS_DENIED
                 response = self.get_response(request)
                 return response
 
         if not request.user.is_authenticated:
-            return HttpResponse('access denied for unauthenticated user', status=403)
+            return RESPONSE_403_USER_NOT_AUTHENTICATED
 
         response = self.get_response(request)
         return response

@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router} from 'react-router-dom';
 
-import {StartBtn, RouteSearchForm, LogInBtn, ResultForm} from './components'
+import MainRouter from './main_router'
 
 ReactDOM.render(
-    <div>
-        <StartBtn></StartBtn>
-        <RouteSearchForm></RouteSearchForm>
-        <LogInBtn></LogInBtn>
-        <ResultForm></ResultForm>
-    </div>,
-    document.querySelector('#root')
+    <Router>
+        <div>
+            <MainRouter/>
+        </div>
+    </Router>,
+    document.getElementById('root')
 );
