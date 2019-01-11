@@ -12,3 +12,24 @@
 .settingsTab{
     width: 100%;
 }
+
+.settingsComeBack{
+    cursor: pointer;
+    position: fixed;
+    top: 68px;
+    left: 90px;
+    width: 150px;
+    height: 45px;
+    background: #3F51B5;
+}
+
+.settingsLink{
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    font-family: "Al Bayan";
+    font-size: 14.5px;
+    position: absolute;
+    top: 12px;
+    left: 10px;
+}
