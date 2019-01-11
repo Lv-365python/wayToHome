@@ -115,3 +115,6 @@ node_modules/
 package-lock.json
 bundle.js
 way_to_home/..pylintrc.swp
+
+# Public
+way_to_home/static/public/
