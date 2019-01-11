@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 
 from custom_user.views import signup, registration_confirm, log_in, auth_google, signin_google
 
@@ -8,4 +8,6 @@ urlpatterns = [
     path('login', log_in, name='login_user'),
     path('auth_via_google', auth_google, name='auth_google'),
     path('signin_via_google', signin_google, name='sign_in_google'),
+    path('profile', include('user_profile.urls')),
 ]
+
