@@ -1,4 +1,4 @@
-import {Component} from "react";
+import {Component, Fragment} from "react";
 import TextField from '@material-ui/core/TextField';
 import React from "react";
 
@@ -6,7 +6,7 @@ export default class InputPoint extends Component {
 
     state = {
       name: this.props.name,
-      value: undefined,
+      value: this.props.value,
       multiline: 'Controlled',
     }
 
@@ -22,12 +22,13 @@ export default class InputPoint extends Component {
     render() {
 
       return (
-        <div>
+        <Fragment>
           <TextField
-            label={this.state.name}
-            value={this.state.value}
+            label={this.props.name}
+            value={this.props.value}
+            InputLabelProps={{ shrink: true }}
             onChange={this.handleChange}/>
-        </div>
+        </Fragment>
       )
     }
 };
