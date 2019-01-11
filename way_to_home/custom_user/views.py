@@ -177,12 +177,11 @@ def change_password(request):
     user = request.user
     data = request.body
     new_password = data.get('new_password')
-    old_password = data.get('old_password')
-    if not new_password or not old_password:
+    if not user.check_password(data.get('old_password')) or not password_validator(new_password):
         return RESPONSE_400_INVALID_DATA
-    if not user.check_password(old_password) or not password_validator(new_password):
-        return RESPONSE_400_INVALID_DATA
-    is_updated = user.update(password=new_password)
-    if not is_updated:
-        return RESPONSE_400_DB_OPERATION_FAILED
-    return RESPONSE_200_UPDATED
+    if not user.check_password(new_password):
+        is_updated = user.update(password=new_password)
+        if not is_updated:
+            return RESPONSE_400_DB_OPERATION_FAILED
+        return RESPONSE_200_UPDATED
+    return RESPONSE_400_INVALID_DATA
