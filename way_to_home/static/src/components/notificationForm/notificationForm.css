@@ -1,0 +1,106 @@
+.notificationForm {
+    width: 700px;
+    height: 500px;
+    background: gainsboro;
+    position: fixed;
+    top: 30%;
+    left: 28%;
+}
+
+.notFormUl{
+    height: 400px;
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    font-size: 15px;
+    line-height: 45px;
+}
+
+.notification {
+    cursor: pointer;
+    list-style: none;
+    width: 200px;
+    height: 40px;
+    border-radius: 15px;
+    background: #3F51B5;
+    color: white;
+    margin-top: 10px;
+    text-align: center;
+    font-family: "Al Bayan";
+}
+
+.not-done-true{
+    background: green;
+}
+
+.wayAB{
+    margin-top: 20px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.pointA, .pointB{
+    display: inline-block;
+    width: 200px;
+    height: 45px;
+    border-radius: 20px;
+    background: #3F51B5;
+    color: white;
+    font-size: 16px;
+    line-height: 50px;
+    font-family: "Al Bayan";
+}
+
+.space{
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.pickStartDate{
+    cursor: pointer;
+    position: absolute;
+    left: 8%;
+    top: 200px;
+    font-family: "Al Bayan";
+    background: #3F51B5;
+    color: white;
+    width: 170px;
+    height: 60px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 30px;
+    border-radius: 15px;
+}
+
+.pickEndDate{
+    cursor: pointer;
+    position: absolute;
+    right: 8%;
+    top: 200px;
+    font-family: "Al Bayan";
+    background: #3F51B5;
+    color: white;
+    width: 170px;
+    height: 60px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 30px;
+    border-radius: 15px;
+}
+
+.startDate{
+    position: absolute;
+    left: 25%;
+    top: 130px;
+    z-index: 10;
+}
+.endDate{
+    position: absolute;
+    left: 25%;
+    top: 130px;
+    z-index: 10;
+}
