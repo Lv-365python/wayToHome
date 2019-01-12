@@ -76,3 +76,15 @@ class CustomUser(AbstractBaseUser):
             return user
         except (ValueError, IntegrityError):
             pass
+
+    @classmethod
+    def delete_by_id(cls, obj_id):
+        """
+        Delete object, found by id.
+        """
+        try:
+            obj = cls.objects.get(id=obj_id)
+            obj.delete()
+            return True
+        except cls.DoesNotExist:
+            return False

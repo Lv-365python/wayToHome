@@ -1,5 +1,6 @@
 """Authentication views module"""
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth2Session
@@ -20,7 +21,8 @@ from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_200_OK,
-                                  RESPONSE_201_CREATED)
+                                  RESPONSE_201_CREATED,
+                                  RESPONSE_200_DELETED)
 
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
@@ -129,3 +131,15 @@ def signin_google(request):
         return RESPONSE_201_CREATED
 
     return RESPONSE_400_EMPTY_JSON
+
+
+@require_http_methods(["DELETE"])
+def delete_account(request):
+    """Function that provides deleting user account."""
+    user = request.user
+    is_deleted = CustomUser.delete_by_id(obj_id=user.id)
+    if not is_deleted:
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    logout(request)
+    return RESPONSE_200_DELETED
