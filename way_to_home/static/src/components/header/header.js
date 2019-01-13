@@ -13,12 +13,11 @@ class Header extends Component{
     render(){
         return(
             <div>
-            <AppBar style={{height: '44px', }} position="static">
+            <AppBar style={{height: '44px'}} position="static">
             <Toolbar>
-            WAY TO HOME
                 <StartBtn/>
                 <LoginBtn/>
-                <AccountCircle style={{fontSize: '40px', top: '10px'}}/>
+                <AccountCircle style={{fontSize: '40px'}}/>
             </Toolbar>
             </AppBar>
             </div>
