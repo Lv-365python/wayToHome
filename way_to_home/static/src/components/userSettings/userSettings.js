@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {Button} from "@material-ui/core";
+import axios from "axios";
 
 import UserSettingsForm from "../userSettingsForm/userSettingsForm";
 import './userSettings.css';
 
+
 export default class UserSettings extends Component{
+
     render(){
         return(
             <div>
@@ -17,6 +20,7 @@ export default class UserSettings extends Component{
                     >← ПОВЕРНУТИСЬ
                     </Button>
                 </div>
+
                 <UserSettingsForm />
             </div>
         )

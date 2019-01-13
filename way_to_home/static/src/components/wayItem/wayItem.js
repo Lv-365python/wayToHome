@@ -26,6 +26,8 @@ const currencies = [
 ];
 
 export default class WayItem extends Component{
+
+
     render(){
         return(
             <div className="wayItem">
@@ -33,10 +35,9 @@ export default class WayItem extends Component{
                   select
                   className="textField"
                   label="Місце А"
-                  value="xzxz"
+                  value="123123123"
                   // onChange={}
 
-                  // helperText="Please select your currency"
                   margin="normal"
                 >
                   {currencies.map(option => (
@@ -54,10 +55,9 @@ export default class WayItem extends Component{
                   select
                   className="textField"
                   label="Місце Б"
-                  value="xzxz"
+                  value="dddddommmmm"
                   // onChange={}
 
-                  // helperText="Please select your currency"
                   margin="normal"
                 >
                   {currencies.map(option => (
