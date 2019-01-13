@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Calendar from 'react-calendar'
-import TimePicker from 'react-time-picker';
+import TimeField from 'react-simple-timefield';
 import './notificationForm.css';
 
 class NotificationForm extends Component{
@@ -13,13 +13,13 @@ class NotificationForm extends Component{
         StartDate: new Date(),
         EndDate: new Date(),
         notifications: [
-            {id: 1, time: '08:30', text: 'ПН', active: true},
-            {id: 2, time: '08:30', text: 'ВТ', active: false},
-            {id: 3, time: '08:30', text: 'СР', active: true },
-            {id: 4, time: '08:30', text: 'ЧТ', active: false},
-            {id: 5, time: '08:30', text: 'ПТ', active: true},
-            {id: 6, time: '08:30', text: 'СБ', active: true},
-            {id: 7, time: '08:30', text: 'НД', active: false}
+            {id: 0, time: '09:30', text: 'ПН', active: true, openTimePicker: false},
+            {id: 1, time: '08:30', text: 'ВТ', active: false, openTimePicker: false},
+            {id: 2, time: '08:30', text: 'СР', active: true, openTimePicker: false},
+            {id: 3, time: '08:30', text: 'ЧТ', active: false, openTimePicker: false},
+            {id: 4, time: '08:30', text: 'ПТ', active: true, openTimePicker: false},
+            {id: 5, time: '08:30', text: 'СБ', active: true, openTimePicker: false},
+            {id: 6, time: '08:30', text: 'НД', active: false, openTimePicker: false}
         ]
     }
 
@@ -29,9 +29,22 @@ class NotificationForm extends Component{
                 {this.state.notifications.map((not) => (
                     <li className={`not-done-${not.active} notification`}
                         onClick={() => this.updateNotActive(not.id)}>
-                        <span>{not.time}</span>
-                        >----->
+                        <span className='changeTimeDiv'
+                              onClick={(event) => {this.toggleTime(not.id); event.stopPropagation()}}>+</span>
+                        {not.time}
+                        <span className='not_space'></span>
                         {not.text}
+
+                        { not.openTimePicker &&
+                        <div className='timePicker'
+                             onClick={(event) => {event.stopPropagation()}}>
+                            <TimeField value={not.time}
+                                       className={'timeInput'}
+                                       onChange={(value) => this.onChangeTime(value, not.id)}
+                                       onClick={(event) => {event.stopPropagation()} }/>
+                            <button className='saveTimeBtn'
+                                    onClick={(event) => {this.toggleTime(not.id); event.stopPropagation()}}>ЗБЕРЕГТИ</button>
+                        </div> }
                     </li>
                 ))}
             </div>
@@ -75,6 +88,33 @@ class NotificationForm extends Component{
         }));
         this.toggleEndDate()
     }
+
+    toggleTime = (id) => {
+        let notifications_new = this.state.notifications.map((not) => {
+            if (not.id === id){
+                not.openTimePicker = !not.openTimePicker;
+            } else {
+                not.openTimePicker = false
+            }
+            return not;
+        });
+        return this.setState({
+            notifications: notifications_new
+        });
+    }
+
+    onChangeTime = (newTime, id) => {
+        let notifications_new = this.state.notifications.map((not) => {
+            if (not.id === id){
+                not.time = newTime
+            }
+            return not;
+        });
+        return this.setState({
+            notifications: notifications_new
+        });
+    }
+
     render() {
         return (
             <div className='notificationForm'>

@@ -98,9 +98,50 @@
     top: 130px;
     z-index: 10;
 }
+
 .endDate{
     position: absolute;
     left: 25%;
     top: 130px;
     z-index: 10;
+}
+
+.not_space{
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.changeTimeDiv{
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+    font-size: 25px;
+}
+
+.changeTimeDiv:hover{
+    color: red;
+}
+
+.timePicker{
+    position: absolute;
+    left: 42%;
+    top: 100px;
+    z-index: 10;
+    width: 100px;
+    height: 100px;
+    background: white;
+    text-align: center;
+    border: 0.3px solid black;
+}
+
+.saveTimeBtn{
+    border: none;
+    background: #3F51B5;
+    color: white;
+    margin-top: 20%;
+}
+
+.timeInput{
+    margin-top: 20px;
+    transform: scale(2);
 }
