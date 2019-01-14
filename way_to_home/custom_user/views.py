@@ -13,7 +13,8 @@ from utils.responsehelper import (RESPONSE_200_OK,
                                   RESPONSE_498_INVALID_TOKEN,
                                   RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_200_UPDATED,
-                                  RESPONSE_400_DB_OPERATION_FAILED, RESPONSE_400_INVALID_EMAIL)
+                                  RESPONSE_400_DB_OPERATION_FAILED,
+                                  RESPONSE_400_INVALID_EMAIL)
 from utils.send_email import send_email
 from utils.validators import (registration_validator,
                               login_validator,
@@ -134,11 +135,14 @@ def reset_password(request):
     email = data.get('email')
     if not email_validator(email):
         return RESPONSE_400_INVALID_EMAIL
+
     user = CustomUser.get_by_email(email=email)
     if not user:
         return RESPONSE_400_OBJECT_NOT_FOUND
+
     token = create_token(data={'email': user.email})
     send_email_password_update(user, token)
+
     return RESPONSE_200_OK
 
 
