@@ -1,0 +1,13 @@
+.addButton {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    margin: 2% 2% 2% 2%;
+}
+
+.saveButton {
+    display: flex;
+    margin-right: 5%;
+    justify-content: right;
+    align-items: end;
+}
