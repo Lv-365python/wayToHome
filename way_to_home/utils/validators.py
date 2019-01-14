@@ -250,8 +250,20 @@ def login_validator(data):
 
 def profile_validator(data):
     """Function that provides user_profile data validation"""
-    if not string_validator(data.get('first_name'), max_length=50):
-        return False
-    if not string_validator(data.get('last_name'), max_length=50):
-        return False
+    profile_fields = [
+        'first_name'
+        'last_name'
+    ]
+    filtered_data = {key: data.get(key) for key in profile_fields}
+
+    validation_rules = {
+        'first_name': lambda val: string_validator(val, 64),
+        'last_name': lambda val: string_validator(val, 64)
+    }
+
+    for key, value in filtered_data.items():
+        if value is not None:
+            if not validation_rules[key](value):
+                return False
+
     return True
