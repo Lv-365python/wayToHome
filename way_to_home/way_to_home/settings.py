@@ -159,6 +159,11 @@ DEFAULT_FROM_EMAIL = 'DEFAULT_FROM_EMAIL'
 JWT_TOKEN_KEY = 'any secret word'
 JWT_ALGORITHM = 'HS384'
 
+# Celery settings
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+
 DOMAIN = 'localhost:8000'
 
 try:
