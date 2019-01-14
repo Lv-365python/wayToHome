@@ -35,7 +35,7 @@ class LoginBtn extends Component{
                     size='large'
                     onClick={this.onClickLoginBtn}
                     className='Btn'>
-                        log in
+                        Увійти
                 </Button>
 
             </div>
