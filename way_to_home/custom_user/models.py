@@ -4,6 +4,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models, IntegrityError, transaction
 from django.core.exceptions import ValidationError
+from django.db.utils import OperationalError
 
 
 class CustomUser(AbstractBaseUser):
@@ -43,7 +44,7 @@ class CustomUser(AbstractBaseUser):
             try:
                 self.save()
                 return True
-            except (ValueError, ValidationError):
+            except (ValueError, ValidationError, OperationalError):
                 return False
 
     @classmethod
@@ -51,7 +52,7 @@ class CustomUser(AbstractBaseUser):
         """Method for returns user by email"""
         try:
             return cls.objects.get(email=email)
-        except (ValueError, cls.DoesNotExist):
+        except (ValueError, cls.DoesNotExist, OperationalError):
             pass
 
     @classmethod
@@ -59,7 +60,7 @@ class CustomUser(AbstractBaseUser):
         """Method for returns user by id"""
         try:
             return cls.objects.get(id=obj_id)
-        except (ValueError, cls.DoesNotExist):
+        except (ValueError, cls.DoesNotExist, OperationalError):
             pass
 
     @classmethod
@@ -74,7 +75,7 @@ class CustomUser(AbstractBaseUser):
         try:
             user.save()
             return user
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass
 
     @classmethod
@@ -84,5 +85,5 @@ class CustomUser(AbstractBaseUser):
             user = cls.objects.get(id=obj_id)
             user.delete()
             return True
-        except cls.DoesNotExist:
+        except (cls.DoesNotExist, OperationalError):
             return False

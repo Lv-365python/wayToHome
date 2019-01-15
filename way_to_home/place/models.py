@@ -1,6 +1,7 @@
 """This module implements class that represents the place entity."""
 
 from django.db import models, IntegrityError
+from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
 
@@ -44,5 +45,5 @@ class Place(AbstractModel):
             place.user = user
             place.save()
             return place
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass

@@ -2,6 +2,7 @@
 
 from django.db import models, IntegrityError
 from utils.abstract_models import AbstractModel
+from django.db.utils import OperationalError
 from way.models import Way
 from place.models import Place
 
@@ -51,5 +52,5 @@ class Route(AbstractModel):
             route.end_place = end_place
             route.save()
             return route
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass
