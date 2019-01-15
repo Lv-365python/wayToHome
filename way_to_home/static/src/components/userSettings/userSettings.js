@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Button} from "@material-ui/core";
-import axios from "axios";
 
 import UserSettingsForm from "../userSettingsForm/userSettingsForm";
 import './userSettings.css';

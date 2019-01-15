@@ -4,22 +4,31 @@ import axios from 'axios';
 
 import WayItem from './wayItem/wayItem';
 import NewWayItem from './newWayItem/newWayItem'
-import './placeTab.css';
+import './wayTab.css';
 
-export default class PlaceTab extends Component{
+const url = 'http://127.0.0.1:8000/api/v1/';
+
+
+export default class WayTab extends Component{
 
     state = {
         ways: [],
-        newWays: [],
+        places: [],
+        newWay: [],
     };
 
     getData = () => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
-        let type = 'way/';
+        let requestWays = 'way/';
+        let requestPlaces = 'place/';
 
-        axios.get(url + type)
+        axios.get(url + requestWays)
             .then(response => {
                 this.setState({ ways: response.data });
+            });
+
+        axios.get(url + requestPlaces)
+            .then(response => {
+                this.setState({ places: response.data });
             });
     };
 
@@ -27,41 +36,49 @@ export default class PlaceTab extends Component{
         this.getData();
     };
 
-    componentWillUnmount() {
-        console.log("DID")
-    };
-
     handleAddButtonClick = () => {
         this.setState({
-            newWays: [...this.state.newWays, {name: ''}],
+            newWay: [{name: ''}],
         })
     };
 
     handleDeleteNewItemClick = () => {
         this.setState({
-            newWays: []
+            newWay: []
         })
-    }
+    };
+
+    handleDeleteExistItemClick = () => {
+        console.log("TODO: Delete way")
+
+    };
+
+    handleSaveClick = (placeA, placeB) => {
+        console.log("TODO: Save way");
+        console.log(`${placeA} - ${placeB}`)
+    };
 
     render(){
+
         return(
             <div>
                 {this.state.ways.map(way => (
-
                     <WayItem
                         key={way.id}
-                        way={way}/>
-
+                        way={way}
+                        places={this.state.places}
+                        deleteButton={this.handleDeleteExistItemClick}
+                    />
                 ))}
 
-                {this.state.newWays.map(way => (
-
+                {this.state.newWay.map(way => (
                     <NewWayItem
                         key={Date.now()}
                         way={way}
+                        places={this.state.places}
                         deleteButton={this.handleDeleteNewItemClick}
+                        saveButton={this.handleSaveClick}
                     />
-
                 ))}
 
                 <div className="addButton" >
@@ -70,22 +87,11 @@ export default class PlaceTab extends Component{
                         size="medium"
                         color="primary"
                         onClick={this.handleAddButtonClick}
-                        disabled={this.state.newWays.length > 0 ? true : false}
+                        disabled={this.state.newWay.length > 0 ? true : false}
                     >
-                      Добавити шлях
+                      Додати шлях
                     </Button>
                 </div>
-
-                {/*<div className="saveButton">*/}
-                    {/*<Button*/}
-                        {/*variant="contained"*/}
-                        {/*size="medium"*/}
-                        {/*color="primary"*/}
-                        {/*// onClick={this.handleAddButtonClick}*/}
-                    {/*>*/}
-                      {/*Зберегти*/}
-                    {/*</Button>*/}
-                {/*</div>*/}
             </div>
         )
     }

@@ -4,10 +4,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import PlaceTab from './wayTab/placeTab';
+import WayTab from './wayTab/wayTab';
 import './userSettingsForm.css';
-import axios from "axios";
-
 
 
 class UserSettingsForm extends React.Component {
@@ -26,14 +24,14 @@ class UserSettingsForm extends React.Component {
             <div className="settingsForm">
 
                 <AppBar position="static">
-                    <Tabs value={value} onChange={this.handleChange}>
+                    <Tabs value={value} onChange={this.handleChange} centered >
                         <Tab label="Профіль" className="settingsTab" />
                         <Tab label="Шляхи" className="settingsTab" />
                     </Tabs>
                 </AppBar>
 
-                {value === 0 && <div>vbbcbbcccv</div>}
-                {value === 1 && <PlaceTab/>}
+                {value === 0 && <div>TODO: user profile tab</div>}
+                {value === 1 && <WayTab/>}
             </div>
         );
     }

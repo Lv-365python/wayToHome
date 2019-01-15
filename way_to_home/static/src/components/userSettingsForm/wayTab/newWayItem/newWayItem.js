@@ -9,55 +9,26 @@ import IconButton from '@material-ui/core/IconButton';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 
 import './newWayItem.css';
-import axios from "axios";
-
-const url = 'http://127.0.0.1:8000/api/v1/';
 
 
 export default class NewWayItem extends Component{
 
     state = {
-        places: [],
+        places: this.props.places,
         placeA: 'Виберіть місце A',
         placeB: 'Виберіть місце Б',
     };
 
-    getData = () => {
-        let requestPlaces = 'place/';
 
-        axios.get(url + requestPlaces)
-            .then(response => {
-                this.setState({ places: response.data });
-            });
-    };
-
-    handleSaveButton = () =>{
-
-        // let postWay = 'way/';
-        //
-        // axios.post(url + postWay)
-        //     .then(response => {
-        //         this.setState({ places: response.data });
-        //     });
-
-        console.log("save")
-    };
-
-    componentWillMount() {
-        this.getData();
-    };
 
     newWayValidator(){
         if (this.state.placeA === this.state.placeB) {
-            console.log("placeA and placeB should be different")
             return false
         }
 
         if (!Number.isInteger(this.state.placeA) || !Number.isInteger(this.state.placeB)){
-            console.log("select place")
             return false
         }
-
         return true
     }
 
@@ -109,7 +80,7 @@ export default class NewWayItem extends Component{
                         style={this.newWayValidator()?{color: "green"}:{color: "grey"}}
                         disabled={!this.newWayValidator()}
                         aria-label="Зберегти"
-                        onClick={this.handleSaveButton}
+                        onClick={() => this.props.saveButton(this.state.placeA, this.state.placeB)}
                     >
                         <SaveAlt />
                     </IconButton>

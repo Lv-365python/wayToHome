@@ -8,7 +8,6 @@ import PlaceIcon from '@material-ui/icons/Place';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import './wayItem.css';
-import axios from "axios";
 
 
 export default class WayItem extends Component{
@@ -16,39 +15,36 @@ export default class WayItem extends Component{
     state = {
         startPlace: {},
         endPlace: {},
+        notificationOpen: false,
     };
 
     getData = () => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
 
-        let startPlace = this.props.way.routes.reduce(function(prev, curr) {
+        let startRoute = this.props.way.routes.reduce(function(prev, curr) {
             return prev.position < curr.position ? prev : curr;
         });
 
-        let endPlace = this.props.way.routes.reduce(function(prev, curr) {
+        let endRoute = this.props.way.routes.reduce(function(prev, curr) {
             return prev.position > curr.position ? prev : curr;
         });
 
-        let requestStartPlace = `place/${startPlace.start_place}`;
-        let requestEndPlace = `place/${endPlace.end_place}`;
+        let startPlace = this.props.places.find(x => x.id === startRoute.start_place);
+        let endPlace = this.props.places.find(x => x.id === endRoute.end_place);
 
-        axios.get(url + requestStartPlace)
-            .then(response => {
-                this.setState({ startPlace: response.data });
-            });
-
-        axios.get(url + requestEndPlace)
-            .then(response => {
-                this.setState({ endPlace: response.data });
-            });
+        this.setState({
+            startPlace: startPlace,
+            endPlace: endPlace
+        });
     };
 
     componentWillMount() {
         this.getData();
     };
 
-    handleDeleteButton = () => {
-        console.log('delete')
+    handleOpenNotification = () => {
+        this.setState({
+            notificationOpen: true
+        })
     };
 
     render(){
@@ -62,7 +58,6 @@ export default class WayItem extends Component{
                    variant="outlined"
                />
 
-
                 <TrendingFlat className="arrow" />
 
                 <Chip
@@ -75,19 +70,18 @@ export default class WayItem extends Component{
 
 
                 <Tooltip title="Settings">
-                    <IconButton color="primary" aria-label="Нотифікації">
+                    <IconButton color="primary" aria-label="Нотифікації" onClick={this.handleOpenNotification}>
                          <SettingsIcon />
                     </IconButton>
                 </Tooltip>
 
                 <Tooltip title="Delete">
-                    <IconButton color="secondary" aria-label="Видалити" onClick={this.handleDeleteButton}>
+                    <IconButton color="secondary" aria-label="Видалити" onClick={this.props.deleteButton}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
 
             </div>
-
         )
     }
 }
