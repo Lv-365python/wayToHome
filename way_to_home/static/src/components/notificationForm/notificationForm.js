@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Calendar from 'react-calendar'
 import TimeField from 'react-simple-timefield';
+import Button from '@material-ui/core/Button';
+import axios from 'axios'
 import './notificationForm.css';
 
 class NotificationForm extends Component{
@@ -115,9 +117,35 @@ class NotificationForm extends Component{
         });
     }
 
+    getData = () => {
+        let url = 'http://127.0.0.1:8000/api/v1/'
+        let way_id = 1
+        let type = `way/${way_id}/notification/`
+
+        axios.get(url+type)
+            .then(function (response) {
+                console.log(response.data.length)
+                for (let i = 0; i<=response.data.length-1; i++){
+                    console.log(response.data[i])
+                }
+            })
+    }
+
+    componentDidMount()
+    {
+        this.getData()
+    }
+
+    sendRequest = () => {
+        let url ='http://127.0.0.1:8000/api/v1/'
+        let type = ''
+
+    }
+
     render() {
         return (
             <div className='notificationForm'>
+
                 <div className='wayAB'>
                     <div className='pointA'>
                         {this.state.pointA.toUpperCase()}
@@ -148,6 +176,12 @@ class NotificationForm extends Component{
                     <Calendar onChange={this.onChangeEndDate}
                               value={this.state.EndDate} />
                 </div> }
+                <div className='SaveBtn'>
+
+                    <Button variant="contained" color='primary' size='large' onClick={this.sendRequest}>
+                        ЗБЕРЕГТИ
+                    </Button>
+                </div>
             </div>
         );
     }
