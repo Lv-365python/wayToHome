@@ -26,3 +26,13 @@ docopt==0.6.2
 idna==2.8
 requests==2.21.0
 urllib3==1.24.1
+asn1crypto==0.24.0
+cffi==1.11.5
+cryptography==2.4.2
+nexmo==2.3.0
+pycparser==2.19
+amqp==2.3.2
+billiard==3.5.0.5
+celery==4.2.1
+kombu==4.2.2.post1
+vine==1.2.0
