@@ -27,6 +27,7 @@ class GTFSDaemon(Daemon):
     def execute(self):
         """Defines commands for preparing GTFS data from EasyWay."""
         url = f'http://track.ua-gis.com/gtfs/lviv/vehicle_position'
+        redis_gtfs_key = 'gtfs_data'
 
         loaded_file = load_file(url, save_to=settings.EASY_WAY_DIR)
         if not loaded_file:
@@ -36,8 +37,8 @@ class GTFSDaemon(Daemon):
         if not gtfs_data:
             return False
 
-        gtfs_data = pickle.dumps(gtfs_data)  # FIXME: deep pickling
-        if not redis.set('gtfs_data', gtfs_data, 11):  # FIXME: expire time
+        gtfs_data = pickle.dumps(gtfs_data)
+        if not redis.set(redis_gtfs_key, gtfs_data):
             return False
 
         return True

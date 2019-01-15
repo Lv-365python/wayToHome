@@ -28,7 +28,7 @@ class RedisWorker:
         return True
 
     def get(self, key):
-        """Retrieves data from redis database."""
+        """Retrieves object from redis database by `key`."""
         try:
             obj = self.redis.get(key)
         except redis.RedisError:
