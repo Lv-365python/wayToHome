@@ -31,8 +31,8 @@ class NotificationViewsTestCase(TestCase):
         Notification.objects.create(
             id=100,
             way=way_first,
-            start_time=pytz.utc.localize(datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')),
-            end_time=pytz.utc.localize(datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')),
+            start_time=datetime.date(2019, 10, 29),
+            end_time=datetime.date(2019, 12, 29),
             week_day=6,
             time=datetime.time(23, 58, 59)
         )
@@ -40,8 +40,8 @@ class NotificationViewsTestCase(TestCase):
         Notification.objects.create(
             id=101,
             way=way_first,
-            start_time=pytz.utc.localize(datetime.datetime.strptime('2019-11-27', '%Y-%m-%d')),
-            end_time=pytz.utc.localize(datetime.datetime.strptime('2020-12-27', '%Y-%m-%d')),
+            start_time=datetime.date(2019, 11, 27),
+            end_time=datetime.date(2020, 12, 27),
             week_day=1,
             time=datetime.time(1, 12, 38)
         )
@@ -49,8 +49,8 @@ class NotificationViewsTestCase(TestCase):
         Notification.objects.create(
             id=102,
             way=way_second,
-            start_time=pytz.utc.localize(datetime.datetime.strptime('2019-03-11', '%Y-%m-%d')),
-            end_time=pytz.utc.localize(datetime.datetime.strptime('2019-07-31', '%Y-%m-%d')),
+            start_time=datetime.date(2019, 3, 11),
+            end_time=datetime.date(2019, 7, 31),
             week_day=2,
             time=datetime.time(11, 28, 25)
         )
@@ -63,8 +63,8 @@ class NotificationViewsTestCase(TestCase):
         """Provide tests for request to retrieve certain Notification instance."""
         expected_response = {
             'id': 100,
-            'start_time': pytz.utc.localize(datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')),
-            'end_time': pytz.utc.localize(datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')),
+            'start_time': datetime.date(2019, 10, 29),
+            'end_time': datetime.date(2019, 12, 29),
             'week_day': 6,
             'time': datetime.time(23, 58, 59),
             'way': 100
@@ -82,16 +82,16 @@ class NotificationViewsTestCase(TestCase):
         expected_response = [
             {
                 'id': 101,
-                'start_time': pytz.utc.localize(datetime.datetime.strptime('2019-11-27', '%Y-%m-%d')),
-                'end_time': pytz.utc.localize(datetime.datetime.strptime('2020-12-27', '%Y-%m-%d')),
+                'start_time': '2019-11-27',
+                'end_time': '2020-12-27',
                 'week_day': 1,
                 'time': datetime.time(1, 12, 38),
                 'way': 100
             },
             {
                 'id': 100,
-                'start_time': pytz.utc.localize(datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')),
-                'end_time': pytz.utc.localize(datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')),
+                'start_time': '2019-10-29',
+                'end_time': '2019-12-29',
                 'week_day': 6,
                 'time': datetime.time(23, 58, 59),
                 'way': 100

@@ -3,15 +3,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
+from django.db import transaction
 from requests_oauthlib import OAuth2Session
 
+from user_profile.models import UserProfile
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
+from utils.passwordreseting import send_email_password_update, send_successful_update_email
 from utils.send_email import send_email
-from utils.validators import credentials_validator
-
 from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_200_ACTIVATED,
                                   RESPONSE_498_INVALID_TOKEN,
                                   RESPONSE_400_INVALID_EMAIL,
@@ -21,9 +23,11 @@ from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_200_OK,
+                                  RESPONSE_200_UPDATED,
                                   RESPONSE_201_CREATED,
                                   RESPONSE_200_DELETED)
-
+from utils.validators import (login_validator,
+                              password_validator, email_validator)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -143,3 +147,67 @@ def delete_account(request):
 
     logout(request)
     return RESPONSE_200_DELETED
+
+
+
+@require_http_methods(["POST"])
+def reset_password(request):
+    """Function that provides reset user password"""
+    data = request.body
+    email = data.get('email')
+    if not email_validator(email):
+        return RESPONSE_400_INVALID_EMAIL
+
+    user = CustomUser.get_by_email(email=email)
+    if not user:
+        return RESPONSE_400_OBJECT_NOT_FOUND
+
+    token = create_token(data={'email': user.email})
+    send_email_password_update(user, token)
+
+    return RESPONSE_200_OK
+
+
+@require_http_methods(['PUT'])
+def confirm_reset_password(request, token):
+    """Function that provides confirm reset user password"""
+    data = request.body
+    new_password = data.get('new_password')
+    confirm = decode_token(token)
+
+    if not confirm:
+        return RESPONSE_498_INVALID_TOKEN
+    user = CustomUser.get_by_email(email=confirm.get('email'))
+
+    if not user:
+        return RESPONSE_400_OBJECT_NOT_FOUND
+
+    if not password_validator(new_password):
+        return RESPONSE_400_INVALID_DATA
+
+    if not user.check_password(new_password):
+        is_updated = user.update(password=new_password)
+
+        if not is_updated:
+            return RESPONSE_400_DB_OPERATION_FAILED
+
+        send_successful_update_email(user)
+        return RESPONSE_200_UPDATED
+
+    return RESPONSE_400_INVALID_DATA
+
+
+@require_http_methods(["PUT"])
+def change_password(request):
+    """Function that provides change user password"""
+    user = request.user
+    data = request.body
+    new_password = data.get('new_password')
+    if not user.check_password(data.get('old_password')) or not password_validator(new_password):
+        return RESPONSE_400_INVALID_DATA
+    if not user.check_password(new_password):
+        is_updated = user.update(password=new_password)
+        if not is_updated:
+            return RESPONSE_400_DB_OPERATION_FAILED
+        return RESPONSE_200_UPDATED
+    return RESPONSE_400_INVALID_DATA
