@@ -15,18 +15,12 @@ def compile_file(file_gtfs):
         with open(file_gtfs, 'rb') as file:
             content = file.read()
     except (FileNotFoundError, PermissionError):
-        return False
+        return None
 
     feed.ParseFromString(content)
     json_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
 
-    try:
-        with open('vehicle_data.json', 'w') as file:
-            file.write(json_data)
-    except PermissionError:
-        return False
-
-    return True
+    return json_data
 
 
 def parse_vehicle_data(feed_entity):
@@ -44,7 +38,7 @@ def parse_vehicle_data(feed_entity):
             'vehicle_id': entity.vehicle.vehicle.id  # identifier of vehicle
         })
 
-    return json.dumps(vehicle_data)
+    return vehicle_data
 
 
 def get_route(file_json, route_id):
