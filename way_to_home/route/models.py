@@ -1,8 +1,8 @@
 """This module implements class that represents the route entity."""
 
 from django.db import models, IntegrityError
-from utils.abstract_models import AbstractModel
 from django.db.utils import OperationalError
+from utils.abstract_models import AbstractModel
 from way.models import Way
 from place.models import Place
 
