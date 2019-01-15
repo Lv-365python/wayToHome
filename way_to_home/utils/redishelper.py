@@ -18,13 +18,23 @@ class RedisWorker:
 
         return cls.instance
 
-    def set(self, key, value, cache_time):
+    def set(self, key, value, cache_time=None):
         """Sets data in redis database with specifying the expire time."""
-        return self.redis.set(key, value, cache_time)
+        try:
+            self.redis.set(key, value, cache_time)
+        except redis.RedisError:
+            return False
+
+        return True
 
     def get(self, key):
-        """Retrieve data from redis database."""
-        return self.redis.get(key)
+        """Retrieves data from redis database."""
+        try:
+            obj = self.redis.get(key)
+        except redis.RedisError:
+            return None
+
+        return obj
 
 
 REDIS_HELPER = RedisWorker()
