@@ -118,3 +118,6 @@ way_to_home/..pylintrc.swp
 
 # Public
 way_to_home/static/public/
+
+# EasyWay data directory
+easy_way_data/
