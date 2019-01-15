@@ -79,10 +79,10 @@ class CustomUser(AbstractBaseUser):
 
     @classmethod
     def delete_by_id(cls, obj_id):
-        """Delete object, found by id."""
+        """Delete user account found by id."""
         try:
-            objct = cls.objects.get(id=obj_id)
-            objct.delete()
+            user = cls.objects.get(id=obj_id)
+            user.delete()
             return True
         except cls.DoesNotExist:
             return False
