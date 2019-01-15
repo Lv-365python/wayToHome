@@ -15,12 +15,12 @@ class NotificationForm extends Component{
         StartDate: new Date(),
         EndDate: new Date(),
         notifications: [
-            {id: 0, time: '09:30', text: 'ПН', active: true, openTimePicker: false},
+            {id: 0, time: '08:30', text: 'ПН', active: false, openTimePicker: false},
             {id: 1, time: '08:30', text: 'ВТ', active: false, openTimePicker: false},
-            {id: 2, time: '08:30', text: 'СР', active: true, openTimePicker: false},
+            {id: 2, time: '08:30', text: 'СР', active: false, openTimePicker: false},
             {id: 3, time: '08:30', text: 'ЧТ', active: false, openTimePicker: false},
-            {id: 4, time: '08:30', text: 'ПТ', active: true, openTimePicker: false},
-            {id: 5, time: '08:30', text: 'СБ', active: true, openTimePicker: false},
+            {id: 4, time: '08:30', text: 'ПТ', active: false, openTimePicker: false},
+            {id: 5, time: '08:30', text: 'СБ', active: false, openTimePicker: false},
             {id: 6, time: '08:30', text: 'НД', active: false, openTimePicker: false}
         ]
     }
@@ -122,11 +122,37 @@ class NotificationForm extends Component{
         let way_id = 1
         let type = `way/${way_id}/notification/`
 
+        let self = this
+
         axios.get(url+type)
             .then(function (response) {
-                console.log(response.data.length)
-                for (let i = 0; i<=response.data.length-1; i++){
-                    console.log(response.data[i])
+                let start_date = response.data[0].start_time
+                let end_date = response.data[0].end_time
+
+                let new_start_date = new Date(start_date.substring(0,4),
+                                              start_date.substring(5,7)-1,
+                                              start_date.substring(9,11))
+                let new_end_date = new Date(end_date.substring(0,4),
+                                            end_date.substring(5,7)-1,
+                                            end_date.substring(9,11))
+
+                self.setState(state => ({
+                    StartDate: new_start_date,
+                    EndDate: new_end_date
+                }))
+
+                for (let i = 0; i<=response.data.length-1; i=i+1){
+                    let notifications_new = self.state.notifications.map((not) => {
+                        if (not.id === response.data[i].week_day){
+                            not.time = response.data[i].time.substring(0,5);
+                            not.active = true;
+                        }
+                        return not;
+                    });
+                    self.setState({
+                        notifications: notifications_new
+                    });
+
                 }
             })
     }
