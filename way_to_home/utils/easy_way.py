@@ -38,7 +38,7 @@ def parse_vehicle_data(feed_entity):
             'vehicle_id': entity.vehicle.vehicle.id  # identifier of vehicle
         })
 
-    return json.dumps(vehicle_data)
+    return vehicle_data
 
 
 def get_route(file_json, route_id):
