@@ -2,8 +2,10 @@
 from django.contrib.auth import authenticate, login
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
+from django.db import transaction, DatabaseError, IntegrityError
 from requests_oauthlib import OAuth2Session
 
+from user_profile.models import UserProfile
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
@@ -72,12 +74,13 @@ def registration_confirm(request, token):
     user = CustomUser.get_by_email(email=data.get('email'))
     if not user:
         return RESPONSE_400_INVALID_EMAIL
-
-    is_updated = user.update(is_active=True)
-    if not is_updated:
+    try:
+        with transaction.atomic():
+            user.update(is_active=True)
+            UserProfile.create(user)
+            return RESPONSE_200_ACTIVATED
+    except (DatabaseError, IntegrityError):
         return RESPONSE_400_DB_OPERATION_FAILED
-
-    return RESPONSE_200_ACTIVATED
 
 
 @require_http_methods(["POST"])
