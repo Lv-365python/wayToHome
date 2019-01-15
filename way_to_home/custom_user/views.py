@@ -1,9 +1,8 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
-from django.db import transaction
+from django.db import transaction, DatabaseError, IntegrityError
 from requests_oauthlib import OAuth2Session
 
 from user_profile.models import UserProfile
@@ -11,7 +10,9 @@ from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
 from utils.send_email import send_email
-from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
+from utils.validators import credentials_validator, password_validator, email_validator
+from utils.responsehelper import (RESPONSE_200_UPDATED,
+                                  RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_200_ACTIVATED,
@@ -23,11 +24,8 @@ from utils.responsehelper import (RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_200_OK,
-                                  RESPONSE_200_UPDATED,
                                   RESPONSE_201_CREATED,
                                   RESPONSE_200_DELETED)
-from utils.validators import (login_validator,
-                              password_validator, email_validator)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -74,18 +72,18 @@ def registration_confirm(request, token):
     user = CustomUser.get_by_email(email=data.get('email'))
     if not user:
         return RESPONSE_400_INVALID_EMAIL
-
-    is_updated = user.update(is_active=True)
-    if not is_updated:
+    try:
+        with transaction.atomic():
+            user.update(is_active=True)
+            UserProfile.create(user)
+            return RESPONSE_200_ACTIVATED
+    except (DatabaseError, IntegrityError):
         return RESPONSE_400_DB_OPERATION_FAILED
-
-    return RESPONSE_200_ACTIVATED
 
 
 @require_http_methods(["POST"])
 def log_in(request):
     """Login of the existing user. Handles post and get requests."""
-
     data = request.body
     credentials = {
         'email': data.get('email').lower().strip(),
@@ -149,7 +147,6 @@ def delete_account(request):
     return RESPONSE_200_DELETED
 
 
-
 @require_http_methods(["POST"])
 def reset_password(request):
     """Function that provides reset user password"""
@@ -182,19 +179,15 @@ def confirm_reset_password(request, token):
     if not user:
         return RESPONSE_400_OBJECT_NOT_FOUND
 
-    if not password_validator(new_password):
+    if not password_validator(new_password) or user.check_password(new_password):
         return RESPONSE_400_INVALID_DATA
 
-    if not user.check_password(new_password):
-        is_updated = user.update(password=new_password)
+    is_updated = user.update(password=new_password)
+    if not is_updated:
+        return RESPONSE_400_DB_OPERATION_FAILED
 
-        if not is_updated:
-            return RESPONSE_400_DB_OPERATION_FAILED
-
-        send_successful_update_email(user)
-        return RESPONSE_200_UPDATED
-
-    return RESPONSE_400_INVALID_DATA
+    send_successful_update_email(user)
+    return RESPONSE_200_UPDATED
 
 
 @require_http_methods(["PUT"])
@@ -203,11 +196,12 @@ def change_password(request):
     user = request.user
     data = request.body
     new_password = data.get('new_password')
-    if not user.check_password(data.get('old_password')) or not password_validator(new_password):
+    if (not password_validator(new_password) or not user.check_password(data.get('old_password'))
+            or user.check_password(new_password)):
         return RESPONSE_400_INVALID_DATA
-    if not user.check_password(new_password):
-        is_updated = user.update(password=new_password)
-        if not is_updated:
-            return RESPONSE_400_DB_OPERATION_FAILED
-        return RESPONSE_200_UPDATED
-    return RESPONSE_400_INVALID_DATA
+
+    is_updated = user.update(password=new_password)
+    if not is_updated:
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    return RESPONSE_200_UPDATED

@@ -240,14 +240,6 @@ def credentials_validator(data):
     return True
 
 
-def login_validator(data):
-    """Function that provides login validation"""
-    required_keys = ['email', 'password']
-    if not required_keys_validator(data, required_keys):
-        return False
-    return True
-
-
 def profile_validator(data):
     """Function that provides user_profile data validation"""
     profile_fields = [
