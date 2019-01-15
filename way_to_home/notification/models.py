@@ -11,8 +11,8 @@ from way.models import Way
 class Notification(AbstractModel):
     """Model for Notification entity."""
     way = models.ForeignKey(Way, on_delete=models.CASCADE, related_name='notifications')
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.DateField()
+    end_time = models.DateField()
     week_day = models.PositiveSmallIntegerField()
     time = models.TimeField()
 

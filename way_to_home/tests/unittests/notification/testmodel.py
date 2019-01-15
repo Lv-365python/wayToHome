@@ -56,16 +56,10 @@ class NotificationModelTestCase(TestCase):
         """Provide tests for `to_dict` method of certain Notification instance."""
         notification = Notification.objects.get(id=self.notification.id)
 
-        start_date = datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')
-        end_date = datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')
-
-        aware_start_date = pytz.utc.localize(start_date)
-        aware_end_date = pytz.utc.localize(end_date)
-
         expected_dict = {
             'id': 100,
-            'start_time': aware_start_date,
-            'end_time': aware_end_date,
+            'start_time': datetime.date(2019, 10, 29),
+            'end_time': datetime.date(2019, 12, 29),
             'week_day': 6,
             'time': datetime.time(23, 58, 59),
             'way': 100
