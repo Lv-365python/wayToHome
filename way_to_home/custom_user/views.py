@@ -86,7 +86,6 @@ def registration_confirm(request, token):
 @require_http_methods(["POST"])
 def log_in(request):
     """Login of the existing user. Handles post and get requests."""
-
     data = request.body
     credentials = {
         'email': data.get('email').lower().strip(),
@@ -170,19 +169,15 @@ def confirm_reset_password(request, token):
     if not user:
         return RESPONSE_400_OBJECT_NOT_FOUND
 
-    if not password_validator(new_password):
+    if not password_validator(new_password) or user.check_password(new_password):
         return RESPONSE_400_INVALID_DATA
 
-    if not user.check_password(new_password):
-        is_updated = user.update(password=new_password)
+    is_updated = user.update(password=new_password)
+    if not is_updated:
+        return RESPONSE_400_DB_OPERATION_FAILED
 
-        if not is_updated:
-            return RESPONSE_400_DB_OPERATION_FAILED
-
-        send_successful_update_email(user)
-        return RESPONSE_200_UPDATED
-
-    return RESPONSE_400_INVALID_DATA
+    send_successful_update_email(user)
+    return RESPONSE_200_UPDATED
 
 
 @require_http_methods(["PUT"])
@@ -191,11 +186,12 @@ def change_password(request):
     user = request.user
     data = request.body
     new_password = data.get('new_password')
-    if not user.check_password(data.get('old_password')) or not password_validator(new_password):
+    if (not password_validator(new_password) or not user.check_password(data.get('old_password'))
+            or user.check_password(new_password)):
         return RESPONSE_400_INVALID_DATA
-    if not user.check_password(new_password):
-        is_updated = user.update(password=new_password)
-        if not is_updated:
-            return RESPONSE_400_DB_OPERATION_FAILED
-        return RESPONSE_200_UPDATED
-    return RESPONSE_400_INVALID_DATA
+
+    is_updated = user.update(password=new_password)
+    if not is_updated:
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    return RESPONSE_200_UPDATED
