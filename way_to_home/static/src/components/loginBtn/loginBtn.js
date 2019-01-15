@@ -31,6 +31,7 @@ class LoginBtn extends Component{
 
                 </Modal>
                 <Button variant="contained"
+//                    variant="outlined"
                     color='primary'
                     size='large'
                     onClick={this.onClickLoginBtn}

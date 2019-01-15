@@ -6,16 +6,17 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Avatar from '@material-ui/core/Avatar';
 
 import LoginBtn from '../loginBtn/loginBtn.js';
-import './header.css'
 import StartBtn from "../startBtn/startBtn.js";
-import UserIcon from './usericon.js'
+import './header.css'
 
 const style = {
     height: '44px',
     background: '#4887c1cc',
     borderRadius: 5,
     avatar: {
-        margin: 10,
+        margin: 20,
+        width: 60,
+        height: 60,
     },
 };
 
@@ -27,8 +28,9 @@ class Header extends Component{
             <Toolbar>
                 <StartBtn/>
                 <LoginBtn/>
-                <Avatar />
+                <AccountCircle style={{fontSize: '40px'}} />
                  <Avatar
+                     sizes='60'
                      alt="user icon"
                      src="https://lh3.googleusercontent.com/-xYbOPGo_nDM/AAAAAAAAAAI/AAAAAAAAAPY/EQgQkBZ-_D0/photo.jpg"
                      className={style.avatar}
