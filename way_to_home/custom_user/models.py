@@ -2,7 +2,8 @@
 
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.db import models, IntegrityError
+from django.db import models, IntegrityError, transaction
+from django.core.exceptions import ValidationError
 
 
 class CustomUser(AbstractBaseUser):
@@ -30,25 +31,34 @@ class CustomUser(AbstractBaseUser):
 
     def update(self, password=None, google_token=None, phone_number=None, is_active=None):
         """Method for object update."""
-        if password:
-            self.set_password(password)
-        if google_token:
-            self.google_token = google_token
-        if phone_number:
-            self.phone_number = phone_number
-        if is_active is not None:
-            self.is_active = is_active
-        try:
-            self.save()
-            return True
-        except ValueError:
-            return False
+        with transaction.atomic():
+            if password:
+                self.set_password(password)
+            if google_token:
+                self.google_token = google_token
+            if phone_number:
+                self.phone_number = phone_number
+            if is_active is not None:
+                self.is_active = is_active
+            try:
+                self.save()
+                return True
+            except (ValueError, ValidationError):
+                return False
 
     @classmethod
     def get_by_email(cls, email):
         """Method for returns user by email"""
         try:
             return cls.objects.get(email=email)
+        except (ValueError, cls.DoesNotExist):
+            pass
+
+    @classmethod
+    def get_by_id(cls, obj_id):
+        """Method for returns user by id"""
+        try:
+            return cls.objects.get(id=obj_id)
         except (ValueError, cls.DoesNotExist):
             pass
 
