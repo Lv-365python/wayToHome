@@ -5,11 +5,67 @@ This module provides complete testing for all CustomUser's views functions.
 """
 
 import json
+
 from django.urls import reverse
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token
 from unittest import mock
+
+
+class MockObjectGetNew:
+    """
+    Class of mock object to use in place of
+    get attribute of google Oauth session,
+    if attribute json is called, it returns new email
+    """
+    def json(self, *args, **kwargs):
+        """mock for google session .get.json(), returns new email"""
+        return {'email': 'test_mail@mail.com'}
+
+
+class MockObjectGetExisting:
+    """
+    Class of mock object to use in place of
+    get attribute of google Oauth session,
+    if attribute json is called, it returns registered email
+    """
+    def json(self, *args, **kwargs):
+        """mock for google session .get.json(), returns existing email"""
+        return {'email': 'user@mail.com'}
+
+
+class MockObjectGetEmpty:
+    """
+    Class of mock object to use in place of
+    get attribute of google Oauth session,
+    if attribute json is called, it returns empty json
+    """
+    def json(self, *args, **kwargs):
+        """mock for google session .get.json(), returns empty json"""
+        return {}
+
+
+class GoogleMock:
+    """Class of mock object to use in place of google Oauth session"""
+    def fetch_token(self, *args, **kwargs):
+        """mock that replaces fetch_token attribute of google oauth session"""
+        pass
+
+    def get_new(self, *args, **kwargs):
+        """mock to replace get attribute of google oauth session, in case we need to receive new email"""
+        mock_get = MockObjectGetNew()
+        return mock_get
+
+    def get_existing(self, *args, **kwargs):
+        """mock to replace get attribute of google oauth session, in case we need to receive existing email"""
+        mock_get = MockObjectGetExisting()
+        return mock_get
+
+    def get_empty(self, *args, **kwargs):
+        """mock to replace get attribute of google oauth session, in case we need to receive empty json"""
+        mock_get = MockObjectGetEmpty()
+        return mock_get
 
 
 class CustomUserViewTest(TestCase):
@@ -152,3 +208,30 @@ class CustomUserViewTest(TestCase):
             authorization_url.return_value = ['']
             response = self.client.get(url, follow=True)
             self.assertEquals(response.status_code, 403)
+
+    @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
+    @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_new)
+    def test_google_signup_success(self):
+        url = reverse('sign_in_google')
+        code = 'test_code'
+        uri = f'{url}?code={code}'
+        response = self.client.get(uri)
+        self.assertEquals(response.status_code, 201)
+
+    @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
+    @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_existing)
+    def test_google_login_success(self):
+        url = reverse('sign_in_google')
+        code = 'test_code'
+        uri = f'{url}?code={code}'
+        response = self.client.get(uri)
+        self.assertEquals(response.status_code, 200)
+
+    @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
+    @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_empty)
+    def test_google_empty_json(self):
+        url = reverse('sign_in_google')
+        code = 'test_code'
+        uri = f'{url}?code={code}'
+        response = self.client.get(uri)
+        self.assertEquals(response.status_code, 400)
