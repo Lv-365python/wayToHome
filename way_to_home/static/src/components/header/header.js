@@ -19,7 +19,7 @@ const style = {
     display: 'flex',
 };
 
-class Header extends Component{
+class Header extends Component {
 
     state = {
         show: true,
@@ -34,13 +34,7 @@ class Header extends Component{
             <div>
             <AppBar style={style} position='static'>
             <Toolbar>
-                <div className='Title'>
-                    <font size='6'
-                        color='#2a218c'
-                    >
-                       WAY TO HOME
-                    </font>
-                </div>
+                <div className='Title'> Way to home </div>
                 <StartBtn />
 
                 <ToggleDisplay show={this.state.show}>

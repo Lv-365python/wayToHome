@@ -9,4 +9,10 @@
     left: 10%;
     top: 8%;
     display: flex;
+    text-transform: uppercase;
+    font-size: 2rem;
+    font-style: italic;
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    color: #2a218c;
 }
