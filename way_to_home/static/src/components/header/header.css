@@ -1,6 +1,6 @@
 /* user icon */
 .MuiSvgIcon-root-72 {
-    position: absolute;
+    position: flex;
     right: 10px;
     top: 0px;
 }
