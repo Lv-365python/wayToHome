@@ -120,7 +120,6 @@ class PlaceViewTest(TestCase):
         }
 
         expected_data = {
-            'id': 3,
             'longitude': 12.842601,
             'latitude': 23.968448,
             'name': 'Дім',
@@ -132,6 +131,7 @@ class PlaceViewTest(TestCase):
         url = reverse('place', args=[])
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         response_dict = json.loads(response.content)
+        response_dict.pop('id')
 
         self.assertEqual(response.status_code, 201)
         self.assertDictEqual(response_dict, expected_data)

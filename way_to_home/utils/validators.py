@@ -43,11 +43,17 @@ def coordinate_validator(value, min_value, max_value):
 
 
 def required_keys_validator(data, keys_required):
-    """Provide required keys validation"""
+    """Provide required keys validation."""
     keys = set(data.keys())
     keys_required = set(keys_required)
+    if keys_required.difference(keys):
+        return False
 
-    return not keys_required.difference(keys)
+    for key, value in data.items():
+        if key in keys_required and value is None:
+            return False
+
+    return True
 
 
 def date_validator(date):

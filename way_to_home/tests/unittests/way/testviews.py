@@ -118,7 +118,6 @@ class WayViewsTestCase(TestCase):
 
 		expected_data = {
 			'way': {
-				'id': 2,
 				'name': 'test_name',
 				'user_id': 100
 			},
@@ -134,6 +133,7 @@ class WayViewsTestCase(TestCase):
 		url = reverse('way', args=[])
 		response = self.client.post(url, json.dumps(data), content_type='application/json')
 		response_dict = json.loads(response.content)
+		response_dict['way'].pop('id')
 
 		self.assertEqual(response.status_code, 201)
 		self.assertDictEqual(response_dict, expected_data)
