@@ -18,9 +18,9 @@ def compile_file(file_gtfs):
         return None
 
     feed.ParseFromString(content)
-    json_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
+    gtfs_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
 
-    return json_data
+    return gtfs_data
 
 
 def parse_vehicle_data(feed_entity):
@@ -39,14 +39,3 @@ def parse_vehicle_data(feed_entity):
         })
 
     return vehicle_data
-
-
-def get_route(file_json, route_id):
-    """ This function return json object that contain necessary data about certain trip """
-    try:
-        with open(file_json, 'r') as file:
-            data = json.loads(file.read())
-    except (FileNotFoundError, PermissionError):
-        return None
-
-    return data.get(route_id)
