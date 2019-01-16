@@ -2,7 +2,7 @@
     This module use for parsing data got in real time from 'Easy Way' source
     in GTFS format.
 """
-import json
+
 from google import protobuf  # pylint: disable=no-name-in-module, unused-import
 from google.transit import gtfs_realtime_pb2
 

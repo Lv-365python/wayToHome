@@ -1,7 +1,7 @@
 """This module provides helper functions to send SMS and emails."""
 
-import nexmo
 from smtplib import SMTPRecipientsRefused
+import nexmo
 
 from django.conf import settings
 from django.core.mail import send_mail
