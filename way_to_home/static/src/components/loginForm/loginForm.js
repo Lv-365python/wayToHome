@@ -115,50 +115,52 @@ class LoginForm extends Component {
     };
 
     render() {
+        const {email_error, email, pass_error, first_pass, repeat_display,
+               second_pass, change_button, disable_button, confirm_button, ajax_error} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
-                    error={this.state.email_error}
+                    error={email_error}
                     className="loginField"
                     id="email-input"
-                    label={this.state.email_error ? 'Поганий Email' : 'Email'}
+                    label={email_error ? 'Поганий Email' : 'Email'}
                     type="email"
                     name="email"
                     autoComplete="email"
                     margin="normal"
                     fullWidth
                     variant="filled"
-                    value={this.state.email}
+                    value={email}
                     onChange={this.onChangeEmail}/>
                 <TextField
-                    error={this.state.pass_error}
+                    error={pass_error}
                     id="password-input"
-                    label={this.state.pass_error ? 'Поганий пароль' : 'Пароль'}
+                    label={pass_error ? 'Поганий пароль' : 'Пароль'}
                     type="password"
                     autoComplete="current-password"
                     margin="normal"
                     fullWidth
                     variant="filled"
-                    value={this.state.first_pass}
+                    value={first_pass}
                     onChange={this.onChangeFirstPassword}/>
                 <TextField
-                    error={this.state.pass_error}
-                    style={{display: this.state.repeat_display}}
+                    error={pass_error}
+                    style={{display: repeat_display}}
                     id="repeat-password-input"
-                    label={this.state.pass_error ? 'Поганий пароль' : 'Повторіть пароль'}
+                    label={pass_error ? 'Поганий пароль' : 'Повторіть пароль'}
                     type="password"
                     autoComplete="current-password"
                     margin="normal"
                     fullWidth
                     variant="filled"
-                    value={this.state.second_pass}
+                    value={second_pass}
                     onChange={this.onChangeSecondPassword}/>
                 <div>
                     <FormControlLabel control={<Checkbox value="checkedC"/>} label="Запам'ятати мене"/>
                 </div>
                 <div>
                     <Button color="primary" onClick={this.onClickChangeType}>
-                        {this.state.change_button}
+                        {change_button}
                     </Button>
                 </div>
                 <div className="loginButtons">
@@ -166,9 +168,9 @@ class LoginForm extends Component {
                             variant='contained'
                             color='primary'
                             size='medium'
-                            disabled={this.state.disable_button}
+                            disabled={disable_button}
                             onClick={this.onClickConfirm}>
-                        {this.state.confirm_button}
+                        {confirm_button}
                     </Button>
                     <Button
                         variant='contained'
@@ -179,9 +181,7 @@ class LoginForm extends Component {
                         відмінити
                     </Button>
                 </div>
-                {this.state.ajax_error && <CustomizedSnackbars
-                                                    message={this.state.ajax_error}
-                                                    reset={this.setError}/>}
+                {ajax_error && <CustomizedSnackbars message={ajax_error} reset={this.setError}/>}
             </div>
         )
     };
