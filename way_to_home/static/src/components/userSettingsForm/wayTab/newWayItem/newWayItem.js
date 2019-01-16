@@ -14,7 +14,6 @@ import './newWayItem.css';
 export default class NewWayItem extends Component{
 
     state = {
-        places: this.props.places,
         placeA: 'Виберіть місце A',
         placeB: 'Виберіть місце Б',
     };
@@ -50,7 +49,7 @@ export default class NewWayItem extends Component{
                   helperText="Виберіть одне з Ваших збережених місць"
                   margin="normal"
                 >
-                  {this.state.places.map(place => (
+                  {this.props.places.map(place => (
                     <MenuItem key={place.id} value={place.id}>
                       {place.name}
                     </MenuItem>
@@ -68,7 +67,7 @@ export default class NewWayItem extends Component{
                   helperText="Виберіть одне з Ваших збережених місць"
                   margin="normal"
                 >
-                  {this.state.places.map(place => (
+                  {this.props.places.map(place => (
                     <MenuItem key={place.id} value={place.id}>
                       {place.name}
                     </MenuItem>
