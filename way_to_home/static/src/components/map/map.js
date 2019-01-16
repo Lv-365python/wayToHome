@@ -44,7 +44,12 @@ export default class MapLeaflet extends Component {
                     />
                     <Marker position={position} draggable={true} icon={DefaultIcon}>
                         <Popup>
-                            Привіт! Давайте знайдемо вам маршрут:)
+                            Початкова точка
+                        </Popup>
+                    </Marker>
+                    <Marker position={position} draggable={true} icon={DefaultIcon}>
+                        <Popup>
+                            Кінцева точка
                         </Popup>
                     </Marker>
                 </Map>
