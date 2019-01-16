@@ -5,9 +5,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import ToggleDisplay from 'react-toggle-display';
 
 import LoginBtn from '../loginBtn/loginBtn.js';
 import StartBtn from "../startBtn/startBtn.js";
+import SettingsButton from "./settingsButton/settingsButton.js";
 import './header.css'
 
 const style = {
@@ -20,11 +22,11 @@ const style = {
 class Header extends Component{
 
     state = {
-        display: 'none',
+        show: true,
     };
 
     toggle = () => {
-        this.setState({display: (this.state.display == 'flex' ? 'none' : 'flex')});
+        this.setState({show: !this.state.show});
     };
 
     render(){
@@ -32,29 +34,36 @@ class Header extends Component{
             <div>
             <AppBar style={style} position="static">
             <Toolbar>
-                <StartBtn/>
-                <LoginBtn/>
-                    <AccountCircle
-                        className='AvatarDiv'
-                        style={{
-                            fontSize: '40px',
-                            display: (this.state.display == 'flex' ? 'none' : 'flex'),
-                        }}
-                    />
+                <StartBtn />
+
+                <ToggleDisplay show={this.state.show}>
+                    <LoginBtn />
+                        <AccountCircle
+                            className='AvatarDiv'
+                            style={{fontSize: '40px'}}
+                        />
+                </ToggleDisplay>
+
+                <ToggleDisplay show={!this.state.show}>
                     <div className='AvatarDiv'>
                         <Avatar
                             alt="user icon"
                             src="https://lh3.googleusercontent.com/-xYbOPGo_nDM/AAAAAAAAAAI/AAAAAAAAAPY/EQgQkBZ-_D0/photo.jpg"
-                            style={{display: this.state.display}}
                         />
                     </div>
-                <Button color="secondary"
+                    <SettingsButton/>
+                </ToggleDisplay>
+
+                <Button
+                    style={{top: '10%'}}
+                    color="secondary"
                     variant='contained'
                     size='small'
                     onClick={this.toggle}
-                 >
-                        toggle avatar
+                >
+                   toggle
                 </Button>
+
             </Toolbar>
             </AppBar>
             </div>

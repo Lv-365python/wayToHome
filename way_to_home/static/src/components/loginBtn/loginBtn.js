@@ -21,7 +21,6 @@ class LoginBtn extends Component{
 
     render(){
         return(
-
             <div className='LoginBtnDiv'>
                 <Modal open={this.state.open}
                        onClose={this.modalClose}
@@ -37,7 +36,6 @@ class LoginBtn extends Component{
                     className='Btn'>
                         Увійти
                 </Button>
-
             </div>
         )
     }
