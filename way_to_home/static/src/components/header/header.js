@@ -14,11 +14,7 @@ const style = {
     height: '44px',
     background: '#4887c1cc',
     borderRadius: 5,
-    avatar: {
-        margin: 20,
-        width: 60,
-        height: 60,
-    },
+    display: 'flex',
 };
 
 class Header extends Component{
@@ -28,9 +24,8 @@ class Header extends Component{
     };
 
     toggle = () => {
-        this.setState({display: (this.state.display == 'block' ? 'none' : 'block')});
+        this.setState({display: (this.state.display == 'flex' ? 'none' : 'flex')});
     };
-
 
     render(){
         return(
@@ -39,23 +34,27 @@ class Header extends Component{
             <Toolbar>
                 <StartBtn/>
                 <LoginBtn/>
-                <AccountCircle style={{fontSize: '40px',
-                    display: (this.state.display == 'block' ? 'none' : 'block')}} />
-                 <Avatar
-                     sizes='60'
-                     alt="user icon"
-                     src="https://lh3.googleusercontent.com/-xYbOPGo_nDM/AAAAAAAAAAI/AAAAAAAAAPY/EQgQkBZ-_D0/photo.jpg"
-                     className={style.avatar}
-                     style={{display: this.state.display}}
-                 />
-                 <Button color="secondary"
+                    <AccountCircle
+                        className='AvatarDiv'
+                        style={{
+                            fontSize: '40px',
+                            display: (this.state.display == 'flex' ? 'none' : 'flex'),
+                        }}
+                    />
+                    <div className='AvatarDiv'>
+                        <Avatar
+                            alt="user icon"
+                            src="https://lh3.googleusercontent.com/-xYbOPGo_nDM/AAAAAAAAAAI/AAAAAAAAAPY/EQgQkBZ-_D0/photo.jpg"
+                            style={{display: this.state.display}}
+                        />
+                    </div>
+                <Button color="secondary"
                     variant='contained'
                     size='small'
                     onClick={this.toggle}
                  >
                         toggle avatar
                 </Button>
-
             </Toolbar>
             </AppBar>
             </div>

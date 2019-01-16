@@ -1,6 +1,5 @@
-/* user icon */
-.MuiSvgIcon-root-72 {
-    position: flex;
-    right: 10px;
-    top: 0px;
+.AvatarDiv {
+    position: absolute;
+    right: 0.5%;
+    top: 3%;
 }
