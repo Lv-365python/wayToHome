@@ -228,8 +228,8 @@ def password_validator(password):
     return True
 
 
-def registration_validator(data):
-    """Function that provides registration validation"""
+def credentials_validator(data):
+    """Function that provides registration and log in validation"""
     required_keys = ['email', 'password']
     if not required_keys_validator(data, required_keys):
         return False
@@ -240,9 +240,22 @@ def registration_validator(data):
     return True
 
 
-def login_validator(data):
-    """Function that provides login validation"""
-    required_keys = ['email', 'password']
-    if not required_keys_validator(data, required_keys):
-        return False
+def profile_validator(data):
+    """Function that provides user_profile data validation"""
+    profile_fields = [
+        'first_name'
+        'last_name'
+    ]
+    filtered_data = {key: data.get(key) for key in profile_fields}
+
+    validation_rules = {
+        'first_name': lambda val: string_validator(val, 64),
+        'last_name': lambda val: string_validator(val, 64)
+    }
+
+    for key, value in filtered_data.items():
+        if value is not None:
+            if not validation_rules[key](value):
+                return False
+
     return True

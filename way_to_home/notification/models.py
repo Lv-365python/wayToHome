@@ -1,6 +1,9 @@
 """This module implements class that represents the notification entity."""
 
+from datetime import date
+
 from django.db import models, IntegrityError
+
 from utils.abstract_models import AbstractModel
 from way.models import Way
 
@@ -8,8 +11,8 @@ from way.models import Way
 class Notification(AbstractModel):
     """Model for Notification entity."""
     way = models.ForeignKey(Way, on_delete=models.CASCADE, related_name='notifications')
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.DateField()
+    end_time = models.DateField()
     week_day = models.PositiveSmallIntegerField()
     time = models.TimeField()
 
@@ -43,3 +46,11 @@ class Notification(AbstractModel):
             return notification
         except (ValueError, IntegrityError):
             pass
+
+    @classmethod
+    def get_expired(cls):
+        """Retrieve all notifications with expired datetime."""
+        today = date.today()
+        expired_notifications = cls.objects.filter(end_time__lt=today)
+
+        return expired_notifications
