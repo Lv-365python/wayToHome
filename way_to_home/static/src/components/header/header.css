@@ -2,5 +2,11 @@
     position: absolute;
     right: 0.5%;
     top: 3%;
-    z-index: 11;
+}
+
+.Title {
+    position: absolute;
+    left: 10%;
+    top: 8%;
+    display: flex;
 }

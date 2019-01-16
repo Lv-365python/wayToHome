@@ -41,6 +41,7 @@ class SettingsButton extends Component{
                 >
                     <MenuItem onClick={this.handleClose}>Мої маршрути</MenuItem>
                     <MenuItem onClick={this.handleClose}>Мої місця</MenuItem>
+                    <MenuItem onClick={this.handleClose}>Сповіщення</MenuItem>
                     <MenuItem onClick={this.handleClose}>Вийти</MenuItem>
                 </Menu>
             </div>
