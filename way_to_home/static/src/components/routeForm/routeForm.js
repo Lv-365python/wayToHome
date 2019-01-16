@@ -15,62 +15,66 @@ class RouteSearchForm extends Component {
         pointB: undefined,
         open: false,
         error: undefined,
-    }
+    };
 
     onClick = () => {
         this.setState((state) => ({
             open: !state.open
         }));
-    }
+    };
 
     getCurrentPosition = (props) => {
+        let self = this;
         if (!navigator.geolocation){
             self.setError("Geolocation is not supported by your browser");
             return;
         }
-        self = this
         function success(position) {
             let latitude  = position.coords.latitude;
             let longitude = position.coords.longitude;
             let url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+latitude+'&lon='+longitude;
             axios.get(url)
                 .then(function (response) {
-                    const data = response.data.address
-                    let addr = `${data.city || data.town}, ${data.road}`;
+                    const data = response.data.address;
+                    let addr = `${data.town || data.city}, ${data.road}`;
                     if (data.house_number){
                         addr += `, ${data.house_number}`;
+                    }
+                    if (addr.includes("undefined")){
+                        addr = "Неможливо визначити."
                     }
                     props === 'A' ? self.setPointA(addr) :  self.setPointB(addr);
                 })
                 .catch(function (error) {
-                    self.setError(error)
+                    self.setError(error);
                 });
         }
         function error() {
             self.setError("Unable to retrieve your location");
         }
         navigator.geolocation.getCurrentPosition(success, error);
-    }
+    };
 
     setPointA = (value) => {
         this.setState({pointA: value})
-    }
+    };
+
 
     setPointB = (value) => {
         this.setState({pointB: value})
-    }
+    };
 
     closeRouteResult = () =>{
         this.setState({
             open: false
         });
-    }
+    };
 
     setError = (value) => {
         this.setState({
             error: value
         });
-    }
+    };
 
     render() {
         const { open, error } = this.state;

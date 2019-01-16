@@ -8,11 +8,12 @@ export default class InputPoint extends Component {
       let value = event.target.value;
       if (value.length > 3) {
           this.props.onChange(value)
+      }else{
+          this.props.onChange()
       }
   }
 
     render(){
-
       return (
         <Fragment>
           <TextField

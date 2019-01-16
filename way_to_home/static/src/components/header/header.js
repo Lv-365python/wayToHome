@@ -1,18 +1,13 @@
+
 import React, {Component} from 'react';
-import LoginBtn from '../loginBtn/loginBtn.js';
-import './header.css'
-import StartBtn from "../startBtn/startBtn.js";
+import {MapLeaflet} from "../index";
 
-
-class Header extends Component{
+export default class Home extends Component{
     render(){
         return(
             <div>
-                <StartBtn/>
-                <LoginBtn/>
+              <MapLeaflet />
             </div>
         )
     }
 }
-
-export default Header
