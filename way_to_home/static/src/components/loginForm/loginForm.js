@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import axios from 'axios';
+import CustomizedSnackbars from '../message/message';
 import './loginForm.css';
 
 
@@ -12,7 +13,8 @@ class LoginForm extends Component {
 
     state = {
         request_type: 'login',
-        change_button: 'sign up',
+        confirm_button: 'увійти',
+        change_button: 'зареєструватися',
         repeat_display: 'none',
         email: '',
         first_pass: '',
@@ -20,14 +22,18 @@ class LoginForm extends Component {
         email_error: false,
         pass_error: false,
         disable_button: true,
+        ajax_error: undefined,
     };
 
     onClickChangeType = () => {
         let display = this.state.repeat_display === 'inline-flex' ? 'none': 'inline-flex';
         this.setState({repeat_display: display});
 
-        let button_text = this.state.change_button === 'sign up' ? 'login': 'sign up';
+        let button_text = this.state.change_button === 'зареєструватися' ? 'увійти': 'зареєструватися';
         this.setState({change_button: button_text});
+
+        let confirm_text = this.state.confirm_button === 'зареєструватися' ? 'увійти': 'зареєструватися';
+        this.setState({confirm_button: confirm_text});
 
         let type = this.state.request_type === 'register' ? 'login': 'register';
         this.setState({request_type: type});
@@ -38,18 +44,16 @@ class LoginForm extends Component {
 
     onClickConfirm = () => {
         let type = this.state.request_type;
-
+        let self = this;
         axios.post('http://127.0.0.1:8000/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
-            //save_cookie: this.state.save_cookie,
         })
-            .then(function (response) {
-                console.log(response);
-                this.props.close();
+            .then(() => {
+                window.location.reload();
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch((error) => {
+                self.setError(error.response.data);
             });
     };
 
@@ -106,27 +110,34 @@ class LoginForm extends Component {
             this.setState({disable_button: false})
     };
 
+    setError = (error) => {
+        this.setState({ajax_error: error});
+    };
+
     render() {
         return (
             <div className='LoginFormDiv'>
                 <TextField
                     error={this.state.email_error}
+                    className="loginField"
                     id="email-input"
-                    label={this.state.email_error ? 'Bad Email' : 'Email'}
+                    label={this.state.email_error ? 'Поганий Email' : 'Email'}
                     type="email"
                     name="email"
                     autoComplete="email"
                     margin="normal"
+                    fullWidth
                     variant="filled"
                     value={this.state.email}
                     onChange={this.onChangeEmail}/>
                 <TextField
                     error={this.state.pass_error}
                     id="password-input"
-                    label={this.state.pass_error ? 'Bad Password' : 'Password'}
+                    label={this.state.pass_error ? 'Поганий пароль' : 'Пароль'}
                     type="password"
                     autoComplete="current-password"
                     margin="normal"
+                    fullWidth
                     variant="filled"
                     value={this.state.first_pass}
                     onChange={this.onChangeFirstPassword}/>
@@ -134,15 +145,16 @@ class LoginForm extends Component {
                     error={this.state.pass_error}
                     style={{display: this.state.repeat_display}}
                     id="repeat-password-input"
-                    label={this.state.pass_error ? 'Bad Password' : 'Repeat Password'}
+                    label={this.state.pass_error ? 'Поганий пароль' : 'Повторіть пароль'}
                     type="password"
                     autoComplete="current-password"
                     margin="normal"
+                    fullWidth
                     variant="filled"
                     value={this.state.second_pass}
                     onChange={this.onChangeSecondPassword}/>
                 <div>
-                    <FormControlLabel control={<Checkbox value="checkedC"/>} label="Remember me"/>
+                    <FormControlLabel control={<Checkbox value="checkedC"/>} label="Запам'ятати мене"/>
                 </div>
                 <div>
                     <Button color="primary" onClick={this.onClickChangeType}>
@@ -156,7 +168,7 @@ class LoginForm extends Component {
                             size='medium'
                             disabled={this.state.disable_button}
                             onClick={this.onClickConfirm}>
-                        {this.state.request_type}
+                        {this.state.confirm_button}
                     </Button>
                     <Button
                         variant='contained'
@@ -164,9 +176,12 @@ class LoginForm extends Component {
                         size='medium'
                         className='Btn'
                         onClick={this.props.close}>
-                        cancel
+                        відмінити
                     </Button>
                 </div>
+                {this.state.ajax_error && <CustomizedSnackbars
+                                                    message={this.state.ajax_error}
+                                                    reset={this.setError}/>}
             </div>
         )
     };
