@@ -22,7 +22,8 @@ class NotificationForm extends Component{
             {id: 4, time: '08:30', text: 'ПТ', active: false, openTimePicker: false},
             {id: 5, time: '08:30', text: 'СБ', active: false, openTimePicker: false},
             {id: 6, time: '08:30', text: 'НД', active: false, openTimePicker: false}
-        ]
+        ],
+        saved_notifications: ''
     }
 
     showList = () => {
@@ -34,7 +35,7 @@ class NotificationForm extends Component{
                         <span className='changeTimeDiv'
                               onClick={(event) => {this.toggleTime(not.id); event.stopPropagation()}}>+</span>
                         {not.time}
-                        <span className='not_space'></span>
+                        <span className='not_space'> </span>
                         {not.text}
 
                         { not.openTimePicker &&
@@ -51,6 +52,18 @@ class NotificationForm extends Component{
                 ))}
             </div>
         )
+    }
+
+    formatDate = (date) => {
+        let d = date,
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
     }
 
     updateNotActive = (id) => {
@@ -118,28 +131,42 @@ class NotificationForm extends Component{
     }
 
     getData = () => {
-        let url = 'http://127.0.0.1:8000/api/v1/'
-        let way_id = 1
-        let type = `way/${way_id}/notification/`
+        let url = 'http://127.0.0.1:8000/api/v1/';
+        let way_id = 1;
+        let type = `way/${way_id}/notification/`;
 
-        let self = this
+        let self = this;
+
+        axios.get(url+`way/${way_id}`)
+            .then(function (response) {
+                let name = response.data.name;
+                self.setState(state => ({
+                    pointA: name.split('-')[0],
+                    pointB: name.split('-')[1]
+                }));
+            });
 
         axios.get(url+type)
             .then(function (response) {
-                let start_date = response.data[0].start_time
-                let end_date = response.data[0].end_time
-
-                let new_start_date = new Date(start_date.substring(0,4),
-                                              start_date.substring(5,7)-1,
-                                              start_date.substring(9,11))
-                let new_end_date = new Date(end_date.substring(0,4),
-                                            end_date.substring(5,7)-1,
-                                            end_date.substring(9,11))
 
                 self.setState(state => ({
-                    StartDate: new_start_date,
-                    EndDate: new_end_date
-                }))
+                    saved_notifications: response.data
+                }));
+
+                let start_date = response.data[0].start_time;
+                let end_date = response.data[0].end_time;
+
+                let parsed_start_date = new Date(start_date.substring(0,4),
+                    start_date.substring(5,7)-1,
+                    start_date.substring(9,11));
+                let parsed_end_date = new Date(end_date.substring(0,4),
+                    end_date.substring(5,7)-1,
+                    end_date.substring(9,11));
+
+                self.setState(state => ({
+                    StartDate: parsed_start_date,
+                    EndDate: parsed_end_date
+                }));
 
                 for (let i = 0; i<=response.data.length-1; i=i+1){
                     let notifications_new = self.state.notifications.map((not) => {
@@ -152,28 +179,132 @@ class NotificationForm extends Component{
                     self.setState({
                         notifications: notifications_new
                     });
-
                 }
             })
-    }
+    };
 
-    componentDidMount()
-    {
-        this.getData()
+    componentDidMount(){
+        this.getData();
     }
 
     sendRequest = () => {
-        let url ='http://127.0.0.1:8000/api/v1/'
-        let type = ''
 
+        let new_notifications = this.state.notifications;
+        let old_notifications = this.state.saved_notifications;
+
+        let new_start_date = this.formatDate(this.state.StartDate);
+        let old_start_date = this.state.saved_notifications[0].start_time;
+
+        let new_end_date = this.formatDate(this.state.EndDate);
+        let old_end_date = this.state.saved_notifications[0].end_time;
+
+        for (let i = 0; i <= new_notifications.length-1; i++){
+            console.log(new_notifications[i])
+            for (let j = 0; j <= old_notifications.length-1; j++){
+                if (new_notifications[i].id === old_notifications[j].week_day) {
+                    if (new_notifications[i].active === false) {
+                        this.sendDelete(old_notifications[j].id)
+                    }
+                    else if (
+                        (new_start_date != old_start_date || new_end_date != old_end_date) &&
+                        new_notifications[i].active === true){
+                        this.sendUpdateDate(old_notifications[j].id, new_start_date, new_end_date)
+                    }
+                    else if (new_notifications[i].time + ':00' != old_notification[j].time &&
+                        new_notifications[i].active === true) {
+                        this.sendUpdateTime(
+                            old_notifications[j].id,
+                            new_start_date,
+                            new_end_date,
+                            new_notifications[i].time)
+                    }
+                } else if (new_notifications[i].active === true){
+                    this.sendPost(
+                        new_start_date,
+                        new_end_date,
+                        new_notifications[i].id,
+                        new_notifications[i].time,
+                        old_notifications[j].way)
+                }
+            }
+        }
+    };
+
+    sendUpdateDate = (id, start_time, end_time) => {
+        let url = 'http://127.0.0.1:8000/api/v1/';
+        let type = `notification/${id}/`;
+        axios.put(url + type, {
+            start_time: start_time,
+            end_time: end_time
+        })
+            .then(function (response) {
+                console.log(response);
+                this.props.close();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    };
+
+    sendUpdateTime = (id, start_time, end_time, new_time) => {
+        let url = 'http://127.0.0.1:8000/api/v1/';
+        let type = `notification/${id}/`;
+        axios.put(url + type, {
+            start_time: start_time,
+            end_time: end_time,
+            time: new_time
+        })
+            .then(function (response) {
+                console.log(response);
+                this.props.close();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    };
+
+
+    sendPost = (start_time, end_time, week_day, time, way) => {
+        let url = 'http://127.0.0.1:8000/api/v1/';
+        let type = `notification/`;
+        axios.post(url + type, {
+            start_time: start_time,
+            end_time: end_time,
+            week_day: week_day,
+            time: time,
+            way: way
+        })
+            .then(function (response) {
+                console.log(response);
+                this.props.close();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
+
+    sendDelete = (id) => {
+        let url = 'http://127.0.0.1:8000/api/v1/';
+        let type = `notification/${id}/`;
+        axios.delete(url + type, {
+        })
+            .then(function (response) {
+                console.log(response);
+                this.props.close();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    };
 
     render() {
         return (
             <div className='notificationForm'>
 
                 <div className='wayAB'>
-                    <div className='pointA'>
+                    <div className='pointA'
+                         onClick={this.sendRequest}>
                         {this.state.pointA.toUpperCase()}
                     </div>
                     <div className='space'>
