@@ -46,7 +46,6 @@ class PlaceView(View):
     def get(self, request, place_id=None):
         """Handle the request to retrieve a place object or user`s places."""
         user = request.user
-
         if not place_id:
             places = user.places.all()
             data = [place.to_dict() for place in places]

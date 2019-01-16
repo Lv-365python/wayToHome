@@ -1,0 +1,15 @@
+.settingsForm{
+    position: fixed;
+    top: 8%;
+    left: 20%;
+    right: 20%;
+    z-index: 10;
+    min-height: 70%;
+    height: auto;
+    width: auto;
+    background: rgba(197, 197, 197, 0.685);
+}
+
+.settingsTab{
+    width: 100%;
+}
