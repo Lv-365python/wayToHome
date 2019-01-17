@@ -8,7 +8,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 
+import Dialog from '@material-ui/core/Dialog';
+
 import './newWayItem.css';
+
+import ModalMap from '../modalMap';
 
 
 export default class NewWayItem extends Component{
@@ -16,9 +20,16 @@ export default class NewWayItem extends Component{
     state = {
         placeA: 'Виберіть місце A',
         placeB: 'Виберіть місце Б',
+        mapOpen: false
     };
 
+    handleClickModalOpen = () => {
+        this.setState({ mapOpen: true });
+    };
 
+    handleModalClose = () => {
+        this.setState({ mapOpen: false });
+    };
 
     newWayValidator(){
         if (this.state.placeA === this.state.placeB) {
@@ -38,6 +49,8 @@ export default class NewWayItem extends Component{
      };
 
     render() {
+        const { places } = this.props;
+
         return (
             <div className="newWayItem">
                 <TextField
@@ -49,7 +62,7 @@ export default class NewWayItem extends Component{
                   helperText="Виберіть одне з Ваших збережених місць"
                   margin="normal"
                 >
-                  {this.props.places.map(place => (
+                  {places.map(place => (
                     <MenuItem key={place.id} value={place.id}>
                       {place.name}
                     </MenuItem>
@@ -67,7 +80,7 @@ export default class NewWayItem extends Component{
                   helperText="Виберіть одне з Ваших збережених місць"
                   margin="normal"
                 >
-                  {this.props.places.map(place => (
+                  {places.map(place => (
                     <MenuItem key={place.id} value={place.id}>
                       {place.name}
                     </MenuItem>
@@ -79,7 +92,7 @@ export default class NewWayItem extends Component{
                         style={this.newWayValidator()?{color: "green"}:{color: "grey"}}
                         disabled={!this.newWayValidator()}
                         aria-label="Зберегти"
-                        onClick={() => this.props.saveButton(this.state.placeA, this.state.placeB)}
+                        onClick={this.handleClickModalOpen}
                     >
                         <SaveAlt />
                     </IconButton>
@@ -94,6 +107,15 @@ export default class NewWayItem extends Component{
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
+
+
+                <Dialog open={this.state.mapOpen} >
+                    <ModalMap
+                        onClose={this.handleModalClose}
+                        placeA={places.find(obj => obj.id === this.state.placeA)}
+                        placeB={places.find(obj => obj.id === this.state.placeB)}
+                    />
+                </Dialog>
 
             </div>
         )

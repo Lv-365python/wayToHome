@@ -73,7 +73,7 @@ class WayView(View):
             if not way_data_validator(data):
                 return RESPONSE_400_INVALID_DATA
 
-            way = Way.create(user=request.user, name=request.body.get('name'))
+            way = Way.create(user=request.user, name=data.get('name'))
 
             if not way:
                 return RESPONSE_400_DB_OPERATION_FAILED

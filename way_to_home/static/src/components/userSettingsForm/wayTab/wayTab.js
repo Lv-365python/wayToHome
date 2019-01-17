@@ -32,7 +32,7 @@ export default class WayTab extends Component{
             });
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.getData();
     };
 
