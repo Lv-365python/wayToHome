@@ -184,6 +184,7 @@ class CustomUserViewTest(TestCase):
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
         self.assertIn('user_id', response.cookies)
+        self.assertNotEqual(response.cookies['user_id'].value, '')
         self.assertEqual(response.status_code, 200)
 
     def test_log_in_fail(self):
@@ -212,11 +213,18 @@ class CustomUserViewTest(TestCase):
 
     def test_logout(self):
         """ Positive user logout test """
-        user = json.dumps({'email': 'user@mail.com', 'password': '1111Bb'})
-        response = self.client.post(reverse('login_user'), user, content_type='application/json')
+        test_data = {
+            'email': 'user@mail.com',
+            'password': '1111Bb',
+        }
+        url_login = reverse('login_user')
+        response = self.client.post(url_login,
+                                    json.dumps(test_data),
+                                    content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-        resp_logout = self.client.get((reverse('logout_user')))
+        url_logout = reverse('logout_user')
+        resp_logout = self.client.get(url_logout)
         self.assertEqual(resp_logout.cookies['user_id'].value, '')
         self.assertEqual(resp_logout.status_code, 200)
 
