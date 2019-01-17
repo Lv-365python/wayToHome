@@ -82,11 +82,6 @@ class LoginForm extends Component {
         return regex.test(String(email).toLowerCase());
     };
 
-    setError = (value) => {
-        this.setState({
-            error: value
-        });
-    }
 
     handlePassword = (first_pass, second_pass) => {
         let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
@@ -112,16 +107,6 @@ class LoginForm extends Component {
             this.setState({disable_button: false});
     };
 
-    handleSigninGoogle = () => {
-        let self = this;
-        axios.get('http://127.0.0.1:8000/api/v1/user/auth_via_google')
-            .then(function (response) {
-                window.location.replace(response.data.url);
-            })
-            .catch(function (error) {
-                self.setError(error.response.data);
-            });
-    };
 
     render() {
         const { error } = this.state;
