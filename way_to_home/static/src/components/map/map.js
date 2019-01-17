@@ -16,13 +16,10 @@ let DefaultIcon = L.icon({
 
 export default class MapLeaflet extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            lat: 49.84,
-            lng: 24.028667,
-        }
-    }
+    state = {
+        lat: 49.84,
+        lng: 24.028667,
+    };
 
     render() {
         const position = [this.state.lat, this.state.lng];

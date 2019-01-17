@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -20,6 +19,7 @@ class LoginForm extends Component {
         email_error: false,
         pass_error: false,
         disable_button: true,
+        error: undefined,
     };
 
     onClickChangeType = () => {
@@ -82,6 +82,12 @@ class LoginForm extends Component {
         return regex.test(String(email).toLowerCase());
     };
 
+    setError = (value) => {
+        this.setState({
+            error: value
+        });
+    }
+
     handlePassword = (first_pass, second_pass) => {
         let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
         let type = this.state.request_type;
@@ -103,10 +109,22 @@ class LoginForm extends Component {
         else if(!email || !pass)
             this.setState({disable_button: true});
         else
-            this.setState({disable_button: false})
+            this.setState({disable_button: false});
+    };
+
+    handleSigninGoogle = () => {
+        let self = this;
+        axios.get('http://127.0.0.1:8000/api/v1/user/auth_via_google')
+            .then(function (response) {
+                window.location.replace(response.data.url);
+            })
+            .catch(function (error) {
+                self.setError(error.response.data);
+            });
     };
 
     render() {
+        const { error } = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -167,6 +185,7 @@ class LoginForm extends Component {
                         cancel
                     </Button>
                 </div>
+                { error && <CustomizedSnackbars message={this.state.error} reset={this.setError}/>}
             </div>
         )
     };

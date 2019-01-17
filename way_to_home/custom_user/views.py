@@ -1,5 +1,6 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.db import transaction, DatabaseError, IntegrityError
@@ -25,8 +26,8 @@ from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_200_OK,
-                                  RESPONSE_201_CREATED,
                                   RESPONSE_400_OBJECT_NOT_FOUND)
+
 
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
@@ -109,7 +110,7 @@ def auth_google(request):
                                    state=STATE, scope=SCOPE)
     data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
-        return redirect(data)
+        return JsonResponse({"url": data})
 
     return RESPONSE_403_ACCESS_DENIED
 
@@ -127,13 +128,10 @@ def signin_google(request):
     user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
-        if user:
-            login(request, user=user)
-            return RESPONSE_200_ACTIVATED
-        user = CustomUser.create(email=user_data.get('email'), password=user_data.get('email'))
+        if not user:
+            user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
         login(request, user=user)
-        return RESPONSE_201_CREATED
-
+        return redirect('/')
     return RESPONSE_400_EMPTY_JSON
 
 
