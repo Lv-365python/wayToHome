@@ -7,7 +7,8 @@ from custom_user.views import (signup,
                                signin_google,
                                reset_password,
                                confirm_reset_password,
-                               change_password)
+                               change_password,
+                               delete_account)
 
 urlpatterns = [
     path('register', signup, name='signup'),
@@ -19,5 +20,6 @@ urlpatterns = [
     path('reset_password', reset_password, name='reset_password'),
     re_path(r'^reset_password/(?P<token>.+)$', confirm_reset_password, name='confirm_reset_password'),
     path('change_password', change_password, name='change_password'),
+    path('delete_account', delete_account, name='delete_account'),
 ]
 

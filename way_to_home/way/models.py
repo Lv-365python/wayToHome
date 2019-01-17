@@ -1,6 +1,7 @@
 """This module implements class that represents the way entity."""
 
 from django.db import models, IntegrityError
+from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
 
@@ -38,5 +39,5 @@ class Way(AbstractModel):
             way.user = user
             way.save()
             return way
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass
