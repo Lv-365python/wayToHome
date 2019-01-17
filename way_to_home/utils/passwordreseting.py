@@ -3,7 +3,7 @@ Password reseting
 =========
 The module that provides functions for sending reset password letter to user and reseting password.
 """
-from utils.send_email import send_email
+from utils.senderhelper import send_email
 from way_to_home.settings import DOMAIN
 
 

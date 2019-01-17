@@ -9,7 +9,7 @@ from user_profile.models import UserProfile
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
-from utils.send_email import send_email
+from utils.senderhelper import send_email
 from utils.validators import credentials_validator, password_validator, email_validator
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EXISTED_EMAIL,
