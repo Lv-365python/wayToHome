@@ -8,11 +8,16 @@ from notification.models import Notification
 from .file_handlers import load_file, unzip_file
 
 
+DEFAULT_RETRY_DELAY = 60
+CLEANER_CTONTAB = crontab(hour=1, minute=30)
+EASYWAY_CTONTAB = crontab(hour=2, day_of_week=1)
+
+
 @periodic_task(bind=True,
                name='delete expired notifications',
-               run_every=(crontab(hour=1, minute=30)),
+               run_every=CLEANER_CTONTAB,
                ignore_result=True,
-               default_retry_delay=60)
+               default_retry_delay=DEFAULT_RETRY_DELAY)
 def delete_expired_notifications(self):
     """Delete notifications that have expired datetime every day at 1:30 a.m."""
     retry = False
@@ -29,8 +34,8 @@ def delete_expired_notifications(self):
 @periodic_task(bind=True,
                name='prepare static easy way data',
                ignore_results=True,
-               run_every=crontab(hour=2, day_of_week=1),
-               default_retry_delay=600)
+               run_every=EASYWAY_CTONTAB,
+               default_retry_delay=DEFAULT_RETRY_DELAY)
 def prepare_static_easy_way_data(self):
     """Provide preparing static data from EasyWay every Monday at 2 a.m."""
     url = 'http://track.ua-gis.com/gtfs/lviv/static/zip'
