@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+  {% load staticfiles %}
   <head>
     <title>Way to home</title>
+    <meta charset="UTF-8">
   </head>
   <body>
     <div id="root"></div>
-    <script src="./bundle.js"></script>
+    <script src={% static "bundle.js" %} charset="utf-8"></script>
   </body>
 </html>

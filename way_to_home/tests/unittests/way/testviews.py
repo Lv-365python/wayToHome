@@ -56,7 +56,7 @@ class WayViewsTestCase(TestCase):
 				'routes': []
 			},
 			{
-				"id": 100,
+				'id': 100,
 				'name': 'test_name',
 				'user_id': 100,
 				'routes': []
@@ -66,7 +66,9 @@ class WayViewsTestCase(TestCase):
 		url = reverse('way', args=[])
 		response = self.client.get(url)
 		self.assertEqual(response.status_code, 200)
-		self.assertJSONEqual(json.dumps(expected_response), json.loads(response.content))
+
+		actual_response = json.loads(response.content)
+		self.assertJSONEqual(json.dumps(expected_response), actual_response)
 
 	def test_get_wrong_id(self):
 		"""Method that tests request to retrieve non existent object."""

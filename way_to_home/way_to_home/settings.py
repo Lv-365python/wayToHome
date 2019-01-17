@@ -14,6 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EASY_WAY_DIR = os.path.abspath(os.path.join(BASE_DIR, '../easy_way_data'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'way',
     'route',
     'notification',
+    'home',
 ]
 
 AUTH_USER_MODEL = 'custom_user.CustomUser'
@@ -55,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middlewares.login_required.LoginRequiredMiddleware',
+    'middlewares.login_required.LoginRequiredMiddleware'
 ]
 
 ROOT_URLCONF = 'way_to_home.urls'
@@ -63,7 +65,7 @@ ROOT_URLCONF = 'way_to_home.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
@@ -130,6 +132,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static/public/')
+]
 
 # Required settings for authorization via google
 
@@ -154,6 +159,17 @@ DEFAULT_FROM_EMAIL = 'DEFAULT_FROM_EMAIL'
 
 JWT_TOKEN_KEY = 'any secret word'
 JWT_ALGORITHM = 'HS384'
+
+# Required setting for NEXMO
+
+NEXMO_API_KEY = 'Nexmo API KEY'
+NEXMO_API_SECRET = 'Nexmo API SECRET'
+
+# Celery settings
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+
 
 DOMAIN = 'localhost:8000'
 
