@@ -7,6 +7,7 @@ This module implements abstract class.
 from abc import abstractmethod
 
 from django.db import models, IntegrityError, transaction
+from django.db.utils import OperationalError
 
 
 class AbstractModel(models.Model):
@@ -22,7 +23,7 @@ class AbstractModel(models.Model):
         """
         try:
             obj = cls.objects.get(id=obj_id)
-        except cls.DoesNotExist:
+        except (cls.DoesNotExist, OperationalError):
             obj = None
         return obj
 
@@ -35,7 +36,7 @@ class AbstractModel(models.Model):
             obj = cls.objects.get(id=obj_id)
             obj.delete()
             return True
-        except cls.DoesNotExist:
+        except (cls.DoesNotExist, OperationalError):
             return False
 
     @classmethod
@@ -52,7 +53,7 @@ class AbstractModel(models.Model):
             try:
                 self.save()
                 return True
-            except (ValueError, IntegrityError):
+            except (ValueError, IntegrityError, OperationalError):
                 return False
 
     @abstractmethod
