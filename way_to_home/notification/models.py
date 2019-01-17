@@ -3,6 +3,7 @@
 from datetime import date
 
 from django.db import models, IntegrityError
+from django.db.utils import OperationalError
 
 from utils.abstract_models import AbstractModel
 from way.models import Way
@@ -44,7 +45,7 @@ class Notification(AbstractModel):
             notification.way = way
             notification.save()
             return notification
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass
 
     @classmethod

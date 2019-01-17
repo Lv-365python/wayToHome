@@ -120,3 +120,12 @@ class CustomUserTestCase(TestCase):
         self.assertNotEqual(not_updated_user.google_token, new_google_token)
         self.assertNotEqual(not_updated_user.phone_number, new_phone_number)
         self.assertNotEqual(not_updated_user.is_active, new_is_active)
+
+    def test_delete_by_id(self):
+        """ Provide tests for 'delete_by_id' method of certain CustomUser instance """
+        is_deleted = CustomUser.delete_by_id(obj_id=self.custom_user.id)
+        self.assertTrue(is_deleted)
+        self.assertRaises(CustomUser.DoesNotExist, CustomUser.objects.get, id=self.custom_user.id)
+
+        is_deleted = CustomUser.delete_by_id(obj_id=999)
+        self.assertFalse(is_deleted)
