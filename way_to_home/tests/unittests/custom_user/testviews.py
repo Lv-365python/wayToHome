@@ -227,11 +227,16 @@ class CustomUserViewTest(TestCase):
     def test_google_auth_success(self):
         """Provides test for a (GET) request to authenticate via Google."""
         url = reverse('auth_google')
-        expected_reverse = reverse('sign_in_google')
+        expected_url = {
+            'url': 'somewhere.com'
+        }
+
         with mock.patch('requests_oauthlib.OAuth2Session.authorization_url') as authorization_url:
-            authorization_url.return_value = [expected_reverse]
-            response = self.client.get(url, follow=True)
-            self.assertEquals(response.redirect_chain[0], (expected_reverse, 302))
+            authorization_url.return_value = ['somewhere.com']
+            response = self.client.get(url)
+            self.assertEquals(response.status_code, 200)
+            self.assertJSONEqual(str(response.content, encoding='utf8'),
+                                 json.dumps(expected_url))
 
     def test_google_auth_fail(self):
         """Provides test for a (GET) request to authenticate via Google."""
@@ -265,7 +270,7 @@ class CustomUserViewTest(TestCase):
         code = 'test_code'
         uri = f'{url}?code={code}'
         response = self.client.get(uri)
-        self.assertEquals(response.status_code, 201)
+        self.assertEquals(response.status_code, 302)
 
     @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
     @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_existing)
@@ -275,7 +280,7 @@ class CustomUserViewTest(TestCase):
         code = 'test_code'
         uri = f'{url}?code={code}'
         response = self.client.get(uri)
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 302)
 
     @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
     @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_empty)
@@ -286,6 +291,12 @@ class CustomUserViewTest(TestCase):
         uri = f'{url}?code={code}'
         response = self.client.get(uri)
         self.assertEquals(response.status_code, 400)
+
+    def test_google_access_denied(self):
+        """Provides test for a (GET) request to authenticate via Google in case of no user_data received from google"""
+        url = reverse('sign_in_google')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 403)
 
     def test_reset_password_success(self):
         """Provides test for a (POST) request to reset password for not authenticated user in case of success"""
