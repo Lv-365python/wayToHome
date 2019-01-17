@@ -232,7 +232,8 @@ class NotificationForm extends Component{
 
     sendUpdateDate = (id, start_time, end_time) => {
         let url = 'http://127.0.0.1:8000/api/v1/';
-        let type = `notification/${id}/`;
+        let way_id = 1;
+        let type = `way/${way_id}/notification/${id}`;
         axios.put(url + type, {
             start_time: start_time,
             end_time: end_time
@@ -249,7 +250,8 @@ class NotificationForm extends Component{
 
     sendUpdateTime = (id, start_time, end_time, new_time) => {
         let url = 'http://127.0.0.1:8000/api/v1/';
-        let type = `notification/${id}/`;
+        let way_id = 1;
+        let type = `way/${way_id}/notification/${id}`;
         axios.put(url + type, {
             start_time: start_time,
             end_time: end_time,
@@ -267,7 +269,8 @@ class NotificationForm extends Component{
 
     sendPost = (start_time, end_time, week_day, time, way) => {
         let url = 'http://127.0.0.1:8000/api/v1/';
-        let type = `notification/`;
+        let way_id = 1;
+        let type = `way/${way_id}/notification/`;
         axios.post(url + type, {
             start_time: start_time,
             end_time: end_time,
@@ -286,7 +289,8 @@ class NotificationForm extends Component{
 
     sendDelete = (id) => {
         let url = 'http://127.0.0.1:8000/api/v1/';
-        let type = `notification/${id}/`;
+        let way_id = 1;
+        let type = `way/${way_id}/notification/${id}`;
         axios.delete(url + type, {
         })
             .then(function (response) {
@@ -301,10 +305,8 @@ class NotificationForm extends Component{
     render() {
         return (
             <div className='notificationForm'>
-
                 <div className='wayAB'>
-                    <div className='pointA'
-                         onClick={this.sendRequest}>
+                    <div className='pointA'>
                         {this.state.pointA.toUpperCase()}
                     </div>
                     <div className='space'>
