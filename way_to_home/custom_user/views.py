@@ -12,21 +12,20 @@ from utils.passwordreseting import send_email_password_update, send_successful_u
 from utils.senderhelper import send_email
 from utils.validators import credentials_validator, password_validator, email_validator
 from utils.responsehelper import (RESPONSE_200_UPDATED,
-                                  RESPONSE_200_OK,
-                                  RESPONSE_200_DELETED,
-                                  RESPONSE_200_ACTIVATED,
-                                  RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_OBJECT_NOT_FOUND,
+                                  RESPONSE_200_ACTIVATED,
+                                  RESPONSE_498_INVALID_TOKEN,
                                   RESPONSE_400_INVALID_EMAIL,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_400_INVALID_EMAIL_OR_PASSWORD,
-                                  RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_498_INVALID_TOKEN)
-
-
+                                  RESPONSE_201_ACTIVATE,
+                                  RESPONSE_400_EMPTY_JSON,
+                                  RESPONSE_200_OK,
+                                  RESPONSE_201_CREATED,
+                                  RESPONSE_200_DELETED)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -108,7 +107,7 @@ def auth_google(request):
                                    state=STATE, scope=SCOPE)
     data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
-        return JsonResponse({"url": data})
+        return redirect(data)
 
     return RESPONSE_403_ACCESS_DENIED
 
@@ -126,10 +125,13 @@ def signin_google(request):
     user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
-        if not user:
-            user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
+        if user:
+            login(request, user=user)
+            return RESPONSE_200_ACTIVATED
+        user = CustomUser.create(email=user_data.get('email'), password=user_data.get('email'))
         login(request, user=user)
-        return redirect('/')
+        return RESPONSE_201_CREATED
+
     return RESPONSE_400_EMPTY_JSON
 
 
