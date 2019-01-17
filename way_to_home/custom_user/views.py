@@ -1,5 +1,5 @@
 """Authentication views module"""
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.db import transaction, DatabaseError, IntegrityError
@@ -9,13 +9,12 @@ from user_profile.models import UserProfile
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
-
 from utils.senderhelper import send_email
 from utils.validators import credentials_validator, password_validator, email_validator
-
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
+                                  RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_200_ACTIVATED,
                                   RESPONSE_498_INVALID_TOKEN,
                                   RESPONSE_400_INVALID_EMAIL,
@@ -26,8 +25,7 @@ from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EMPTY_JSON,
                                   RESPONSE_200_OK,
                                   RESPONSE_201_CREATED,
-                                  RESPONSE_400_OBJECT_NOT_FOUND)
-
+                                  RESPONSE_200_DELETED)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -135,6 +133,18 @@ def signin_google(request):
         return RESPONSE_201_CREATED
 
     return RESPONSE_400_EMPTY_JSON
+
+
+@require_http_methods(["DELETE"])
+def delete_account(request):
+    """Function that provides deleting user account."""
+    user = request.user
+    is_deleted = CustomUser.delete_by_id(obj_id=user.id)
+    if not is_deleted:
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    logout(request)
+    return RESPONSE_200_DELETED
 
 
 @require_http_methods(["POST"])
