@@ -1,5 +1,6 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.db import transaction, DatabaseError, IntegrityError
@@ -132,6 +133,8 @@ def signin_google(request):
             return RESPONSE_200_ACTIVATED
         user = CustomUser.create(email=user_data.get('email'), password=user_data.get('email'))
         login(request, user=user)
+        response = HttpResponseRedirect('/')
+        response.set_cookie('picture', user_data.get('picture'))
         return RESPONSE_201_CREATED
 
     return RESPONSE_400_EMPTY_JSON

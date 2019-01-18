@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import { Cookies } from 'react-cookie';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -20,9 +21,13 @@ const style = {
 
 class Header extends Component {
 
+    static propTypes = {
+//        cookies: instanceOf(Cookies).isRequired,
+    };
+
     state = {
         show: true,
-//        image: sessionStorage.getItem('photo.jpg'),
+//        image: cookies.get('picture'),
         image: 'https://lh3.googleusercontent.com/-xYbOPGo_nDM/AAAAAAAAAAI/AAAAAAAAAPY/EQgQkBZ-_D0/photo.jpg',
     };
 
@@ -38,7 +43,6 @@ class Header extends Component {
             <Toolbar>
 
                 <div className='Title'> Way to home </div>
-                <StartBtn />
 
                 <ToggleDisplay show={!this.isLoggined()}>
                     <LoginBtn />

@@ -1,7 +1,7 @@
 .StartBtnDiv{
-    position: absolute;
+    position: fixed;
     text-align: center;
     width: 100%;
-    top: 0px;
+    top: 15%;
     z-index: 10;
 }

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
 import {Button} from "@material-ui/core";
 import KeyboardBackspace from "@material-ui/icons/KeyboardBackspace";
 
@@ -6,7 +7,7 @@ import UserSettingsForm from "../userSettingsForm/userSettingsForm";
 import './userSettings.css';
 
 
-export default class UserSettings extends Component{
+class UserSettings extends Component{
 
     render(){
         return(
@@ -27,3 +28,5 @@ export default class UserSettings extends Component{
         )
     }
 }
+
+export default withRouter(UserSettings);
