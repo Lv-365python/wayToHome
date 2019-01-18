@@ -12,6 +12,7 @@ import Dialog from '@material-ui/core/Dialog';
 import './newWayItem.css';
 
 import ModalMap from '../modalMap';
+import axios from "axios";
 
 
 export default class NewWayItem extends Component{
@@ -19,11 +20,28 @@ export default class NewWayItem extends Component{
     state = {
         placeA: 'Виберіть місце A',
         placeB: 'Виберіть місце Б',
-        mapOpen: false
+        mapOpen: false,
+        routes: []
     };
 
-    handleClickModalOpen = () => {
-        this.setState({ mapOpen: true });
+    handleClickModalOpen = async () => {
+        let today = new Date();
+        let tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000)).toISOString();
+        const APP_ID = "ctrJV3imNpgpWu5urnAa";
+        const APP_CODE = "4lPfKEUtIyz_PXCcimqv2w";
+        const testUrl = `https://transit.api.here.com/v3/route.json?dep=44.8073074%2C23.982835&arr=49.8334453%2C23.9930059&time=${tomorrow}&app_id=${APP_ID}&app_code=${APP_CODE}&routing=tt`;
+
+         await axios.get(testUrl)
+            .then(response => {
+                let listRoutes = response.data.Res.Connections.Connection;
+                if (listRoutes) {
+                    this.setState({
+                        routes: listRoutes,
+                        mapOpen: true
+                    });
+                }
+            })
+            .catch(error => console.log(error));
     };
 
     handleModalClose = () => {
@@ -113,6 +131,7 @@ export default class NewWayItem extends Component{
                         onClose={this.handleModalClose}
                         placeA={places.find(obj => obj.id === this.state.placeA)}
                         placeB={places.find(obj => obj.id === this.state.placeB)}
+                        routes={this.state.routes}
                     />
                 </Dialog>
 

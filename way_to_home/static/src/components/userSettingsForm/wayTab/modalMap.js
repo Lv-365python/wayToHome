@@ -65,12 +65,12 @@ class ModalMap extends React.Component {
       };
       const testUrl = `https://transit.api.here.com/v3/route.json?dep=49.8073074%2C23.982835&arr=49.8334453%2C23.9930059&time=${tomorrow}&app_id=${APP_ID}&app_code=${APP_CODE}&routing=tt`;
 
-      axios.get(testUrl)
-            .then(response => {
-                console.log(response.data);
-                this.setState({routes: response.data.Res.Connections.Connection});
-            })
-      .catch(error => console.log(error))
+      // axios.get(testUrl)
+      //       .then(response => {
+      //           console.log(response.data);
+      //           this.setState({routes: response.data.Res.Connections.Connection});
+      //       })
+      // .catch(error => console.log(error))
   };
 
 
@@ -101,7 +101,7 @@ class ModalMap extends React.Component {
             <DialogTitle>Виберіть маршрут</DialogTitle>
             <DialogContent>
                 <div>
-                    TODO: MAP {this.state.routes.map(route => <div key={route.id}>{route.duration}</div>)}
+                    TODO: MAP {this.props.routes[0].id}
                 </div>
             </DialogContent>
             <DialogActions>
