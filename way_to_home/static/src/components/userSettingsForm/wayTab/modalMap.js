@@ -6,6 +6,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import axios from "axios";
 
 
 const tutorialSteps = [
@@ -39,7 +40,8 @@ const tutorialSteps = [
 
 class ModalMap extends React.Component {
   state = {
-    activeStep: 0,
+      routes: [],
+      activeStep: 0,
   };
 
   getData = () => {
@@ -47,17 +49,30 @@ class ModalMap extends React.Component {
 
       var today = new Date();
       let tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000)).toISOString();
+      const APP_ID = "ctrJV3imNpgpWu5urnAa";
+      const APP_CODE = "4lPfKEUtIyz_PXCcimqv2w";
 
       const url = `https://transit.api.here.com/v3/route.json
       ?dep=${placeA.longitude}%2C${placeA.latitude}
       &arr=${placeB.longitude}%2C${placeB.latitude}
       &time=${tomorrow}
-      &app_id={APP_ID}
-      &app_code={APP_CODE}
+      &app_id=${APP_ID}
+      &app_code=${APP_CODE}
       &routing=tt`;
 
-      console.log(url)
+      const config = {
+          headers: {'Access-Control-Allow-Origin': '*'}
+      };
+      const testUrl = `https://transit.api.here.com/v3/route.json?dep=49.8073074%2C23.982835&arr=49.8334453%2C23.9930059&time=${tomorrow}&app_id=${APP_ID}&app_code=${APP_CODE}&routing=tt`;
+
+      axios.get(testUrl)
+            .then(response => {
+                console.log(response.data);
+                this.setState({routes: response.data.Res.Connections.Connection});
+            })
+      .catch(error => console.log(error))
   };
+
 
   componentDidMount = () => {
       this.getData()
@@ -86,7 +101,7 @@ class ModalMap extends React.Component {
             <DialogTitle>Виберіть маршрут</DialogTitle>
             <DialogContent>
                 <div>
-                     TODO: MAP
+                    TODO: MAP {this.state.routes.map(route => <div key={route.id}>{route.duration}</div>)}
                 </div>
             </DialogContent>
             <DialogActions>

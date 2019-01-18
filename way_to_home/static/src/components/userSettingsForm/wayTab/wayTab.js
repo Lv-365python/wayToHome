@@ -24,12 +24,14 @@ export default class WayTab extends Component{
         axios.get(url + requestWays)
             .then(response => {
                 this.setState({ ways: response.data });
-            });
+            })
+        .catch(error => console.log(error));
 
         axios.get(url + requestPlaces)
             .then(response => {
                 this.setState({ places: response.data });
-            });
+            })
+        .catch(error => console.log(error));
     };
 
     componentDidMount() {

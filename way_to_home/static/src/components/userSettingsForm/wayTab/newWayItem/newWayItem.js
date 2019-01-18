@@ -7,7 +7,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import SaveAlt from '@material-ui/icons/SaveAlt';
-
 import Dialog from '@material-ui/core/Dialog';
 
 import './newWayItem.css';
