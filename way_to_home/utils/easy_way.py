@@ -2,7 +2,7 @@
     This module use for parsing data got in real time from 'Easy Way' source
     in GTFS format.
 """
-import json
+
 from google import protobuf  # pylint: disable=no-name-in-module, unused-import
 from google.transit import gtfs_realtime_pb2
 
@@ -15,18 +15,12 @@ def compile_file(file_gtfs):
         with open(file_gtfs, 'rb') as file:
             content = file.read()
     except (FileNotFoundError, PermissionError):
-        return False
+        return None
 
     feed.ParseFromString(content)
-    json_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
+    gtfs_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
 
-    try:
-        with open('vehicle_data.json', 'w') as file:
-            file.write(json_data)
-    except PermissionError:
-        return False
-
-    return True
+    return gtfs_data
 
 
 def parse_vehicle_data(feed_entity):
@@ -44,15 +38,4 @@ def parse_vehicle_data(feed_entity):
             'vehicle_id': entity.vehicle.vehicle.id  # identifier of vehicle
         })
 
-    return json.dumps(vehicle_data)
-
-
-def get_route(file_json, route_id):
-    """ This function return json object that contain necessary data about certain trip """
-    try:
-        with open(file_json, 'r') as file:
-            data = json.loads(file.read())
-    except (FileNotFoundError, PermissionError):
-        return None
-
-    return data.get(route_id)
+    return vehicle_data

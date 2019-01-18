@@ -1,6 +1,7 @@
 """This module implements class that represents the way entity."""
 
 from django.db import models, IntegrityError
+from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
 
@@ -23,7 +24,7 @@ class Way(AbstractModel):
         }
 
     def get_way_with_routes(self):
-        """Method that retruns dicitonary with way's info, and all of the way's routes"""
+        """Method that returns dictionary with way's info, and all of the way's routes"""
         way = self.to_dict()
         way['routes'] = [route.to_dict() for route in self.routes.all()]
         return way
@@ -38,5 +39,5 @@ class Way(AbstractModel):
             way.user = user
             way.save()
             return way
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass
