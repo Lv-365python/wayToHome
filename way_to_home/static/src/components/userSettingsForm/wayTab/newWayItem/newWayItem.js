@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {TrendingFlat} from "@material-ui/icons";
+import TrendingFlat from '@material-ui/icons/TrendingFlat';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
