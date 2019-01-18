@@ -25,9 +25,14 @@ class SettingsButton extends Component{
     // TODO: loguot function
   };
 
-  redirectToSettings = () => {
+  toSettings = () => {
     this.setState({ anchorEl: null });
     this.props.history.push('/settings');
+  }
+
+  toHome = () => {
+    this.setState({ anchorEl: null });
+    this.props.history.push('/home');
   }
 
     render(){
@@ -50,7 +55,8 @@ class SettingsButton extends Component{
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={this.redirectToSettings}>Налаштування</MenuItem>
+                    <MenuItem onClick={this.toHome}>На головну</MenuItem>
+                    <MenuItem onClick={this.toSettings}>Налаштування</MenuItem>
                     <MenuItem onClick={this.logOut}>Вийти</MenuItem>
                 </Menu>
             </div>
