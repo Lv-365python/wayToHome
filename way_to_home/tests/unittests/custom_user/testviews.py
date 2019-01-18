@@ -221,6 +221,22 @@ class CustomUserViewTest(TestCase):
             response = self.client.get(url, follow=True)
             self.assertEquals(response.status_code, 403)
 
+    def test_delete_account_success(self):
+        """Method that tests successful deleting user account"""
+        self.client.login(username='user@mail.com', password='1111Bb')
+        url = reverse('delete_account')
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_account_fail(self):
+        """Method that tests failing deleting user account"""
+        self.client.login(username='user@mail.com', password='1111Bb')
+        url = reverse('delete_account')
+        with mock.patch('custom_user.models.CustomUser.delete_by_id') as is_deleted:
+            is_deleted.return_value = False
+            response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400)
+
     @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
     @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_new)
     def test_google_signup_success(self):

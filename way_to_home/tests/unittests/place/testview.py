@@ -120,7 +120,6 @@ class PlaceViewTest(TestCase):
         }
 
         expected_data = {
-            'id': 3,
             'longitude': 12.842601,
             'latitude': 23.968448,
             'name': 'Дім',
@@ -132,19 +131,20 @@ class PlaceViewTest(TestCase):
         url = reverse('place', args=[])
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         response_dict = json.loads(response.content)
+        response_dict.pop('id')
 
         self.assertEqual(response.status_code, 201)
         self.assertDictEqual(response_dict, expected_data)
 
-    def test_post_data_not_required(self):
-        """The method that tests unsuccessful post request without fields that required"""
+    def test_post_create_fail(self):
+        """Method that tests when place was not created"""
 
-        data = {
-            'name': 'Дім',
-            'stop_id': 4,
-        }
-        url = reverse('place', args=[])
-        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        url = reverse('place')
+
+        with mock.patch('place.views.Place.create') as mock_place:
+            mock_place.return_value = False
+            response = self.client.post(url)
+
         self.assertEqual(response.status_code, 400)
 
     def test_post_invalid_data(self):
