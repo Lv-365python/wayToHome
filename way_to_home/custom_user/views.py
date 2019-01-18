@@ -1,5 +1,4 @@
 """Authentication views module"""
-from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
