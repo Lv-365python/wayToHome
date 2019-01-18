@@ -11,6 +11,7 @@ import LoginBtn from '../loginBtn/loginBtn.js';
 import StartBtn from '../startBtn/startBtn.js';
 import SettingsButton from './settingsButton/settingsButton.js';
 import './header.css'
+import user_default_avatar from './user_default_avatar.png'
 
 const style = {
     height: '44px',
@@ -21,18 +22,13 @@ const style = {
 
 class Header extends Component {
 
-    static propTypes = {
-//        cookies: instanceOf(Cookies).isRequired,
-    };
-
     state = {
         show: true,
-//        image: cookies.get('picture'),
-        image: 'https://lh3.googleusercontent.com/-xYbOPGo_nDM/AAAAAAAAAAI/AAAAAAAAAPY/EQgQkBZ-_D0/photo.jpg',
+        image: user_default_avatar,
     };
 
     isLoggined = () => {
-        return true;
+        return false;
 //        return document.cookie.indexOf('sessionid') !== -1;
     };
 

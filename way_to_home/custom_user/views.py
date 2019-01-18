@@ -131,8 +131,6 @@ def signin_google(request):
             return RESPONSE_200_ACTIVATED
         user = CustomUser.create(email=user_data.get('email'), password=user_data.get('email'))
         login(request, user=user)
-        response = HttpResponseRedirect('/')
-        response.set_cookie('picture', user_data.get('picture'))
         return RESPONSE_201_CREATED
 
     return RESPONSE_400_EMPTY_JSON
