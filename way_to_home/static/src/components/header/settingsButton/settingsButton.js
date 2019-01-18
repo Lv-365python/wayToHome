@@ -16,6 +16,10 @@ class SettingsButton extends Component{
     this.setState({ anchorEl: event.currentTarget });
   };
 
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
   logOut = () => {
     this.setState({ anchorEl: null });
     // TODO: loguot function
