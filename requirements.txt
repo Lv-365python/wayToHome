@@ -1,7 +1,6 @@
 amqp==2.3.2
 asn1crypto==0.24.0
 astroid==2.1.0
-beautifulsoup4==4.6.3
 billiard==3.5.0.5
 celery==4.2.1
 certifi==2018.11.29

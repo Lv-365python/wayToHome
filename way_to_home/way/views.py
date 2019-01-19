@@ -3,6 +3,7 @@
 from django.views.generic import View
 from django.http import JsonResponse
 from django.db import transaction
+import isodate
 from way.models import Way
 from place.models import Place
 from route.models import Route
@@ -15,7 +16,7 @@ from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_200_UPDATED)
 
 from utils.validators import way_data_validator
-import isodate
+
 
 
 class WayView(View):
@@ -174,18 +175,18 @@ def _make_route_dict(step):
     dep = step.get('Dep')
     start_point = dep.get('Stn') or dep.get('Addr')
 
-    start_place = {'longitude': start_point.get('y'),
-                   'latitude': start_point.get('x')}
+    start_place = {'longitude': start_point.get('x'),
+                   'latitude': start_point.get('y')}
 
     arr = step.get('Arr')
     end_point = arr.get('Stn') or arr.get('Addr')
 
-    end_place = {'longitude': end_point.get('y'),
-                 'latitude': end_point.get('x')}
+    end_place = {'longitude': end_point.get('x'),
+                 'latitude': end_point.get('y')}
 
     route['start_place'] = start_place
     route['end_place'] = end_place
-    route['time'] = isodate.parse_duration(step['Journey'].get('duration'))
+    route['time'] = str(isodate.parse_duration(step['Journey'].get('duration')))
 
     transport = dep.get('Transport')
     if transport and transport.get('name'):
