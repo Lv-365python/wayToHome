@@ -75,7 +75,10 @@ export default class NewWayItem extends Component{
      };
 
     saveButton = route => {
-        this.setState({loading:false});
+        this.setState({
+            loading: true,
+            mapOpen: false
+        });
         this.props.saveRoute(this.state.placeA, this.state.placeB, route);
         this.setState({loading:false})
     };

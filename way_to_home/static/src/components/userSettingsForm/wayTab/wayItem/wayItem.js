@@ -19,14 +19,9 @@ export default class WayItem extends Component{
     };
 
     getData = () => {
-
-        let startRoute = this.props.way.routes.reduce(function(prev, curr) {
-            return prev.position < curr.position ? prev : curr;
-        });
-
-        let endRoute = this.props.way.routes.reduce(function(prev, curr) {
-            return prev.position > curr.position ? prev : curr;
-        });
+        let routes = this.props.way.routes;
+        let startRoute = routes.find(x => x.position === 0);
+        let endRoute = routes.find(x => x.position === routes.length-1);
 
         let startPlace = this.props.places.find(x => x.id === startRoute.start_place);
         let endPlace = this.props.places.find(x => x.id === endRoute.end_place);
@@ -76,7 +71,7 @@ export default class WayItem extends Component{
                 </Tooltip>
 
                 <Tooltip title="Delete">
-                    <IconButton color="secondary" aria-label="Видалити" onClick={this.props.deleteButton}>
+                    <IconButton color="secondary" aria-label="Видалити" onClick={() => this.props.deleteButton(this.props.way.id)}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>

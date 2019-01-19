@@ -51,8 +51,16 @@ export default class WayTab extends Component{
         })
     };
 
-    handleDeleteExistItemClick = () => {
-        console.log("TODO: Delete way")
+    handleDeleteExistItemClick = (id) => {
+        axios.delete(url + `way/${id}`)
+            .then(response => {
+                this.setState({
+                    ways: this.state.ways.filter(way => way.id !== id)
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            });
     };
 
     handleSaveClick = (placeAid, placeBid, route) => {
@@ -60,7 +68,7 @@ export default class WayTab extends Component{
         let placeA = this.state.places.find(place => place.id === placeAid);
         let placeB = this.state.places.find(place => place.id === placeBid);
         let name = `${placeA.name} - ${placeB.name}`;
-        console.log(route);
+
         let data = {
             name: name,
             start_place: placeAid,
@@ -69,8 +77,7 @@ export default class WayTab extends Component{
         };
         axios.post(url + 'way/', data)
             .then(response => {
-                console.log(response);
-
+                this.getData()
             })
             .catch(error => {
                 console.log(error)
