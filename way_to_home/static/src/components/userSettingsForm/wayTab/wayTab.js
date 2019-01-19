@@ -53,12 +53,29 @@ export default class WayTab extends Component{
 
     handleDeleteExistItemClick = () => {
         console.log("TODO: Delete way")
-
     };
 
-    handleSaveClick = (placeA, placeB) => {
-        console.log("TODO: Save way");
-        console.log(`${placeA} - ${placeB}`)
+    handleSaveClick = (placeAid, placeBid, route) => {
+
+        let placeA = this.state.places.find(place => place.id === placeAid);
+        let placeB = this.state.places.find(place => place.id === placeBid);
+        let name = `${placeA.name} - ${placeB.name}`;
+        console.log(route);
+        let data = {
+            name: name,
+            start_place: placeAid,
+            end_place: placeBid,
+            steps: route,
+        };
+        axios.post(url + 'way/', data)
+            .then(response => {
+                console.log(response);
+
+            })
+            .catch(error => {
+                console.log(error)
+            });
+
     };
 
     render(){
@@ -80,7 +97,7 @@ export default class WayTab extends Component{
                         way={way}
                         places={this.state.places}
                         deleteButton={this.handleDeleteNewItemClick}
-                        saveButton={this.handleSaveClick}
+                        saveRoute={this.handleSaveClick}
                     />
                 ))}
 
