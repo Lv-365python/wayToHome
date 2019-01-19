@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
-import {Button} from "@material-ui/core";
+import withRouter from "react-router-dom/withRouter";
+
+import Button from "@material-ui/core/Button";
 import KeyboardBackspace from "@material-ui/icons/KeyboardBackspace";
 
 import UserSettingsForm from "../userSettingsForm/userSettingsForm";
 import './userSettings.css';
 
 
-export default class UserSettings extends Component{
+class UserSettings extends Component{
 
     render(){
         return(
@@ -18,7 +20,7 @@ export default class UserSettings extends Component{
                         color="primary"
                         onClick={() => this.props.history.push('/home')}
                     >
-                        <KeyboardBackspace></KeyboardBackspace>ПОВЕРНУТИСЬ
+                        <KeyboardBackspace />ПОВЕРНУТИСЬ
                     </Button>
                 </div>
 
@@ -27,3 +29,5 @@ export default class UserSettings extends Component{
         )
     }
 }
+
+export default withRouter(UserSettings);

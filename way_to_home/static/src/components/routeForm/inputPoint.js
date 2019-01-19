@@ -1,6 +1,6 @@
-import {Component, Fragment} from "react";
+import React, {Component, Fragment} from "react";
 import TextField from '@material-ui/core/TextField';
-import React from "react";
+
 
 export default class InputPoint extends Component {
 
