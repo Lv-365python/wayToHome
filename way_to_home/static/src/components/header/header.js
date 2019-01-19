@@ -9,7 +9,7 @@ import ToggleDisplay from 'react-toggle-display';
 
 import LoginBtn from '../loginBtn/loginBtn.js';
 import StartBtn from '../startBtn/startBtn.js';
-import SettingsButton from './settingsButton/settingsButton.js';
+import MenuButton from './menuButton/menuButton.js';
 import './header.css'
 
 const style = {
@@ -26,7 +26,8 @@ class Header extends Component {
     };
 
     isLoggined = () => {
-        return document.cookie.indexOf('sessionid') !== -1;
+//        return document.cookie.indexOf('sessionid') !== -1;
+        return true;
     };
 
     render(){
@@ -45,7 +46,7 @@ class Header extends Component {
 
                 <ToggleDisplay show={this.isLoggined()}>
                     <AccountCircle className='AvatarDiv' style={{fontSize: '40px'}} />
-                    <SettingsButton/>
+                    <MenuButton />
                 </ToggleDisplay>
 
             </Toolbar>

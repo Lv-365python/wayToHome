@@ -4,10 +4,10 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {withRouter} from 'react-router-dom';
 
-import './settingsButton.css'
+import './menuButton.css'
 
 
-class SettingsButton extends Component{
+class MenuButton extends Component{
     state = {
         anchorEl: null,
     };
@@ -38,7 +38,7 @@ class SettingsButton extends Component{
     render(){
         const {anchorEl} = this.state;
         return(
-            <div className='SettingsButtonDiv'>
+            <div className='MenuButtonDiv'>
                 <Button
                     variant="contained"
                     color='primary'
@@ -64,4 +64,4 @@ class SettingsButton extends Component{
     }
 }
 
-export default withRouter(SettingsButton);
+export default withRouter(MenuButton);
