@@ -15,10 +15,14 @@ from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_200_UPDATED)
 
 from utils.validators import way_data_validator
+import isodate
 
 
 class WayView(View):
     """Class-based view for way model."""
+
+    http_method_names = ['get', 'post', 'delete']
+
     def get(self, request, way_id=None):  # pylint: disable=R0201
         """
         Method for HTTP GET request
@@ -63,17 +67,15 @@ class WayView(View):
         :return JsonResponse within way data and list with routes with status 200
                 if parameters are good or HttpRequest with error if parameters are bad
         """
-        # if not route_data_validator(route.get('time'), position):
-        #     return RESPONSE_400_INVALID_DATA
-        steps = request.body.get('gmaps_response')
+        data = request.body
+        steps = data.get('steps')
 
         with transaction.atomic():
-            data = request.body
 
             if not way_data_validator(data):
                 return RESPONSE_400_INVALID_DATA
 
-            way = Way.create(user=request.user, name=request.body.get('name'))
+            way = Way.create(user=request.user, name=data.get('name'))
 
             if not way:
                 return RESPONSE_400_DB_OPERATION_FAILED
@@ -82,7 +84,6 @@ class WayView(View):
             position = 0
 
             for step in steps:
-                # Add validators
                 route = _make_route_dict(step)
                 was_created = _create_route(way, position, **route)
 
@@ -169,19 +170,26 @@ def _make_route_dict(step):
     :return dict with route information
     """
     route = {}
-    start_place = {'longitude': step['start_location']['lng'],
-                   'latitude': step['start_location']['lat']}
+
+    dep = step.get('Dep')
+    start_point = dep.get('Stn') or dep.get('Addr')
+
+    start_place = {'longitude': start_point.get('y'),
+                   'latitude': start_point.get('x')}
+
+    arr = step.get('Arr')
+    end_point = arr.get('Stn') or arr.get('Addr')
+
+    end_place = {'longitude': end_point.get('y'),
+                 'latitude': end_point.get('x')}
+
     route['start_place'] = start_place
-
-    end_place = {'longitude': step['end_location']['lng'],
-                 'latitude': step['end_location']['lat']}
     route['end_place'] = end_place
+    route['time'] = isodate.parse_duration(step['Journey'].get('duration'))
 
-    route['time'] = step['duration']['value']
-
-    if step.get('transit_details'):
-        transport_id = step['transit_details']['line']['short_name']
-        route['transport_id'] = transport_id
+    transport = dep.get('Transport')
+    if transport and transport.get('name'):
+        route['transport_id'] = transport.get('name')
 
     return route
 
