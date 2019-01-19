@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {TrendingFlat} from '@material-ui/icons';
+import TrendingFlat from '@material-ui/icons/TrendingFlat';
 import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
