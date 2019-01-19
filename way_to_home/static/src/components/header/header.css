@@ -1,14 +1,13 @@
 .AvatarDiv {
-    position: absolute;
+    position: fixed;
     right: 0.5%;
-    top: 3%;
+    top: 1%;
 }
 
 .Title {
-    position: absolute;
+    position: fixed;
+    top: 1%;
     left: 10%;
-    top: 8%;
-    display: flex;
     text-transform: uppercase;
     font-size: 2rem;
     font-style: italic;

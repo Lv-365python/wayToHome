@@ -1,6 +1,5 @@
 .SettingsButtonDiv {
-    position: absolute;
+    position: fixed;
     right: 8%;
-    top: 0%;
-    display: flex;
+    top: 0.5%;
 }

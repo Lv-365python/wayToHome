@@ -13,10 +13,10 @@ import SettingsButton from './settingsButton/settingsButton.js';
 import './header.css'
 
 const style = {
-    height: '44px',
+    top: '0.5%',
+    height: 44,
     background: '#4887c1cc',
     borderRadius: 5,
-    display: 'flex',
 };
 
 class Header extends Component {
@@ -26,14 +26,13 @@ class Header extends Component {
     };
 
     isLoggined = () => {
-        return false;
-//        return document.cookie.indexOf('sessionid') !== -1;
+        return document.cookie.indexOf('sessionid') !== -1;
     };
 
     render(){
         return(
             <div>
-            <AppBar style={style} position='static'>
+            <AppBar style={style}>
             <Toolbar>
 
                 <div className='Title' onClick={() => this.props.history.push('/home')}>

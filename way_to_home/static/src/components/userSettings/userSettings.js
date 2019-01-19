@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-
-
 import UserSettingsForm from "../userSettingsForm/userSettingsForm";
 import './userSettings.css';
 
