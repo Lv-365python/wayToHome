@@ -86,6 +86,10 @@ class WayView(View):
 
             for step in steps:
                 route = _make_route_dict(step)
+                if position == 0:
+                    route['start_place'] = data.get('start_place')
+                if position == len(steps)-1:
+                    route['end_place'] = data.get('end_place')
                 was_created = _create_route(way, position, **route)
 
                 if not was_created:
@@ -209,13 +213,20 @@ def _create_route(way, position, **kwargs):
         :return True if route was created successfully or
                 False if it was not
     """
-    places = {'start_place': kwargs.get('start_place'),
-              'end_place': kwargs.get('end_place')}
+    start_place = kwargs.get('start_place')
+    end_place = kwargs.get('end_place')
 
-    start_place = Place.create(longitude=places['start_place']['longitude'],
-                               latitude=places['start_place']['latitude'])
-    end_place = Place.create(longitude=places['end_place']['longitude'],
-                             latitude=places['end_place']['latitude'])
+    if isinstance(start_place, int):
+        start_place = Place.get_by_id(start_place)
+    else:
+        start_place = Place.create(longitude=start_place['longitude'],
+                                   latitude=start_place['latitude'])
+
+    if isinstance(end_place, int):
+        end_place = Place.get_by_id(end_place)
+    else:
+        end_place = Place.create(longitude=end_place['longitude'],
+                                 latitude=end_place['latitude'])
 
     if not (start_place or end_place):
         return False
