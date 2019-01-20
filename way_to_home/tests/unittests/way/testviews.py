@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from custom_user.models import CustomUser
 from way.models import Way
+from place.models import Place
 
 
 class WayViewsTestCase(TestCase):
@@ -91,8 +92,19 @@ class WayViewsTestCase(TestCase):
 	def test_post(self):
 		"""Method that tests the success post request for creating Way."""
 
+		Place.objects.create(
+			id=11,
+			longitude=49.842601,
+			latitude=23.968448,
+			address='Широка 34, 79052',
+			name='Дім',
+			stop_id=None,
+		)
+
 		data = {
 			'name': 'test_name',
+			'start_place': 11,
+			'end_place': 11,
 			"steps": [{
 				"Dep": {
 					"Stn": {
@@ -114,19 +126,17 @@ class WayViewsTestCase(TestCase):
 		}
 
 		expected_data = {
-			'way': {
+			'id': 2,
+			'name': 'test_name',
+			'routes': [{
 				'id': 2,
-				'name': 'test_name',
-				'user_id': 100
-			},
-			'routes': [
-				{
-					'start_place': {'latitude': 41.85073, 'longitude': -87.65126},
-					'end_place': {'latitude': 40.85073, 'longitude': -77.65126},
-					'time': '0:13:00'
-				}
-			]
-		}
+				'start_place': 11,
+				'end_place': 11,
+				'position': 0,
+				'time': '00:13:00',
+				'transport_id': None,
+				'way': 2}],
+			'user_id': 100}
 
 		url = reverse('way', args=[])
 		response = self.client.post(url, json.dumps(data), content_type='application/json')

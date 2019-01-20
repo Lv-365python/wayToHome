@@ -12,17 +12,13 @@ from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_400_OBJECT_NOT_FOUND,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_400_INVALID_DATA,
-                                  RESPONSE_200_DELETED,
-                                  RESPONSE_200_UPDATED)
+                                  RESPONSE_200_DELETED)
 
 from utils.validators import way_data_validator
 
 
-
 class WayView(View):
     """Class-based view for way model."""
-
-    http_method_names = ['get', 'post', 'delete']
 
     def get(self, request, way_id=None):  # pylint: disable=R0201
         """
@@ -81,11 +77,10 @@ class WayView(View):
             if not way:
                 return RESPONSE_400_DB_OPERATION_FAILED
 
-            routes = []
             position = 0
 
             for step in steps:
-                route = _make_route_dict(step)
+                route = _make_route_dict_from_here_maps(step)
                 if position == 0:
                     route['start_place'] = data.get('start_place')
                 if position == len(steps)-1:
@@ -95,10 +90,9 @@ class WayView(View):
                 if not was_created:
                     return RESPONSE_400_INVALID_DATA
                 position += 1
-                routes.append(route)
 
-            return JsonResponse({'way': way.to_dict(),
-                                 'routes': routes}, status=201)
+            data = way.get_way_with_routes()
+            return JsonResponse(data, status=201)
 
         return RESPONSE_400_DB_OPERATION_FAILED
 
@@ -130,44 +124,10 @@ class WayView(View):
 
         return RESPONSE_200_DELETED
 
-    def put(self, request, way_id):  # pylint: disable=R0201
-        """
-        Method for HTTP PUT request
 
-        :param request: client HttpRequest. Is required
-        :type request: HttpRequest
-        :param way_id: id of Way model
-        :type way_id: int
-
-        :return HTTPResponse with status 200 if parameters are good or
-                HttpRequest with error if parameters are bad
-        """
-        user = request.user
-        data = request.body
-
-        way = Way.get_by_id(obj_id=way_id)
-
-        if not way:
-            return RESPONSE_400_OBJECT_NOT_FOUND
-
-        if not way.user == user:
-            return RESPONSE_403_ACCESS_DENIED
-
-        data = {'name': data.get('name')}
-
-        if not way_data_validator(data):
-            return RESPONSE_400_DB_OPERATION_FAILED
-
-        is_updated = way.update(**data)
-        if not is_updated:
-            return RESPONSE_400_DB_OPERATION_FAILED
-
-        return RESPONSE_200_UPDATED
-
-
-def _make_route_dict(step):
+def _make_route_dict_from_here_maps(step):
     """
-    Function for creation dict from step data
+    Function for creation dict from here maps api
 
     :param step: Step data. Is required
     :type step: dict
@@ -195,6 +155,31 @@ def _make_route_dict(step):
     transport = dep.get('Transport')
     if transport and transport.get('name'):
         route['transport_id'] = transport.get('name')
+
+    return route
+
+
+def _make_route_dict_from_google_maps(step):
+    """
+    Function for creation dict from google maps api
+    :param step: Step data. Is required
+    :type step: dict
+    :return dict with route information
+    """
+    route = {}
+    start_place = {'longitude': step['start_location']['lng'],
+                   'latitude': step['start_location']['lat']}
+    route['start_place'] = start_place
+
+    end_place = {'longitude': step['end_location']['lng'],
+                 'latitude': step['end_location']['lat']}
+    route['end_place'] = end_place
+
+    route['time'] = step['duration']['value']
+
+    if step.get('transit_details'):
+        transport_id = step['transit_details']['line']['short_name']
+        route['transport_id'] = transport_id
 
     return route
 
