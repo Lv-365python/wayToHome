@@ -7,14 +7,12 @@ import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import SaveAlt from '@material-ui/icons/SaveAlt';
+import DirectionsIcon from '@material-ui/icons/Directions';
 import Dialog from '@material-ui/core/Dialog';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import ModalMap from '../modalMap';
+import ModalMap from './modalMap';
 import './newWayItem.css';
-
-const url = 'http://127.0.0.1:8000/api/v1/';
 
 
 export default class NewWayItem extends Component{
@@ -32,13 +30,17 @@ export default class NewWayItem extends Component{
 
         let today = new Date();
         let tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000)).toISOString();
+
+        let placeA = this.props.places.find(place => place.id === this.state.placeA);
+        let placeB = this.props.places.find(place => place.id === this.state.placeB);
+
         const APP_ID = "ctrJV3imNpgpWu5urnAa";
         const APP_CODE = "4lPfKEUtIyz_PXCcimqv2w";
-        const testUrl = `https://transit.api.here.com/v3/route.json?dep=49.8073074%2C23.982835&arr=49.8334453%2C23.9930059&time=${tomorrow}&app_id=${APP_ID}&app_code=${APP_CODE}&routing=tt`;
+
+        const testUrl = `https://transit.api.here.com/v3/route.json?dep=${placeA.latitude}%2C${placeA.longitude}&arr=${placeB.latitude}%2C${placeB.longitude}&time=${tomorrow}&app_id=${APP_ID}&app_code=${APP_CODE}&routing=tt`;
 
          await axios.get(testUrl)
             .then(response => {
-                console.log(response);
                 let listRoutes = response.data.Res.Connections.Connection;
 
                 this.setState({
@@ -123,14 +125,16 @@ export default class NewWayItem extends Component{
                 </TextField>
 
                 <Tooltip title="Вибрати маршрут">
-                    <IconButton
-                        style={this.newWayValidator()?{color: "green"}:{color: "grey"}}
-                        disabled={!this.newWayValidator()}
-                        aria-label="Зберегти"
-                        onClick={this.handleClickModalOpen}
-                    >
-                        <SaveAlt />
-                    </IconButton>
+                    <div>
+                        <IconButton
+                            style={this.newWayValidator()?{color: "green"}:{color: "grey"}}
+                            disabled={!this.newWayValidator()}
+                            aria-label="Зберегти"
+                            onClick={this.handleClickModalOpen}
+                        >
+                            <DirectionsIcon />
+                        </IconButton>
+                    </div>
                 </Tooltip>
 
                 <Tooltip title="Видалити">

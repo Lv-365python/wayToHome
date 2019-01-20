@@ -19,14 +19,22 @@ export default class WayTab extends Component{
     };
 
     getData = () => {
+        this.getWays();
+        this.getPlaces();
+    };
+
+    getWays = () => {
         let requestWays = 'way/';
-        let requestPlaces = 'place/';
 
         axios.get(url + requestWays)
             .then(response => {
                 this.setState({ ways: response.data });
             })
         .catch(error => console.log(error));
+    };
+
+    getPlaces = () => {
+        let requestPlaces = 'place/';
 
         axios.get(url + requestPlaces)
             .then(response => {
@@ -54,8 +62,9 @@ export default class WayTab extends Component{
     handleDeleteExistItemClick = (id) => {
         axios.delete(url + `way/${id}`)
             .then(response => {
+                const ways = this.state.ways.filter(way => way.id !== id);
                 this.setState({
-                    ways: this.state.ways.filter(way => way.id !== id)
+                    ways: ways
                 })
             })
             .catch(error => {
@@ -77,7 +86,10 @@ export default class WayTab extends Component{
         };
         axios.post(url + 'way/', data)
             .then(response => {
-                this.getData()
+                this.setState({
+                    ways: [...this.state.ways, response.data],
+                    newWay: []
+                })
             })
             .catch(error => {
                 console.log(error)

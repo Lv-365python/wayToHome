@@ -6,7 +6,6 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import axios from "axios";
 
 
 class ModalMap extends React.Component {
@@ -16,14 +15,14 @@ class ModalMap extends React.Component {
 
   handleNext = () => {
       this.setState(prevState => ({
-            activeRoute: prevState.activeRoute + 1,
+          activeRoute: prevState.activeRoute + 1,
       }));
   };
 
   handleBack = () => {
-    this.setState(prevState => ({
-      activeRoute: prevState.activeRoute - 1,
-    }));
+      this.setState(prevState => ({
+          activeRoute: prevState.activeRoute - 1,
+      }));
   };
 
   render() {
@@ -31,12 +30,13 @@ class ModalMap extends React.Component {
     const { activeRoute } = this.state;
     const maxRoutes = routes.length;
     console.log(routes);
+
     return (
         <div>
             <DialogTitle>Виберіть маршрут</DialogTitle>
             <DialogContent>
                 <div>
-                    TODO: MAP {this.props.routes[activeRoute].Sections.Sec[0].mode}
+                    TODO: MAP {routes[activeRoute].Sections.Sec[0].mode}
                 </div>
             </DialogContent>
             <DialogActions>
@@ -57,10 +57,19 @@ class ModalMap extends React.Component {
                         </Button>
                     }
                 />
-                <Button onClick={() => this.props.saveRoute(routes[activeRoute].Sections.Sec)} style={{color:"green"}}>
+                <Button
+                    variant="outlined"
+                    style={{color:"green"}}
+                    onClick={() => this.props.saveRoute(routes[activeRoute].Sections.Sec)}
+
+                >
                     Вибрати
                 </Button>
-                <Button onClick={this.props.onClose} color="secondary">
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={this.props.onClose}
+                >
                     Скасувати
                 </Button>
             </DialogActions>
