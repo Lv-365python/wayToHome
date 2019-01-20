@@ -26,8 +26,7 @@ class Header extends Component {
     };
 
     isLoggined = () => {
-//        return document.cookie.indexOf('sessionid') !== -1;
-        return true;
+        return document.cookie.indexOf('sessionid') !== -1;
     };
 
     render(){
