@@ -3,23 +3,30 @@ Password reseting
 =========
 The module that provides functions for sending reset password letter to user and reseting password.
 """
-from utils.senderhelper import send_email
-from way_to_home.settings import DOMAIN
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+from way_to_home import settings
 
 
-def send_email_password_update(user, token):
+def send_email_password_update(to_email, template, ctx):
     """Function that provides sending update password letter to user."""
-    message = f'http://{DOMAIN}/api/v1/user/reset_password/{token}'
-    mail_subject = 'Password reset'
-    if not send_email(mail_subject, message, (user.email,)):
+    html_message = render_to_string('emails/' + template, ctx)
+    message = 'скинути пароль'
+    mail_subject = 'Скинути пароль'
+
+    if not send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, to_email, html_message=html_message):
         return False
     return True
 
 
 def send_successful_update_email(user):
     """Function that provides sending successful update letter."""
-    mail_subject = 'Password reset'
-    message = 'Successful password reset.'
-    if not send_email(mail_subject, message, (user.email,)):
+    template = 'update_password.html'
+    html_message = render_to_string('emails/' + template)
+    mail_subject = 'Відновлення паролю'
+    message = 'Успішне Відновлення паролю.'
+
+    if not send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, (user.email,), html_message=html_message):
         return False
     return True

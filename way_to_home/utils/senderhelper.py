@@ -5,6 +5,7 @@ import nexmo
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 
 def send_sms(phone_number, message):
@@ -24,10 +25,13 @@ def send_sms(phone_number, message):
     return True
 
 
-def send_email(mail_subject, message, to_email):
+def send_email(to_email, template, ctx):
     """Function that provides sending email to the user"""
+    html_message = render_to_string('emails/' + template, ctx)
+    message = 'реєстрація'
+    mail_subject = 'Активувати акаунт'
     try:
-        send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, to_email)
+        send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, to_email, html_message=html_message)
     except SMTPRecipientsRefused:
         return False
     return True

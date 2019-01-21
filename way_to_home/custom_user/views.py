@@ -53,11 +53,12 @@ def signup(request):
     if not user:
         return RESPONSE_400_EXISTED_EMAIL
 
-    token = create_token(data={'email': user.email})
+    ctx = {
+        'domain': DOMAIN,
+        'token': create_token(data={'email': user.email})
+    }
 
-    message = f'http://{DOMAIN}/api/v1/user/activate/{token}'
-    mail_subject = 'Activate account'
-    send_email(mail_subject, message, (user.email,))
+    send_email((user.email,), 'registration.html', ctx)
 
     return RESPONSE_201_ACTIVATE
 
@@ -76,7 +77,7 @@ def registration_confirm(request, token):
         with transaction.atomic():
             user.update(is_active=True)
             UserProfile.create(user)
-            return RESPONSE_200_ACTIVATED
+            return redirect('index')
     except (DatabaseError, IntegrityError):
         return RESPONSE_400_DB_OPERATION_FAILED
 
@@ -97,7 +98,7 @@ def log_in(request):
     if not user:
         return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
     login(request, user=user)
-    return RESPONSE_200_OK
+    return redirect('index')
 
 
 @require_http_methods(["GET"])
@@ -159,8 +160,11 @@ def reset_password(request):
     if not user:
         return RESPONSE_400_OBJECT_NOT_FOUND
 
-    token = create_token(data={'email': user.email})
-    send_email_password_update(user, token)
+    ctx = {
+        'domain': DOMAIN,
+        'token': create_token(data={'email': user.email})
+    }
+    send_email_password_update((user.email,), 'change_password_link.html', ctx)
 
     return RESPONSE_200_OK
 
