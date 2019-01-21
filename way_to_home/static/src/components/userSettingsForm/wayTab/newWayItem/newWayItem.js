@@ -13,6 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import ModalMap from './modalMap';
 import './newWayItem.css';
+import { HERE_APP_CODE, HERE_APP_ID } from "src/settings";
 
 
 export default class NewWayItem extends Component{
@@ -34,29 +35,23 @@ export default class NewWayItem extends Component{
         let placeA = this.props.places.find(place => place.id === this.state.placeA);
         let placeB = this.props.places.find(place => place.id === this.state.placeB);
 
-        const APP_ID = "ctrJV3imNpgpWu5urnAa";
-        const APP_CODE = "4lPfKEUtIyz_PXCcimqv2w";
+        const url = `https://transit.api.here.com/v3/route.json?dep=${placeA.latitude}%2C${placeA.longitude}&arr=${placeB.latitude}%2C${placeB.longitude}&time=${tomorrow}&app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&routing=tt`;
 
-        const testUrl = `https://transit.api.here.com/v3/route.json?dep=${placeA.latitude}%2C${placeA.longitude}&arr=${placeB.latitude}%2C${placeB.longitude}&time=${tomorrow}&app_id=${APP_ID}&app_code=${APP_CODE}&routing=tt`;
-
-         await axios.get(testUrl)
+         await axios.get(url)
             .then(response => {
                 let listRoutes = response.data.Res.Connections.Connection;
-
                 this.setState({
                     routes: listRoutes,
                     mapOpen: true,
                 });
             })
-            .catch(error => {
-                console.log(error)
-            });
+             .catch(error => this.props.setError("Між між місцями неможливо прокласти маршрут. Виберіть інші місця"));
 
          this.setState({loading:false})
     };
 
     handleModalClose = () => {
-        this.setState({ mapOpen: false });
+        this.setState({mapOpen: false});
     };
 
     newWayValidator(){
@@ -73,7 +68,7 @@ export default class NewWayItem extends Component{
      handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
-         });
+        });
      };
 
     saveButton = route => {
@@ -91,37 +86,37 @@ export default class NewWayItem extends Component{
         return (
             <div className="newWayItem">
                 <TextField
-                  select
-                  className="textField"
-                  label="Місце А"
-                  value={this.state.placeA}
-                  onChange={this.handleChange('placeA')}
-                  helperText="Виберіть одне з Ваших збережених місць"
-                  margin="normal"
+                    select
+                    className="textField"
+                    label="Місце А"
+                    value={this.state.placeA}
+                    onChange={this.handleChange('placeA')}
+                    helperText="Виберіть одне з Ваших збережених місць"
+                    margin="normal"
                 >
-                  {places.map(place => (
-                    <MenuItem key={place.id} value={place.id}>
-                      {place.name}
-                    </MenuItem>
-                  ))}
+                    {places.map(place => (
+                        <MenuItem key={place.id} value={place.id}>
+                            {place.name}
+                        </MenuItem>
+                    ))}
                 </TextField>
 
                 <TrendingFlat className="arrow" />
 
                 <TextField
-                  select
-                  className="textField"
-                  label="Місце Б"
-                  value={this.state.placeB}
-                  onChange={this.handleChange('placeB')}
-                  helperText="Виберіть одне з Ваших збережених місць"
-                  margin="normal"
+                    select
+                    className="textField"
+                    label="Місце Б"
+                    value={this.state.placeB}
+                    onChange={this.handleChange('placeB')}
+                    helperText="Виберіть одне з Ваших збережених місць"
+                    margin="normal"
                 >
-                  {places.map(place => (
-                    <MenuItem key={place.id} value={place.id}>
-                      {place.name}
-                    </MenuItem>
-                  ))}
+                    {places.map(place => (
+                        <MenuItem key={place.id} value={place.id}>
+                            {place.name}
+                        </MenuItem>
+                    ))}
                 </TextField>
 
                 <Tooltip title="Вибрати маршрут">

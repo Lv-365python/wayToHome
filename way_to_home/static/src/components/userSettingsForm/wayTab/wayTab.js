@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 
 import WayItem from './wayItem/wayItem';
 import NewWayItem from './newWayItem/newWayItem'
+import CustomizedSnackbars from '../../message/message';
 import './wayTab.css';
 
 const url = 'http://127.0.0.1:8000/api/v1/';
@@ -16,6 +17,7 @@ export default class WayTab extends Component{
         ways: [],
         places: [],
         newWay: [],
+        ajaxError: undefined,
     };
 
     getData = () => {
@@ -28,9 +30,13 @@ export default class WayTab extends Component{
 
         axios.get(url + requestWays)
             .then(response => {
-                this.setState({ ways: response.data });
+                if (response.status === 200) {
+                    this.setState({ways: response.data});
+                } else {
+                    this.setError(response.data);
+                }
             })
-        .catch(error => console.log(error));
+            .catch(error => this.setError(error));
     };
 
     getPlaces = () => {
@@ -38,9 +44,16 @@ export default class WayTab extends Component{
 
         axios.get(url + requestPlaces)
             .then(response => {
-                this.setState({ places: response.data });
+                if (response.status === 200) {
+                    if (response.data.length === 0){
+                        this.setError("Спочатку збережіть місця");
+                    }
+                    this.setState({places: response.data});
+                } else {
+                    this.setError(response.data);
+                }
             })
-        .catch(error => console.log(error));
+            .catch(error => this.setError(error));
     };
 
     componentDidMount() {
@@ -59,17 +72,21 @@ export default class WayTab extends Component{
         })
     };
 
+    setError = (error) => {
+        this.setState({ajaxError: error});
+    };
+
     handleDeleteExistItemClick = (id) => {
         axios.delete(url + `way/${id}`)
             .then(response => {
-                const ways = this.state.ways.filter(way => way.id !== id);
-                this.setState({
-                    ways: ways
-                })
+                if (response.status === 200 ) {
+                    const ways = this.state.ways.filter(way => way.id !== id);
+                    this.setState({ways: ways})
+                } else {
+                    this.setError(response.data);
+                }
             })
-            .catch(error => {
-                console.log(error)
-            });
+            .catch(error => this.setError(error));
     };
 
     handleSaveClick = (placeAid, placeBid, route) => {
@@ -86,37 +103,41 @@ export default class WayTab extends Component{
         };
         axios.post(url + 'way/', data)
             .then(response => {
-                this.setState({
-                    ways: [...this.state.ways, response.data],
-                    newWay: []
-                })
+                if (response.status === 201) {
+                    this.setState({
+                        ways: [...this.state.ways, response.data],
+                        newWay: []
+                    })
+                } else {
+                    this.setError(response.data);
+                }
             })
-            .catch(error => {
-                console.log(error)
-            });
-
+            .catch(error => this.setError(error));
     };
 
     render(){
 
+        let { ajaxError, ways, newWay, places} = this.state;
+
         return(
             <div>
-                {this.state.ways.map(way => (
+                {ways.map(way => (
                     <WayItem
                         key={way.id}
                         way={way}
-                        places={this.state.places}
+                        places={places}
                         deleteButton={this.handleDeleteExistItemClick}
                     />
                 ))}
 
-                {this.state.newWay.map(way => (
+                {newWay.map(way => (
                     <NewWayItem
                         key={Date.now()}
                         way={way}
-                        places={this.state.places}
+                        places={places}
                         deleteButton={this.handleDeleteNewItemClick}
                         saveRoute={this.handleSaveClick}
+                        setError={this.setError}
                     />
                 ))}
 
@@ -126,11 +147,12 @@ export default class WayTab extends Component{
                         size="medium"
                         color="primary"
                         onClick={this.handleAddButtonClick}
-                        disabled={this.state.newWay.length > 0 ? true : false}
+                        disabled={newWay.length > 0 ? true : false}
                     >
                       Додати шлях
                     </Button>
                 </div>
+                {ajaxError && <CustomizedSnackbars message={ajaxError} reset={this.setError}/>}
             </div>
         )
     }
