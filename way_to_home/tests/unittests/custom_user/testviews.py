@@ -218,7 +218,7 @@ class CustomUserViewTest(TestCase):
             'password': '1111Bb',
         }
         response = self.client.login(**test_data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response, True)
 
         url_logout = reverse('logout_user')
         resp_logout = self.client.get(url_logout)
