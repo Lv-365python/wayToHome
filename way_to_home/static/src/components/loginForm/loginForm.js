@@ -1,11 +1,12 @@
 
 import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import CustomizedSnackbars from '../message/message';
 import axios from 'axios';
+import CustomizedSnackbars from '../message/message';
 import './loginForm.css';
 
 
@@ -22,7 +23,8 @@ class LoginForm extends Component {
         email_error: false,
         pass_error: false,
         disable_button: true,
-        error: undefined,
+        ajax_error: undefined,
+        save_cookies: false,
     };
 
     onClickChangeType = () => {
@@ -47,9 +49,10 @@ class LoginForm extends Component {
         axios.post('/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
+            save_cookies: this.state.save_cookies,
         })
             .then(() => {
-                window.location.reload();
+                this.props.history.go(0)
             })
             .catch((error) => {
                 this.setError(error.response.data);
@@ -97,7 +100,7 @@ class LoginForm extends Component {
         else if(type === 'login')
             return regex.test(first_pass);
 
-        return false
+        return false;
     };
 
     handleButton = (email_error, email, pass_error, pass) => {
@@ -110,12 +113,16 @@ class LoginForm extends Component {
     };
 
     setError = (error) => {
-        this.setState({error: error});
+        this.setState({ajax_error: error});
+    };
+
+    changeSaveCookies = () => {
+        this.setState({save_cookies: !this.state.save_cookies});
     };
 
     render() {
-        const {email_error, email, pass_error, first_pass, repeat_display,
-               second_pass, change_button, disable_button, confirm_button, error} = this.state;
+        const {email_error, email, pass_error, first_pass, repeat_display,second_pass,
+               change_button, disable_button, confirm_button, ajax_error, save_cookies} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -155,7 +162,10 @@ class LoginForm extends Component {
                     value={second_pass}
                     onChange={this.onChangeSecondPassword}/>
                 <div>
-                    <FormControlLabel control={<Checkbox value="checkedC"/>} label="Запам'ятати мене"/>
+                    <FormControlLabel checked={save_cookies}
+                                      onChange={this.changeSaveCookies}
+                                      control={<Checkbox value="checkedC"/>}
+                                      label="Запам'ятати мене"/>
                 </div>
                 <div>
                     <Button color="primary" onClick={this.onClickChangeType}>
@@ -177,13 +187,13 @@ class LoginForm extends Component {
                         size='medium'
                         className='Btn'
                         onClick={this.props.close}>
-                        cancel
+                        відмінити
                     </Button>
                 </div>
-                { error && <CustomizedSnackbars message={error} reset={this.setError}/>}
+                {ajax_error && <CustomizedSnackbars message={ajax_error} reset={this.setError}/>}
             </div>
         )
     };
 }
 
-export default LoginForm
+export default withRouter(LoginForm);
