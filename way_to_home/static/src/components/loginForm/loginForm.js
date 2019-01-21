@@ -1,5 +1,6 @@
 
 import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -23,6 +24,7 @@ class LoginForm extends Component {
         pass_error: false,
         disable_button: true,
         ajax_error: undefined,
+        save_cookies: false,
     };
 
     onClickChangeType = () => {
@@ -44,16 +46,16 @@ class LoginForm extends Component {
 
     onClickConfirm = () => {
         let type = this.state.request_type;
-        let self = this;
-        axios.post('http://127.0.0.1:8000/api/v1/user/' + type, {
+        axios.post('/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
+            save_cookies: this.state.save_cookies,
         })
             .then(() => {
-                window.location.reload();
+                this.props.history.go(0)
             })
             .catch((error) => {
-                self.setError(error.response.data);
+                this.setError(error.response.data);
             });
     };
 
@@ -87,7 +89,7 @@ class LoginForm extends Component {
     };
 
     handlePassword = (first_pass, second_pass) => {
-        let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        let regex = /^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$/;
         let type = this.state.request_type;
 
         if(type === 'register'){
@@ -98,7 +100,7 @@ class LoginForm extends Component {
         else if(type === 'login')
             return regex.test(first_pass);
 
-        return false
+        return false;
     };
 
     handleButton = (email_error, email, pass_error, pass) => {
@@ -107,16 +109,20 @@ class LoginForm extends Component {
         else if(!email || !pass)
             this.setState({disable_button: true});
         else
-            this.setState({disable_button: false})
+            this.setState({disable_button: false});
     };
 
     setError = (error) => {
         this.setState({ajax_error: error});
     };
 
+    changeSaveCookies = () => {
+        this.setState({save_cookies: !this.state.save_cookies});
+    };
+
     render() {
-        const {email_error, email, pass_error, first_pass, repeat_display,
-               second_pass, change_button, disable_button, confirm_button, ajax_error} = this.state;
+        const {email_error, email, pass_error, first_pass, repeat_display,second_pass,
+               change_button, disable_button, confirm_button, ajax_error, save_cookies} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -156,7 +162,10 @@ class LoginForm extends Component {
                     value={second_pass}
                     onChange={this.onChangeSecondPassword}/>
                 <div>
-                    <FormControlLabel control={<Checkbox value="checkedC"/>} label="Запам'ятати мене"/>
+                    <FormControlLabel checked={save_cookies}
+                                      onChange={this.changeSaveCookies}
+                                      control={<Checkbox value="checkedC"/>}
+                                      label="Запам'ятати мене"/>
                 </div>
                 <div>
                     <Button color="primary" onClick={this.onClickChangeType}>
@@ -187,4 +196,4 @@ class LoginForm extends Component {
     };
 }
 
-export default LoginForm
+export default withRouter(LoginForm);
