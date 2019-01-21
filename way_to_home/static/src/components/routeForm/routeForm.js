@@ -24,6 +24,7 @@ class RouteSearchForm extends Component {
     };
 
     getCurrentPosition = (props) => {
+        let self = this;
         if (!navigator.geolocation){
             self.setError("Geolocation is not supported by your browser");
             return;
@@ -45,7 +46,7 @@ class RouteSearchForm extends Component {
                     props === 'A' ? self.setPointA(addr) :  self.setPointB(addr);
                 })
                 .catch((error) => {
-                    this.setError(error);
+                    self.setError(error);
                 });
         }
         function error() {
