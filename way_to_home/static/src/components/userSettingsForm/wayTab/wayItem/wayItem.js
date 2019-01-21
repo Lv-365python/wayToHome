@@ -82,25 +82,23 @@ export default class WayItem extends Component{
                    variant="outlined"
                />
 
-                <TrendingFlat className="arrow" />
+               <TrendingFlat className="arrow" />
+               <Chip
+                   className="textField"
+                   color="primary"
+                   onMouseEnter={() => this.setState({endPlaceName: this.state.endPlace.address})}
+                   onMouseLeave={() => this.setState({endPlaceName: this.state.endPlace.name})}
+                   icon={<PlaceIcon color="secondary"/>}
+                   label={this.state.endPlaceName}
+                   variant="outlined"
+               />
 
-                <Chip
-                    className="textField"
-                    color="primary"
-                    onMouseEnter={() => this.setState({endPlaceName: this.state.endPlace.address})}
-                    onMouseLeave={() => this.setState({endPlaceName: this.state.endPlace.name})}
-                    icon={<PlaceIcon color="secondary"/>}
-                    label={this.state.endPlaceName}
-                    variant="outlined"
-                />
 
-
-                <Tooltip title="Нотифікації">
-                    <IconButton color="primary" aria-label="Нотифікації" onClick={this.handleOpenNotification}>
-                         <NotificationIcon />
-                    </IconButton>
-                </Tooltip>
-
+               <Tooltip title="Нотифікації">
+                   <IconButton color="primary" aria-label="Нотифікації" onClick={this.handleOpenNotification}>
+                       <NotificationIcon />
+                   </IconButton>
+               </Tooltip>
                 <Tooltip title="Видалити">
                     <IconButton color="secondary" aria-label="Видалити" onClick={this.handleOpenDeleteAlert}>
                         <DeleteIcon />
@@ -112,29 +110,29 @@ export default class WayItem extends Component{
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"
                 >
-                  <DialogTitle id="alert-dialog-title">{"Видалити шлях ?"}</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                      Ви впевнені що хочете видалити шлях? Також будуть видалені збережені нотифікації для вибраного шляху.
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                        onClick={this.handleCloseDeleteAlert}
-                        variant="outlined"
-                        color="primary"
-                    >
-                      Скасувати
-                    </Button>
-                    <Button
-                        onClick={() => this.props.deleteButton(this.props.way.id)}
-                        variant="outlined"
-                        color="primary"
-                        autoFocus
-                    >
-                      Видалити
-                    </Button>
-                  </DialogActions>
+                    <DialogTitle id="alert-dialog-title">{"Видалити шлях ?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Ви впевнені що хочете видалити шлях? Також будуть видалені збережені нотифікації для вибраного шляху.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={this.handleCloseDeleteAlert}
+                            variant="outlined"
+                            color="primary"
+                        >
+                            Скасувати
+                        </Button>
+                        <Button
+                            onClick={() => this.props.deleteButton(this.props.way.id)}
+                            variant="outlined"
+                            color="primary"
+                            autoFocus
+                        >
+                            Видалити
+                        </Button>
+                    </DialogActions>
                 </Dialog>
             </div>
         )

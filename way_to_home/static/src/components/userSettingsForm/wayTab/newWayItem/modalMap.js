@@ -26,55 +26,52 @@ class ModalMap extends React.Component {
   };
 
   render() {
-    const { routes } = this.props;
-    const { activeRoute } = this.state;
-    const maxRoutes = routes.length;
-    console.log(routes);
-
-    return (
-        <div>
-            <DialogTitle>Виберіть маршрут</DialogTitle>
-            <DialogContent>
-                <div>
-                    TODO: MAP {routes[activeRoute].Sections.Sec[0].mode}
-                </div>
-            </DialogContent>
-            <DialogActions>
-                <MobileStepper
-                    steps={maxRoutes}
-                    position="static"
-                    activeStep={activeRoute}
-                    nextButton={
-                        <Button size="small" onClick={this.handleNext} disabled={activeRoute === maxRoutes - 1}>
-                          Вперед
-                          <KeyboardArrowRight />
-                        </Button>
-                    }
-                    backButton={
-                        <Button size="small" onClick={this.handleBack} disabled={activeRoute === 0}>
-                          <KeyboardArrowLeft />
-                          Назад
-                        </Button>
-                    }
-                />
-                <Button
-                    variant="outlined"
-                    style={{color:"green"}}
-                    onClick={() => this.props.saveRoute(routes[activeRoute].Sections.Sec)}
-
-                >
-                    Вибрати
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={this.props.onClose}
-                >
-                    Скасувати
-                </Button>
-            </DialogActions>
-        </div>
-    );
+      const { routes } = this.props;
+      const { activeRoute } = this.state;
+      const maxRoutes = routes.length;
+      return (
+          <div>
+              <DialogTitle>Виберіть маршрут</DialogTitle>
+              <DialogContent>
+                  <div>
+                      TODO: MAP {routes[activeRoute].Sections.Sec[0].mode}
+                  </div>
+              </DialogContent>
+              <DialogActions>
+                  <MobileStepper
+                      steps={maxRoutes}
+                      position="static"
+                      activeStep={activeRoute}
+                      nextButton={
+                          <Button size="small" onClick={this.handleNext} disabled={activeRoute === maxRoutes - 1}>
+                              Вперед
+                              <KeyboardArrowRight />
+                          </Button>
+                      }
+                      backButton={
+                          <Button size="small" onClick={this.handleBack} disabled={activeRoute === 0}>
+                              <KeyboardArrowLeft />
+                              Назад
+                          </Button>
+                      }
+                  />
+                  <Button
+                      variant="outlined"
+                      style={{color:"green"}}
+                      onClick={() => this.props.saveRoute(routes[activeRoute].Sections.Sec)}
+                  >
+                      Вибрати
+                  </Button>
+                  <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={this.props.onClose}
+                  >
+                      Скасувати
+                  </Button>
+              </DialogActions>
+          </div>
+      );
   }
 }
 
