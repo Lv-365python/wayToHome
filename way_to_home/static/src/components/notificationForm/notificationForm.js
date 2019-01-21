@@ -215,7 +215,7 @@ class NotificationForm extends Component {
     };
 
     componentWillUnmount() {
-        setTimeout(200, this.getData());
+        this.getData();
     };
 
     componentDidMount() {
@@ -266,6 +266,7 @@ class NotificationForm extends Component {
                 }
             }
         }
+        this.componentWillUnmount()
     };
 
     sendUpdateDate = (id, start_time, end_time) => {
@@ -362,12 +363,12 @@ class NotificationForm extends Component {
                 </div>
                 { this.state.OpenStartDate &&
                 <div className='startDate'>
-                    <Calendar onChange={this.onChangeStartDate}
+                    <Calendar onClickDay={this.onChangeStartDate}
                               value={this.state.StartDate} />
                 </div> }
                 { this.state.OpenEndDate &&
                 <div className='endDate'>
-                    <Calendar onChange={this.onChangeEndDate}
+                    <Calendar onClickDay={this.onChangeEndDate}
                               value={this.state.EndDate} />
                 </div> }
             </div>
