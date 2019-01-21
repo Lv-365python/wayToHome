@@ -77,7 +77,7 @@ def registration_confirm(request, token):
         with transaction.atomic():
             user.update(is_active=True)
             UserProfile.create(user)
-            return redirect('index')
+            return RESPONSE_200_ACTIVATED
     except (DatabaseError, IntegrityError):
         return RESPONSE_400_DB_OPERATION_FAILED
 
@@ -98,7 +98,7 @@ def log_in(request):
     if not user:
         return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
     login(request, user=user)
-    return redirect('index')
+    return RESPONSE_200_OK
 
 
 @require_http_methods(["GET"])
