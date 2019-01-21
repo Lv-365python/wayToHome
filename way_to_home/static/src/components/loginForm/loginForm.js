@@ -4,8 +4,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import axios from 'axios';
 import CustomizedSnackbars from '../message/message';
+import axios from 'axios';
 import './loginForm.css';
 
 
@@ -22,7 +22,7 @@ class LoginForm extends Component {
         email_error: false,
         pass_error: false,
         disable_button: true,
-        ajax_error: undefined,
+        error: undefined,
     };
 
     onClickChangeType = () => {
@@ -44,8 +44,7 @@ class LoginForm extends Component {
 
     onClickConfirm = () => {
         let type = this.state.request_type;
-        let self = this;
-        axios.post('http://127.0.0.1:8000/api/v1/user/' + type, {
+        axios.post('/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
         })
@@ -53,7 +52,7 @@ class LoginForm extends Component {
                 window.location.reload();
             })
             .catch((error) => {
-                self.setError(error.response.data);
+                this.setError(error.response.data);
             });
     };
 
@@ -107,16 +106,16 @@ class LoginForm extends Component {
         else if(!email || !pass)
             this.setState({disable_button: true});
         else
-            this.setState({disable_button: false})
+            this.setState({disable_button: false});
     };
 
     setError = (error) => {
-        this.setState({ajax_error: error});
+        this.setState({error: error});
     };
 
     render() {
         const {email_error, email, pass_error, first_pass, repeat_display,
-               second_pass, change_button, disable_button, confirm_button, ajax_error} = this.state;
+               second_pass, change_button, disable_button, confirm_button, error} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -178,10 +177,10 @@ class LoginForm extends Component {
                         size='medium'
                         className='Btn'
                         onClick={this.props.close}>
-                        відмінити
+                        cancel
                     </Button>
                 </div>
-                {ajax_error && <CustomizedSnackbars message={ajax_error} reset={this.setError}/>}
+                { error && <CustomizedSnackbars message={error} reset={this.setError}/>}
             </div>
         )
     };
