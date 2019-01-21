@@ -13,7 +13,7 @@
         }
 
         body {
-            width: 100% !important;
+            width: 100%;
             height: 100%;
             margin: 0;
             line-height: 1.4;
@@ -29,7 +29,7 @@
         }
 
         a {
-            color: #3869D4;
+            color: white;
         }
 
         a img {
@@ -38,6 +38,10 @@
 
         td {
             word-break: break-word;
+        }
+
+        .td_button a {
+            color: white;
         }
         /* Layout ------------------------------ */
 
@@ -66,10 +70,14 @@
             text-align: center;
         }
 
+        .email-masthead a {
+            color: white;
+        }
+
         .email-masthead_name {
             font-size: 16px;
             font-weight: bold;
-            color: white!important;
+            color: white;
             text-decoration: none;
             text-shadow: 0 1px 0 white;
         }
@@ -108,7 +116,7 @@
         }
 
         .email-footer p {
-            color: #AEAEAE;
+            color: white;
         }
 
         .body-action {
@@ -132,7 +140,7 @@
         }
 
         .preheader {
-            display: none !important;
+            display: none;
             visibility: hidden;
             mso-hide: all;
             font-size: 1px;
@@ -152,13 +160,12 @@
         /* Buttons ------------------------------ */
 
         .button {
-            background-color: #3f51b5 !important;
+            background-color: #3f51b5;
             border-top: 10px solid #3869D4;
             border-right: 18px solid #3869D4;
             border-bottom: 10px solid #3869D4;
             border-left: 18px solid #3869D4;
             display: inline-block;
-            color: #FFF;
             text-decoration: none;
             border-radius: 3px;
             box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
@@ -167,11 +174,11 @@
 
         .button-green {
             background-color: #3f51b5;
-            color: white!important;
             border-top: 10px solid #3f51b5;
             border-right: 18px solid #3f51b5;
             border-bottom: 10px solid #3f51b5;
             border-left: 18px solid #3f51b5;
+            text-decoration: none;
         }
 
         /* Type ------------------------------ */
@@ -231,7 +238,7 @@
                                                         <td align="center">
                                                             <table border="0" cellspacing="0" cellpadding="0">
                                                                 <tr>
-                                                                    <td>
+                                                                    <td class="td_button">
                                                                         {% block link_token %}
                                                                         {% endblock %}
                                                                     </td>

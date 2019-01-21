@@ -31,7 +31,11 @@ def send_email(to_email, template, ctx):
     message = 'реєстрація'
     mail_subject = 'Активувати акаунт'
     try:
-        send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, to_email, html_message=html_message)
+        send_mail(mail_subject,
+                  message,
+                  settings.DEFAULT_FROM_EMAIL,
+                  to_email,
+                  html_message=html_message)
     except SMTPRecipientsRefused:
         return False
     return True

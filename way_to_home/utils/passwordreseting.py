@@ -15,7 +15,11 @@ def send_email_password_update(to_email, template, ctx):
     message = 'скинути пароль'
     mail_subject = 'Скинути пароль'
 
-    if not send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, to_email, html_message=html_message):
+    if not send_mail(mail_subject,
+                     message,
+                     settings.DEFAULT_FROM_EMAIL,
+                     to_email,
+                     html_message=html_message):
         return False
     return True
 
@@ -27,6 +31,10 @@ def send_successful_update_email(user):
     mail_subject = 'Відновлення паролю'
     message = 'Успішне Відновлення паролю.'
 
-    if not send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, (user.email,), html_message=html_message):
+    if not send_mail(mail_subject,
+                     message,
+                     settings.DEFAULT_FROM_EMAIL,
+                     (user.email,),
+                     html_message=html_message):
         return False
     return True
