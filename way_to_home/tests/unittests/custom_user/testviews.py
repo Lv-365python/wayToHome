@@ -213,12 +213,11 @@ class CustomUserViewTest(TestCase):
 
     def test_logout(self):
         """ Positive user logout test """
-        test_data = {
+        login_data = {
             'email': 'user@mail.com',
             'password': '1111Bb',
         }
-        response = self.client.login(**test_data)
-        self.assertEqual(response, True)
+        self.client.login(**login_data)
 
         url_logout = reverse('logout_user')
         resp_logout = self.client.get(url_logout)
