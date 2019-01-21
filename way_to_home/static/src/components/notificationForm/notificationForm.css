@@ -1,10 +1,7 @@
 .notificationForm {
-    width: 700px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
     background: gainsboro;
-    position: fixed;
-    top: 30%;
-    left: 28%;
 }
 
 .notFormUl{
@@ -27,7 +24,7 @@
     color: white;
     margin-top: 10px;
     text-align: center;
-    font-family: "Al Bayan";
+    font-family: "Helvetica";
 }
 
 .not-done-true{
@@ -51,7 +48,7 @@
     color: white;
     font-size: 16px;
     line-height: 50px;
-    font-family: "Al Bayan";
+    font-family: "Helvetica";
 }
 
 .space{
@@ -65,7 +62,7 @@
     position: absolute;
     left: 8%;
     top: 200px;
-    font-family: "Al Bayan";
+    font-family: "Helvetica";
     background: #3F51B5;
     color: white;
     width: 170px;
@@ -81,7 +78,7 @@
     position: absolute;
     right: 8%;
     top: 200px;
-    font-family: "Al Bayan";
+    font-family: "Helvetica";
     background: #3F51B5;
     color: white;
     width: 170px;

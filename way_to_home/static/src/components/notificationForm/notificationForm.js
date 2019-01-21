@@ -102,7 +102,7 @@ class NotificationForm extends Component {
             OpenStartDate: !state.OpenStartDate
         }));
     };
-1
+
     toggleEndDate = () => {
         this.setState(state => ({
             OpenEndDate: !state.OpenEndDate
@@ -152,7 +152,7 @@ class NotificationForm extends Component {
     };
 
     getData = () => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
+        let url = '/api/v1/';
         let way_id = 1;
         let type = `way/${way_id}/notification/`;
 
