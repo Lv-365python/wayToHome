@@ -38,15 +38,14 @@ def load_file(url, save_to='./'):
 
     request = requests.get(url)
     if not request.status_code == 200:
-        return False
+        return None
 
     try:
         with open(f'{save_to}/{file_name}', 'wb') as file:
             file.write(request.content)
+            return file.name
     except PermissionError:
-        return False
-
-    return True
+        pass
 
 
 def parse_csv_file(path_to_file, required_fields):

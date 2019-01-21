@@ -13,7 +13,8 @@ GUESTS_PATHS = [
     '/api/v1/user/activate',
     '/api/v1/user/auth_via_google',
     '/api/v1/user/signin_via_google',
-    '/home',
+    '/api/v1/user/reset_password',
+    '/api/v1/user/confirm_reset_password'
 ]
 
 
@@ -29,6 +30,10 @@ class LoginRequiredMiddleware:  # pylint: disable=too-few-public-methods
 
     def __call__(self, request):
         """Provide JSON check and authentication validations."""
+        if not request.path_info.startswith('/api'):
+            response = self.get_response(request)
+            return response
+
         if request.method in ['POST', 'PUT']:
             try:
                 request._body = json.loads(request.body)  # pylint: disable=protected-access
