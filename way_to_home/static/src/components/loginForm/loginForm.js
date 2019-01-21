@@ -89,7 +89,7 @@ class LoginForm extends Component {
     };
 
     handlePassword = (first_pass, second_pass) => {
-        let regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        let regex = /^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$/;
         let type = this.state.request_type;
 
         if(type === 'register'){
