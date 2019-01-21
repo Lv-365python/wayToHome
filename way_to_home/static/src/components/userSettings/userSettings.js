@@ -1,4 +1,3 @@
-import {Button} from "@material-ui/core";
 import React, {Component} from 'react';
 import withRouter from "react-router-dom/withRouter";
 import Button from "@material-ui/core/Button";
@@ -13,6 +12,7 @@ class UserSettings extends Component{
     render(){
         return(
             <div>
+                <UserSettingsForm />
                 <div className='settingsComeBack'>
                     <Button
                         variant="contained"
@@ -23,8 +23,6 @@ class UserSettings extends Component{
                         <KeyboardBackspace />ПОВЕРНУТИСЬ
                     </Button>
                 </div>
-
-                <UserSettingsForm />
             </div>
         )
     }
