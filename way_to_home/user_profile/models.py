@@ -1,6 +1,7 @@
 """This module implements class that represents the user profile entity."""
 
 from django.db import models, IntegrityError
+from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
 
@@ -35,5 +36,5 @@ class UserProfile(AbstractModel):
             user_profile.user = user
             user_profile.save()
             return user_profile
-        except (ValueError, IntegrityError):
+        except (ValueError, IntegrityError, OperationalError):
             pass
