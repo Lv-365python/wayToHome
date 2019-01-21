@@ -24,7 +24,6 @@ class RouteSearchForm extends Component {
     };
 
     getCurrentPosition = (props) => {
-        let self = this;
         if (!navigator.geolocation){
             self.setError("Geolocation is not supported by your browser");
             return;
@@ -34,7 +33,7 @@ class RouteSearchForm extends Component {
             let longitude = position.coords.longitude;
             let url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+latitude+'&lon='+longitude;
             axios.get(url)
-                .then(function (response) {
+                .then((response) => {
                     const data = response.data.address;
                     let addr = `${data.town || data.city}, ${data.road}`;
                     if (data.house_number){
@@ -45,8 +44,8 @@ class RouteSearchForm extends Component {
                     }
                     props === 'A' ? self.setPointA(addr) :  self.setPointB(addr);
                 })
-                .catch(function (error) {
-                    self.setError(error);
+                .catch((error) => {
+                    this.setError(error);
                 });
         }
         function error() {
@@ -58,7 +57,6 @@ class RouteSearchForm extends Component {
     setPointA = (value) => {
         this.setState({pointA: value})
     };
-
 
     setPointB = (value) => {
         this.setState({pointB: value})

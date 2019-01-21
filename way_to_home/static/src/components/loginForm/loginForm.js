@@ -22,6 +22,7 @@ class LoginForm extends Component {
         email_error: false,
         pass_error: false,
         disable_button: true,
+        error: undefined,
     };
 
     onClickChangeType = () => {
@@ -43,8 +44,7 @@ class LoginForm extends Component {
 
     onClickConfirm = () => {
         let type = this.state.request_type;
-        let self = this;
-        axios.post('http://127.0.0.1:8000/api/v1/user/' + type, {
+        axios.post('/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
         })
@@ -52,7 +52,7 @@ class LoginForm extends Component {
                 window.location.reload();
             })
             .catch((error) => {
-                self.setError(error.response.data);
+                this.setError(error.response.data);
             });
     };
 
@@ -180,7 +180,7 @@ class LoginForm extends Component {
                         cancel
                     </Button>
                 </div>
-                { error && <CustomizedSnackbars message={this.state.error} reset={this.setError}/>}
+                { error && <CustomizedSnackbars message={error} reset={this.setError}/>}
             </div>
         )
     };
