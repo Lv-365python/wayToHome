@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import LoginBtn from '../loginBtn/loginBtn.js';
-import './header.css'
 import StartBtn from "../startBtn/startBtn.js";
+import './header.css';
 
 
-class Header extends Component{
+export default class Header extends Component{
     render(){
         return(
             <div>
@@ -14,5 +14,3 @@ class Header extends Component{
         )
     }
 }
-
-export default Header
