@@ -19,7 +19,7 @@ class PlaceItem extends React.Component {
 
     state = {
         openDeleteModal: false,
-        open: false,
+        openEditModel: false,
         text: this.props.place.name
     };
 
@@ -32,11 +32,11 @@ class PlaceItem extends React.Component {
     };
 
     onClickEdit = () => {
-        this.setState({open: true});
+        this.setState({openEditModel: true});
     };
 
-    modalClose = () => {
-        this.setState({open: false});
+    modalEditClose = () => {
+        this.setState({openEditModel: false});
     };
 
     hoverOn = () => {
@@ -59,7 +59,7 @@ class PlaceItem extends React.Component {
                 <Chip
                     className='placeItem'
                     color='primary'
-                    label={this.state.text}
+                    label={this.state.text || 'Без назви'}
                     variant='outlined'
                     onClick={this.onClickEdit}
                     onMouseEnter={this.hoverOn}
@@ -70,14 +70,14 @@ class PlaceItem extends React.Component {
                 </IconButton>
 
                 <Modal
-                    open={this.state.open}
-                    onClose={this.modalClose}
+                    open={this.state.openEditModel}
+                    onClose={this.modalEditClose}
                     disableAutoFocus='True'>
                     <PlaceForm
                         updatePlace={this.props.updatePlace}
                         form_type='Зберегти'
                         place={place}
-                        close={this.modalClose} />
+                        close={this.modalEditClose} />
                 </Modal>
 
                 <Dialog

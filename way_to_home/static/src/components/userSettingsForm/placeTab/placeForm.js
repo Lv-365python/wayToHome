@@ -14,20 +14,58 @@ class PlaceForm extends Component {
         name: ((!this.props.place)? '': this.props.place.name),
         address: ((!this.props.place)? '': this.props.place.address),
         locationId: '',
-        latitude: null,
-        longitude: null,
+        latitude: ((!this.props.place)? null: this.props.place.latitude),
+        longitude: ((!this.props.place)? null: this.props.place.longitude),
+        confirmDisabled: true,
         suggestions: [],
     };
 
 
     onChangeName = (event) => {
         let name = event.target.value;
-        this.setState({name: name});
+        let disabled = true;
+
+        if (this.props.form_type === 'Зберегти')
+            disabled = this.handleEditForm(name, this.state.address);
+        else
+            disabled = this.handleAddForm(this.state.address);
+
+        this.setState({
+            name: name,
+            confirmDisabled: disabled
+        });
     };
 
 
+    handleAddForm = (address) => {
+        const {latitude, longitude} = this.state;
+        return !(address && longitude && latitude);
+    };
+
+
+    handleEditForm = (name, address) => {
+        const {place} = this.props;
+        const {latitude, longitude} = this.state;
+        let disabled = true;
+
+        if (place.name === name && place.address === address) {
+            disabled = place.latitude === latitude && place.longitude === longitude;
+        }
+        else if (place.name !== name && place.address === address) {
+            disabled = !(place.latitude === latitude && place.longitude === longitude);
+        }
+        else if (place.address !== address) {
+            disabled = place.latitude === latitude && place.longitude === longitude;
+        }
+
+        return disabled;
+    };
+
     onChangeAddress = (event, { newValue }) => {
-        this.setState({ address: newValue })
+        this.setState({
+            address: newValue,
+            confirmDisabled: true
+        });
     };
 
 
@@ -55,7 +93,6 @@ class PlaceForm extends Component {
                     let houseNumber = suggestion.address.houseNumber || '' ;
                     let address =  suggestion.address.street + ' ' + houseNumber;
                     address = address.replace('вулиця', 'вул.');
-
                     return {
                         locationId: suggestion.locationId,
                         address: address,
@@ -73,7 +110,7 @@ class PlaceForm extends Component {
 
     sendUpdate = () => {
         let id = this.props.place.id;
-        let {name, address, longitude, latitude} = this.state;
+        const {name, address, longitude, latitude} = this.state;
         let place = {
             id: id,
             name: name,
@@ -115,7 +152,8 @@ class PlaceForm extends Component {
                 let coordinates = data.response.view[0].result[0].location.displayPosition;
                 this.setState({
                     latitude: coordinates.latitude,
-                    longitude: coordinates.longitude
+                    longitude: coordinates.longitude,
+                    confirmDisabled: false,
                 });
             }).catch(error => {
                 // TODO: messeage component
@@ -189,7 +227,8 @@ class PlaceForm extends Component {
                         variant='contained'
                         color='primary'
                         size='medium'
-                        onClick={this.onClickConfirm}>
+                        onClick={this.onClickConfirm}
+                        disabled={this.state.confirmDisabled}>
                         {this.props.form_type}
                     </Button>
                     <Button
