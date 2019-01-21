@@ -25,16 +25,17 @@ export default class MapLeaflet extends Component {
         const position = [this.state.lat, this.state.lng];
         return (
             <div className="map">
-                <Map   center={position}
-                       zoom={13}
-                       maxZoom={20}
-                       attributionControl={true}
-                       zoomControl={true}
-                       doubleClickZoom={true}
-                       scrollWheelZoom={true}
-                       dragging={true}
-                       animate={true}
-                       easeLinearity={0.35}
+                <Map
+                    center={position}
+                    zoom={13}
+                    maxZoom={20}
+                    attributionControl={true}
+                    zoomControl={true}
+                    doubleClickZoom={true}
+                    scrollWheelZoom={true}
+                    dragging={true}
+                    animate={true}
+                    easeLinearity={0.35}
                 >
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
