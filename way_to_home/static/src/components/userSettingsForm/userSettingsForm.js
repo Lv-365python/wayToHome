@@ -1,5 +1,4 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -18,16 +17,29 @@ class UserSettingsForm extends React.Component {
 
     getProfile = () => {
         let url = "http://localhost:8000/api/v1/user/profile/";
-        let self = this;
 
         axios.get(url)
             .then(function(response){
-                self.setState(state => ({
+                this.setState(state => ({
                     first_name: response.data.first_name,
                     first_name: response.data.last_name
                 })
             )})
             .catch(function(error){
+                console.log(error);
+            })
+    };
+
+    postProfile = (event) => {
+         let url = "http://localhost:8000/api/v1/user/profile/"
+         axios.post(url, {
+            first_name: this.state.first_name,
+            last_name: this.state.last_name
+         })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
                 console.log(error);
             })
     };
@@ -48,20 +60,6 @@ class UserSettingsForm extends React.Component {
         if (this.state.checked != initial_state.checked){
             this.setState({save_disabled: false});
         }
-    }
-
-    saveClick = (event) => {
-        let url = "http://localhost:8000/api/v1/user/profile/"
-        axios.post(url, {
-            first_name: this.state.first_name,
-            last_name: this.state.last_name
-        })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
     }
 
     render(){
@@ -91,7 +89,7 @@ class UserSettingsForm extends React.Component {
                     variant="contained"
                     color='primary'
                     size='medium'
-                    onClick={this.saveClick}
+                    onClick={this.postProfile}
                 />
             </div>
             )
@@ -99,3 +97,4 @@ class UserSettingsForm extends React.Component {
 }
 
 export default UserSettingsForm;
+
