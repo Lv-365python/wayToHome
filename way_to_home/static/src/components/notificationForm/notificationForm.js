@@ -156,21 +156,19 @@ class NotificationForm extends Component {
         let way_id = 1;
         let type = `way/${way_id}/notification/`;
 
-        let self = this;
-
         axios.get(url + `way/${way_id}`)
-            .then(function (response) {
+            .then((response) => {
                 let name = response.data.name;
-                self.setState(state => ({
+                this.setState(state => ({
                     pointA: name.split('-')[0],
                     pointB: name.split('-')[1]
                 }));
             });
 
         axios.get(url + type)
-            .then(function (response) {
+            .then((response) => {
 
-                self.setState(state => ({
+                this.setState(state => ({
                     saved_notifications: response.data
                 }));
 
@@ -193,7 +191,7 @@ class NotificationForm extends Component {
                     end_date.substring(5, 7) - 1,
                     end_date.substring(8, 10));
 
-                self.setState(state => ({
+                this.setState(state => ({
                     StartDate: parsed_start_date,
                     EndDate: parsed_end_date
                 }));
@@ -207,7 +205,7 @@ class NotificationForm extends Component {
                         }
                         return not;
                     });
-                    self.setState({
+                    this.setState({
                         notifications: notifications_new
                     });
                 }
