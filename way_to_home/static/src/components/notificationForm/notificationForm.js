@@ -266,11 +266,10 @@ class NotificationForm extends Component {
                 }
             }
         }
-        this.componentWillUnmount()
     };
 
     sendUpdateDate = (id, start_time, end_time) => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
+        let url = '/api/v1/';
         let way_id = 1;
         let type = `way/${way_id}/notification/${id}`;
         axios.put(url + type, {
@@ -279,7 +278,6 @@ class NotificationForm extends Component {
         })
             .then(function (response) {
                 console.log(response);
-                this.props.close();
             })
             .catch(function (error) {
                 console.log(error);
@@ -288,7 +286,7 @@ class NotificationForm extends Component {
     };
 
     sendUpdateTime = (id, start_time, end_time, new_time) => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
+        let url = '/api/v1/';
         let way_id = 1;
         let type = `way/${way_id}/notification/${id}`;
         axios.put(url + type, {
@@ -298,7 +296,6 @@ class NotificationForm extends Component {
         })
             .then(function (response) {
                 console.log(response);
-                this.props.close();
             })
             .catch(function (error) {
                 console.log(error);
@@ -306,7 +303,7 @@ class NotificationForm extends Component {
     };
 
     sendPost = (start_time, end_time, week_day, time) => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
+        let url = '/api/v1/';
         let way_id = 1;
         let type = `way/${way_id}/notification/`;
         axios.post(url + type, {
@@ -317,7 +314,6 @@ class NotificationForm extends Component {
         })
             .then(function (response) {
                 console.log(response);
-                this.props.close();
             })
             .catch(function (error) {
                 console.log(error);
@@ -325,13 +321,12 @@ class NotificationForm extends Component {
     };
 
     sendDelete = (id) => {
-        let url = 'http://127.0.0.1:8000/api/v1/';
+        let url = '/api/v1/';
         let way_id = 1;
         let type = `way/${way_id}/notification/${id}`;
         axios.delete(url + type, {})
             .then(function (response) {
                 console.log(response);
-                this.props.close();
             })
             .catch(function (error) {
                 console.log(error);
