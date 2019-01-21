@@ -217,10 +217,7 @@ class CustomUserViewTest(TestCase):
             'email': 'user@mail.com',
             'password': '1111Bb',
         }
-        url_login = reverse('login_user')
-        response = self.client.post(url_login,
-                                    json.dumps(test_data),
-                                    content_type='application/json')
+        response = self.client.login(**test_data)
         self.assertEqual(response.status_code, 200)
 
         url_logout = reverse('logout_user')
