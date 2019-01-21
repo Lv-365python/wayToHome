@@ -14,7 +14,7 @@ import './header.css'
 
 const style = {
     top: '0.5%',
-    height: 44,
+    height: '7%',
     background: '#4887c1cc',
     borderRadius: 5,
 };
@@ -26,7 +26,8 @@ class Header extends Component {
     };
 
     isLoggined = () => {
-        return document.cookie.indexOf('sessionid') !== -1;
+//        return document.cookie.indexOf('sessionid') !== -1;
+        return false;
     };
 
     render(){
@@ -36,7 +37,7 @@ class Header extends Component {
             <Toolbar>
 
                 <div className='Title' onClick={() => this.props.history.push('/home')}>
-                    Way to home
+                    <p>WayToHome</p>
                 </div>
 
                 <ToggleDisplay show={!this.isLoggined()}>

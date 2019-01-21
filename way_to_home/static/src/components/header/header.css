@@ -4,15 +4,25 @@
     top: 1%;
 }
 
+p.Title {
+    font-family: 'Aleo', serif;
+    color: white;
+    top: -5%;
+    padding: 10px;
+    margin: 10px;
+}
+
 .Title {
-    position: fixed;
+    position: absolute;
     top: 1%;
     left: 10%;
-    text-transform: uppercase;
-    font-size: 2rem;
-    font-style: italic;
-    font-family: "Helvetica", cursive;
-    font-weight: bold;
-    color: #2a218c;
+    width: 200px;
+    height: 65%;
+    border-radius: 5px;
     cursor: pointer;
+    background-color: #3f51b5;
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 0px;
+    vertical-align: middle;
 }
