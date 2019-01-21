@@ -1,0 +1,16 @@
+{% extends 'emails/base.html' %}
+{% block title %} <title>Реєстрація в систмі WayToHome</title>{% endblock %}
+{% block explain %}
+    <span class="preheader">Використайте посилання нижче, щоб підтвердити Вашу електронну адресу</span>
+{% endblock %}
+{% block content_email %}
+    <p>Ви намагаєтесь створити профіль в системі WayToHome. Використайте кнопку щоб підтвердити реєстрацію.</p>
+{% endblock %}
+{% block link_token %} <a href="http://{{domain}}/api/v1/user/activate/{{token}}" class="button button-green" target="_blank">Підтвердити реєстрацію</a>
+{% endblock %}
+{% block attention %}
+    <p>Якщо Ви не плануєте сворювати профіль в системі WayToHome, будь ласка, проігноруйте даний лист</p>
+{% endblock %}
+{% block trouble_link_email %}
+    <p class="sub">http://{{domain}}/api/v1/user/activate/{{token}}</p>
+{% endblock %}
