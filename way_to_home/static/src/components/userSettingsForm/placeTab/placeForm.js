@@ -134,6 +134,24 @@ class PlaceForm extends Component {
     };
 
 
+    formatSuggestions = (suggestions) => {
+        suggestions = suggestions.map(suggestion => {
+            let houseNumber = suggestion.address.houseNumber || '' ;
+            let address =  suggestion.address.street + ' ' + houseNumber;
+
+            if (address.includes('вулиця'))
+                address = 'вул. ' + address.replace('вулиця', '');
+            else if (address.includes('проспект'))
+                address = 'проспект ' + address.replace('проспект', '');
+
+            return {
+                locationId: suggestion.locationId,
+                address: address,
+            };
+        });
+        return suggestions;
+    };
+
     getSuggestions = ({value}) => {
         axios.get(here_suggestions_url,  {
             crossdomain: true,
@@ -152,21 +170,10 @@ class PlaceForm extends Component {
                     return suggestion;
                 }
             });
-            suggestions = suggestions.map(suggestion => {
-                let houseNumber = suggestion.address.houseNumber || '' ;
-                let address =  suggestion.address.street + ' ' + houseNumber;
-                address = address.replace('вулиця', 'вул.');
-                return {
-                    locationId: suggestion.locationId,
-                    address: address,
-                };
-            });
+            suggestions = this.formatSuggestions(suggestions);
             this.setState({
                 suggestions: suggestions
             });
-        }).catch(error => {
-            // TODO: message component
-            console.log('Can not retrieve suggestions');
         });
     };
 
@@ -189,8 +196,9 @@ class PlaceForm extends Component {
                 confirmDisabled: false,
             });
         }).catch(error => {
-            // TODO: messeage component
-            console.log('Can not retrieve coordinate');
+            this.setState({
+                confirmDisabled: true,
+            });
         });
     };
 

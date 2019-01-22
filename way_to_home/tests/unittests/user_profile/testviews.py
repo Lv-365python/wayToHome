@@ -100,3 +100,15 @@ class UserProfileViewTest(TestCase):
             update.return_value = False
             response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
             self.assertEquals(response.status_code, 400)
+
+    def test_put_validation_fail(self):
+        """Method that tests the unsuccessful request to update user_profile in case of data not passing validation"""
+        test_data = {
+            'first_name': 'new_first_name',
+            'last_name': 'new_last_name'
+        }
+
+        with mock.patch('user_profile.views.profile_validator') as profile_validator:
+            profile_validator.return_value = False
+            response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
+            self.assertEquals(response.status_code, 400)
