@@ -211,6 +211,24 @@ class NotificationViewsTestCase(TestCase):
         response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         self.assertEqual(response.status_code, 403)
 
+    def test_db_creating_post(self):
+        """Method that tests when place was not created"""
+        data = {
+            'start_time': '2019-10-29',
+            'end_time': '2019-12-29',
+            'week_day': 6,
+            'time': '23:58:59'
+        }
+
+        url = reverse('notification',
+                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
+
+        with mock.patch('notification.views.Notification.create') as notification_create:
+            notification_create.return_value = False
+            response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
     def test_put_success(self):
         """Method that test success put request for the updating Notification"""
 
