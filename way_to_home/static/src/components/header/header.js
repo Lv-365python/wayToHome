@@ -8,7 +8,6 @@ import Avatar from '@material-ui/core/Avatar';
 import ToggleDisplay from 'react-toggle-display';
 
 import LoginBtn from '../loginBtn/loginBtn.js';
-import StartBtn from '../startBtn/startBtn.js';
 import MenuButton from './menuButton/menuButton.js';
 import './header.css'
 
