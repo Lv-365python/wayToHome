@@ -1,5 +1,5 @@
 .profileTabDiv{
-   margin: 10% auto;
+   margin: 2% auto;
    display: flex;
    align-items: center;
    flex-direction: column;
@@ -12,6 +12,20 @@
 }
 
 .lastName{
+   margin-top: 2rem;
+   display: flex;
+   width: 25rem;
+   flex-direction: column;
+}
+
+.phoneNumber{
+   margin-top: 2rem;
+   display: flex;
+   width: 25rem;
+   flex-direction: column;
+}
+
+.email{
    margin-top: 2rem;
    display: flex;
    width: 25rem;

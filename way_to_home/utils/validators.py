@@ -12,6 +12,7 @@ from django.core.validators import validate_email
 DATE_MASK = ['%Y%m%d', '%Y-%m-%d', '%d-%m-%Y', '%d%m%Y', '%m%d%Y', '%d/%m/%Y']
 TIME_MASK = "%H:%M:%S"
 PASSWORD_REG_EXP = r'^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$'
+PHONE_REG_EXP = r'^\+380[0-9]{9}$'
 
 
 def string_validator(value, min_length=0, max_length=None):
@@ -258,3 +259,15 @@ def profile_validator(data):
                 return False
 
     return True
+
+
+def phone_validator(phone):
+    """Function that provides phone number validation"""
+    try:
+        if not re.match(PHONE_REG_EXP, phone):
+            return False
+    except (TypeError, AttributeError):
+        return False
+
+    return True
+

@@ -1,5 +1,6 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.db import transaction, DatabaseError, IntegrityError
@@ -10,7 +11,7 @@ from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
 from utils.senderhelper import send_email
-from utils.validators import credentials_validator, password_validator, email_validator
+from utils.validators import credentials_validator, password_validator, email_validator, phone_validator
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
@@ -201,6 +202,28 @@ def change_password(request):
         return RESPONSE_400_INVALID_DATA
 
     is_updated = user.update(password=new_password)
+    if not is_updated:
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    return RESPONSE_200_UPDATED
+
+
+@require_http_methods(["GET"])
+def get_info(request):
+    user = request.user
+
+    return JsonResponse(user.to_dict(), status=200)
+
+
+@require_http_methods(["PUT"])
+def change_phone(request):
+    user = request.user
+    phone = request.body.get('phone')
+    if not phone_validator(phone):
+        return RESPONSE_400_INVALID_DATA
+
+    is_updated = user.update(phone_number=phone)
+
     if not is_updated:
         return RESPONSE_400_DB_OPERATION_FAILED
 
