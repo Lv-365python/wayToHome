@@ -21,8 +21,7 @@ class NotificationForm extends Component {
             {id: 4, time: '08:30', text: 'ПТ', active: false, openTimePicker: false, db_id: 0},
             {id: 5, time: '08:30', text: 'СБ', active: false, openTimePicker: false, db_id: 0},
             {id: 6, time: '08:30', text: 'НД', active: false, openTimePicker: false, db_id: 0}
-        ],
-        saved_notifications: ''
+        ]
     };
 
     showList = () => {
@@ -94,7 +93,7 @@ class NotificationForm extends Component {
         });
         return this.setState({
             notifications: notifications_new
-        },() => {this.getData()});
+        });
     };
 
     toggleStartDate = () => {
@@ -110,19 +109,48 @@ class NotificationForm extends Component {
     };
 
     onChangeStartDate = (newDate) => {
-        this.setState(state => ({
-            StartDate: newDate
-        }));
-        this.sendRequest();
-        this.toggleStartDate();
+
+        if (newDate >= this.state.EndDate){
+            alert('Початкова дата не може бути більшою або рівною за кінцеву')
+        } else {
+            this.setState({StartDate: newDate});
+
+            let new_notifications = this.state.notifications;
+
+            for (let i = 0; i < new_notifications.length; i++) {
+                if (new_notifications[i].db_id !== 0 && new_notifications[i].active === true) {
+                    this.sendUpdateDate(
+                        new_notifications[i].db_id,
+                        this.formatDate(newDate),
+                        this.formatDate(this.state.EndDate)
+                    );
+                }
+            }
+
+            this.toggleStartDate();
+        }
     };
 
     onChangeEndDate = (newDate) => {
-        this.setState(state => ({
-            EndDate: newDate
-        }));
-        this.sendRequest();
-        this.toggleEndDate();
+        if (newDate <= this.state.StartDate){
+            alert('Кінцева дата не може бути меншою або рівною за початкову')
+        } else {
+            this.setState({EndDate: newDate});
+
+            let new_notifications = this.state.notifications;
+
+            for (let i = 0; i < new_notifications.length; i++) {
+                if (new_notifications[i].db_id !== 0 && new_notifications[i].active === true) {
+                    this.sendUpdateDate(
+                        new_notifications[i].db_id,
+                        this.formatDate(this.state.StartDate),
+                        this.formatDate(newDate),
+                    );
+                }
+            }
+
+            this.toggleEndDate();
+        }
     };
 
     toggleTime = (id) => {
@@ -136,7 +164,7 @@ class NotificationForm extends Component {
         });
         this.setState({
             notifications: notifications_new
-        },()=>{this.sendRequest();});
+        });
     };
 
     onChangeTime = (newTime, id) => {
@@ -149,6 +177,18 @@ class NotificationForm extends Component {
         this.setState({
             notifications: notifications_new
         });
+
+        let new_notifications = this.state.notifications;
+
+        for (let i = 0; i < new_notifications.length; i++) {
+            if (new_notifications[i].db_id !== 0 && new_notifications[i].id === id) {
+                this.sendUpdateTime(
+                    new_notifications[i].db_id,
+                    this.formatDate(this.state.StartDate),
+                    this.formatDate(this.state.EndDate),
+                    new_notifications[i].time + ':00')
+            }
+        }
     };
 
     getData = () => {
@@ -167,10 +207,6 @@ class NotificationForm extends Component {
 
         axios.get(url + type)
             .then((response) => {
-
-                this.setState(state => ({
-                    saved_notifications: response.data
-                }));
 
                 let start_date;
                 let end_date;
@@ -191,13 +227,13 @@ class NotificationForm extends Component {
                     end_date.substring(5, 7) - 1,
                     end_date.substring(8, 10));
 
-                this.setState(state => ({
+                this.setState(() => ({
                     StartDate: parsed_start_date,
                     EndDate: parsed_end_date
                 }));
 
                 for (let i = 0; i <= response.data.length - 1; i++) {
-                    let notifications_new = self.state.notifications.map((not) => {
+                    let notifications_new = this.state.notifications.map((not) => {
                         if (not.id === response.data[i].week_day) {
                             not.time = response.data[i].time.substring(0, 5);
                             not.active = true;
@@ -212,58 +248,8 @@ class NotificationForm extends Component {
             })
     };
 
-    componentWillUnmount() {
-        this.getData();
-    };
-
     componentDidMount() {
         this.getData();
-    };
-
-    sendRequest = () => {
-        let new_notifications = this.state.notifications;
-        let old_notifications = this.state.saved_notifications;
-
-        let new_start_date = this.formatDate(this.state.StartDate);
-        let old_start_date;
-
-        if (this.state.saved_notifications.length === 0) {
-            old_start_date = '2019-01-01';
-        } else {
-            old_start_date = this.state.saved_notifications[0].start_time;
-        }
-
-        let new_end_date = this.formatDate(this.state.EndDate);
-        let old_end_date;
-
-        if (this.state.saved_notifications.length === 0) {
-            old_end_date = '2019-01-02'
-        } else {
-            old_end_date = this.state.saved_notifications[0].end_time;
-        }
-
-        for (let i = 0; i < new_notifications.length; i++) {
-            for (let j = 0; j < old_notifications.length; j++) {
-                if (new_notifications[i].id === old_notifications[j].week_day) {
-                    if ((new_notifications[i].time + ':00' !== old_notifications[j].time) &&
-                        new_notifications[i].active === true) {
-                        this.sendUpdateTime(
-                            old_notifications[j].id,
-                            new_start_date,
-                            new_end_date,
-                            new_notifications[i].time + ':00');
-                        break;
-                    } else if (
-                        (new_start_date !== old_start_date || new_end_date !== old_end_date) &&
-                        new_notifications[i].active === true) {
-                        this.sendUpdateDate(old_notifications[j].id, new_start_date, new_end_date);
-                        break;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
     };
 
     sendUpdateDate = (id, start_time, end_time) => {
@@ -308,9 +294,20 @@ class NotificationForm extends Component {
             start_time: start_time,
             end_time: end_time,
             week_day: week_day,
-            time: time
+            time: time + ':00'
         })
-            .then(function (response) {
+            .then( (response) => {
+                let notifications_new = this.state.notifications.map((item) => {
+                    if (item.id === response.data.week_day) {
+                        item.time = response.data.time.substring(0, 5);
+                        item.active = true;
+                        item.db_id = response.data.id
+                    }
+                    return item;
+                });
+                this.setState({
+                    notifications: notifications_new
+                });
                 console.log(response);
             })
             .catch(function (error) {
@@ -349,19 +346,19 @@ class NotificationForm extends Component {
                     {this.showList()}
                 </ul>
                 <div className='pickStartDate' onClick={this.toggleStartDate}>
-                    <p>ПОЧАТКОВА ДАТА</p>
+                    <p>{this.formatDate(this.state.StartDate)}</p>
                 </div>
                 <div className='pickEndDate' onClick={this.toggleEndDate}>
-                    <p>КІНЦЕВА ДАТА</p>
+                    <p>{this.formatDate(this.state.EndDate)}</p>
                 </div>
                 { this.state.OpenStartDate &&
                 <div className='startDate'>
-                    <Calendar onClickDay={this.onChangeStartDate}
+                    <Calendar onChange={this.onChangeStartDate}
                               value={this.state.StartDate} />
                 </div> }
                 { this.state.OpenEndDate &&
                 <div className='endDate'>
-                    <Calendar onClickDay={this.onChangeEndDate}
+                    <Calendar onChange={this.onChangeEndDate}
                               value={this.state.EndDate} />
                 </div> }
             </div>
