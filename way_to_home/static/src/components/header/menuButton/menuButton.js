@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {withRouter} from 'react-router-dom';
+import axios from 'axios';
 
 import './menuButton.css'
 
@@ -22,8 +23,16 @@ class MenuButton extends Component{
 
   logOut = () => {
     this.setState({ anchorEl: null });
-    // TODO: loguot function
-  };
+    this.props.history.push('/home');
+
+    axios.get('/api/v1/user/logout')
+        .then(() => {
+            this.props.history.go(0)
+        })
+        .catch((error) => {
+            this.setError(error.response);
+        });
+  }
 
   toSettings = () => {
     this.setState({ anchorEl: null });
