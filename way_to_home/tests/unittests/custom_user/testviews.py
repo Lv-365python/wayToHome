@@ -178,31 +178,51 @@ class CustomUserViewTest(TestCase):
         """Provides test for a (POST) request to log in a registered user with correct credentials."""
         test_data = {
             'email': 'user@mail.com',
-            'password': '1111Bb'
+            'password': '1111Bb',
+            'remember_me': True,
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertIn('sessionid', response.cookies)
+        self.assertNotEqual(response.cookies['sessionid'].value, '')
         self.assertEqual(response.status_code, 200)
 
     def test_log_in_fail(self):
         """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
         test_data = {
             'email': 'wrong_email@mail.com',
-            'password': 'Randompassword123'
+            'password': 'Randompassword123',
+            'remember_me': True,
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertNotIn('sessionid', response.cookies)
         self.assertEqual(response.status_code, 400)
 
     def test_log_in_validator_fail(self):
         """Provides test for a (POST) request to log in a registered user with credentials that don't pass validator."""
         test_data = {
             'email': 'not_valid_email',
-            'password': 'not_valid_password'
+            'password': 'not_valid_password',
+            'remember_me': True,
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertNotIn('sessionid', response.cookies)
         self.assertEqual(response.status_code, 400)
+
+    def test_logout(self):
+        """ Positive user logout test """
+        login_data = {
+            'email': 'user@mail.com',
+            'password': '1111Bb',
+        }
+        self.client.login(**login_data)
+
+        url_logout = reverse('logout_user')
+        resp_logout = self.client.get(url_logout)
+        self.assertEqual(resp_logout.cookies['sessionid'].value, '')
+        self.assertEqual(resp_logout.status_code, 200)
 
     def test_google_auth_success(self):
         """Provides test for a (GET) request to authenticate via Google."""
@@ -220,6 +240,22 @@ class CustomUserViewTest(TestCase):
             authorization_url.return_value = ['']
             response = self.client.get(url, follow=True)
             self.assertEquals(response.status_code, 403)
+
+    def test_delete_account_success(self):
+        """Method that tests successful deleting user account"""
+        self.client.login(username='user@mail.com', password='1111Bb')
+        url = reverse('delete_account')
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_account_fail(self):
+        """Method that tests failing deleting user account"""
+        self.client.login(username='user@mail.com', password='1111Bb')
+        url = reverse('delete_account')
+        with mock.patch('custom_user.models.CustomUser.delete_by_id') as is_deleted:
+            is_deleted.return_value = False
+            response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400)
 
     @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
     @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_new)

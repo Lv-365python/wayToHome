@@ -1,6 +1,6 @@
-import {Component, Fragment} from "react";
+import React, {Component, Fragment} from "react";
 import TextField from '@material-ui/core/TextField';
-import React from "react";
+
 
 export default class InputPoint extends Component {
 
@@ -8,11 +8,12 @@ export default class InputPoint extends Component {
       let value = event.target.value;
       if (value.length > 3) {
           this.props.onChange(value)
+      }else{
+          this.props.onChange()
       }
   }
 
     render(){
-
       return (
         <Fragment>
           <TextField
