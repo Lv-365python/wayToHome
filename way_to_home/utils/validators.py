@@ -270,4 +270,3 @@ def phone_validator(phone):
         return False
 
     return True
-

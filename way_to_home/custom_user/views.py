@@ -11,7 +11,10 @@ from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
 from utils.passwordreseting import send_email_password_update, send_successful_update_email
 from utils.senderhelper import send_email
-from utils.validators import credentials_validator, password_validator, email_validator, phone_validator
+from utils.validators import (credentials_validator,
+                              password_validator,
+                              email_validator,
+                              phone_validator)
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
@@ -231,6 +234,7 @@ def change_password(request):
 
 @require_http_methods(["GET"])
 def get_info(request):
+    """Function that provides retrieving of user info"""
     user = request.user
 
     return JsonResponse(user.to_dict(), status=200)
@@ -238,6 +242,7 @@ def get_info(request):
 
 @require_http_methods(["PUT"])
 def change_phone(request):
+    """Function that provides updating of users phone number"""
     user = request.user
     phone = request.body.get('phone')
     if not phone_validator(phone):
