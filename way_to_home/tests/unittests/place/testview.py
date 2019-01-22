@@ -139,11 +139,18 @@ class PlaceViewTest(TestCase):
     def test_post_create_fail(self):
         """Method that tests when place was not created"""
 
+        data = {
+            'longitude': 12.842601,
+            'latitude': 23.968448,
+            'name': 'Дім',
+            'address': 'Суха 3, 79052',
+            'stop_id': None
+        }
         url = reverse('place')
 
         with mock.patch('place.views.Place.create') as mock_place:
             mock_place.return_value = False
-            response = self.client.post(url)
+            response = self.client.post(url, json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, 400)
 
