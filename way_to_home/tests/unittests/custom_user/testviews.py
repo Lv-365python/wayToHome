@@ -415,7 +415,7 @@ class CustomUserViewTest(TestCase):
             response = self.client.put(url, json.dumps(test_data), content_type='application/json')
         self.assertEquals(response.status_code, 400)
 
-    def get_succes(self):
+    def test_get_succes(self):
         """Provides test for a (GET) request to retrieve user information"""
         self.client.login(email='user@mail.com', password='1111Bb')
         url = reverse('user_info')
@@ -428,7 +428,7 @@ class CustomUserViewTest(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertJSONEqual(json.dumps(expected_response), json.loads(response.content))
 
-    def change_phone_succes(self):
+    def test_change_phone_succes(self):
         """Provides test for a (PUT) request to change user's phone"""
         self.client.login(email='user@mail.com', password='1111Bb')
         url = reverse('change_phone')
@@ -436,7 +436,7 @@ class CustomUserViewTest(TestCase):
         response = self.client.put(url, json.dumps(new_phone), content_type='application/json')
         self.assertEquals(response.status_code, 200)
 
-    def change_phone_validation_fail(self):
+    def test_change_phone_validation_fail(self):
         """Provides test for a (PUT) request to change user's phone"""
         self.client.login(email='user@mail.com', password='1111Bb')
         url = reverse('change_phone')
@@ -444,7 +444,7 @@ class CustomUserViewTest(TestCase):
         response = self.client.put(url, json.dumps(new_phone), content_type='application/json')
         self.assertEquals(response.status_code, 400)
 
-    def change_phone_db_fail(self):
+    def test_change_phone_db_fail(self):
         """Provides test for a (PUT) request to change user's phone"""
         self.client.login(email='user@mail.com', password='1111Bb')
         url = reverse('change_phone')
