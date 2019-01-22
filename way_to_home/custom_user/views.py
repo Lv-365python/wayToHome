@@ -99,12 +99,13 @@ def log_in(request):
     user = authenticate(**credentials)
     if not user:
         return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
+
     login(request, user=user)
+
+    if not data.get('remember_me'):
+        request.session.set_expiry(0)
+
     response = RESPONSE_200_OK
-
-    if data.get('save_cookies'):
-        response.set_cookie('user_id', user.id, max_age=TTL_USER_ID_COOKIE)
-
     return response
 
 
@@ -113,7 +114,6 @@ def logout_user(request):
     """Logout the existing user"""
     logout(request)
     response = RESPONSE_200_OK
-    response.delete_cookie('user_id')
     return response
 
 

@@ -179,12 +179,12 @@ class CustomUserViewTest(TestCase):
         test_data = {
             'email': 'user@mail.com',
             'password': '1111Bb',
-            'save_cookies': True,
+            'remember_me': True,
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
-        self.assertIn('user_id', response.cookies)
-        self.assertNotEqual(response.cookies['user_id'].value, '')
+        self.assertIn('sessionid', response.cookies)
+        self.assertNotEqual(response.cookies['sessionid'].value, '')
         self.assertEqual(response.status_code, 200)
 
     def test_log_in_fail(self):
@@ -192,11 +192,11 @@ class CustomUserViewTest(TestCase):
         test_data = {
             'email': 'wrong_email@mail.com',
             'password': 'Randompassword123',
-            'save_cookies': True,
+            'remember_me': True,
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
-        self.assertNotIn('user_id', response.cookies)
+        self.assertNotIn('sessionid', response.cookies)
         self.assertEqual(response.status_code, 400)
 
     def test_log_in_validator_fail(self):
@@ -204,11 +204,11 @@ class CustomUserViewTest(TestCase):
         test_data = {
             'email': 'not_valid_email',
             'password': 'not_valid_password',
-            'save_cookies': True,
+            'remember_me': True,
         }
         url = reverse('login_user')
         response = self.client.post(url, json.dumps(test_data), content_type='application/json')
-        self.assertNotIn('user_id', response.cookies)
+        self.assertNotIn('sessionid', response.cookies)
         self.assertEqual(response.status_code, 400)
 
     def test_logout(self):
@@ -221,7 +221,7 @@ class CustomUserViewTest(TestCase):
 
         url_logout = reverse('logout_user')
         resp_logout = self.client.get(url_logout)
-        self.assertEqual(resp_logout.cookies['user_id'].value, '')
+        self.assertEqual(resp_logout.cookies['sessionid'].value, '')
         self.assertEqual(resp_logout.status_code, 200)
 
     def test_google_auth_success(self):

@@ -49,7 +49,7 @@ class LoginForm extends Component {
         axios.post('/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
-            save_cookies: this.state.save_cookies,
+            remember_me: this.state.save_cookies,
         })
             .then(() => {
                 this.props.history.go(0)
