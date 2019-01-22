@@ -1,0 +1,84 @@
+.placeList{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3%;
+}
+
+.placeItem{
+    width: 250px;
+}
+
+.addButton {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    margin: 1% 2% 2% 2%;
+}
+
+.removeButton{
+    cursor: pointer;
+}
+
+.placeForm{
+    margin: 10% auto;
+    padding: 0 16px 16px 16px;
+    z-index: 10;
+    height: auto;
+    width: 30%;
+    background: rgba(197, 197, 197, 0.685);
+    border-radius: 30px;
+    text-align: center;
+}
+
+.formButtons{
+    margin-top: 16px;
+}
+
+
+.react-autosuggest__input {
+    width: 100%;
+    padding-left: 12px;
+    height: 54px;
+    font-size: 16px;
+    margin-top: 8px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom: 0.05rem solid rgba(0,0,0,0.45);
+}
+
+.react-autosuggest__input::placeholder{
+    color: rgba(0,0,0,0.6);
+}
+
+.react-autosuggest__input--focused {
+    outline: none;
+}
+
+.react-autosuggest__input--open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.react-autosuggest__suggestions-container--open {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.09);
+    font-size: 16px;
+}
+
+.react-autosuggest__suggestions-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    text-align: left;
+}
+
+.react-autosuggest__suggestion {
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.react-autosuggest__suggestion--highlighted {
+    background: #3f51b5;
+}
