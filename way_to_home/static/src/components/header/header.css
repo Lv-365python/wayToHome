@@ -1,28 +1,29 @@
 .AvatarDiv {
     position: fixed;
     right: 0.5%;
-    top: 1%;
+    top: 0;
 }
 
 p.Title {
-    font-family: 'Aleo', serif;
-    color: white;
-    top: -5%;
-    padding: 10px;
-    margin: 10px;
+    display: absolute;
+    vertical-align: middle;
+    margin-bottom: 10;
 }
 
 .Title {
-    position: absolute;
-    top: 1%;
+    position: fixed;
+    top: 0px;
     left: 10%;
     width: 200px;
-    height: 65%;
+    height: 40px;
     border-radius: 5px;
     cursor: pointer;
     background-color: #3f51b5;
     text-align: center;
     font-size: 1.5rem;
     line-height: 0px;
-    vertical-align: middle;
+    z-index: 1101;
+    color: white;
+    padding: 5;
+
 }

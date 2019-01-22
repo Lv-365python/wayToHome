@@ -12,10 +12,8 @@ import MenuButton from './menuButton/menuButton.js';
 import './header.css'
 
 const style = {
-    top: '0.5%',
-    height: '7%',
-    background: '#4887c1cc',
-    borderRadius: 5,
+    height: '40px',
+    background: '#5c85d6',
 };
 
 class Header extends Component {
@@ -33,7 +31,6 @@ class Header extends Component {
             <div>
             <AppBar style={style}>
             <Toolbar>
-
                 <div className='Title' onClick={() => this.props.history.push('/home')}>
                     <p>WayToHome</p>
                 </div>

@@ -33,7 +33,8 @@ class LoginBtn extends Component{
                     color='primary'
                     size='large'
                     onClick={this.onClickLoginBtn}
-                    className='Btn'>
+                    className='Btn'
+                    font-family= "Helvetica">
                         Увійти
                 </Button>
             </div>
