@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
-import Header from "../header/header";
+import StartBtn from '../startBtn/startBtn';
+import MapLeaflet from "../map/map"
 
-export default class Home extends Component{
+class Home extends Component {
     render(){
         return(
             <div>
-                <Header/>
+                <StartBtn/>
+              <MapLeaflet />
             </div>
         )
     }
 }
+
+export default Home;
