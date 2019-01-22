@@ -36,6 +36,9 @@ from way_to_home.settings import (DOMAIN,
                                   STATE)
 
 
+TTL_USER_ID_COOKIE = 60 * 60 * 24 * 14
+
+
 @require_http_methods(["POST"])
 def signup(request):
     """Function that provides user registration"""
@@ -96,8 +99,22 @@ def log_in(request):
     user = authenticate(**credentials)
     if not user:
         return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
+
     login(request, user=user)
-    return RESPONSE_200_OK
+
+    if not data.get('remember_me'):
+        request.session.set_expiry(0)
+
+    response = RESPONSE_200_OK
+    return response
+
+
+@require_http_methods(['GET'])
+def logout_user(request):
+    """Logout the existing user"""
+    logout(request)
+    response = RESPONSE_200_OK
+    return response
 
 
 @require_http_methods(["GET"])
