@@ -50,6 +50,13 @@ def required_keys_validator(data, keys_required):
     return not keys_required.difference(keys)
 
 
+def none_validator_for_required_keys(data, keys_required):
+    for key, value in data.items():
+        if key in keys_required and value is None:
+            return False
+    return True
+
+
 def date_validator(date):
     """Function that provides validation data type"""
     for mask in DATE_MASK:
@@ -109,6 +116,8 @@ def notification_data_validator(data, update=False):
     required_fields = ['start_time', 'end_time', 'week_day', 'time']
 
     if not update:
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
         if not required_keys_validator(data, required_fields):
             return False
 
@@ -140,6 +149,8 @@ def place_data_validator(data, update=False):
     required_fields = ['longitude', 'latitude', 'address']
 
     if not update:
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
         if not required_keys_validator(data, required_fields):
             return False
 
@@ -173,6 +184,8 @@ def route_data_validator(data, update=False):
     required_fields = ['time', 'position']
 
     if not update:
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
         if not required_keys_validator(data, required_fields):
             return False
 
@@ -228,11 +241,14 @@ def password_validator(password):
     return True
 
 
-def credentials_validator(data):
+def credentials_validator(data, update=False):
     """Function that provides registration and log in validation"""
-    required_keys = ['email', 'password']
-    if not required_keys_validator(data, required_keys):
-        return False
+    required_fields = ['email', 'password']
+    if not update:
+        if not required_keys_validator(data, required_fields):
+            return False
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
     if not email_validator(data.get('email')):
         return False
     if not password_validator(data.get('password')):
