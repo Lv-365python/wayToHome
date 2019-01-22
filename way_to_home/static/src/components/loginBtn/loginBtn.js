@@ -21,11 +21,10 @@ class LoginBtn extends Component{
 
     render(){
         return(
-
             <div className='LoginBtnDiv'>
                 <Modal open={this.state.open}
                        onClose={this.modalClose}
-                       disableAutoFocus="True">
+                       disableAutoFocus={true}>
 
                 <LoginForm close={this.modalClose} />
 
@@ -35,9 +34,8 @@ class LoginBtn extends Component{
                     size='large'
                     onClick={this.onClickLoginBtn}
                     className='Btn'>
-                        log in
+                        Увійти
                 </Button>
-
             </div>
         )
     }
