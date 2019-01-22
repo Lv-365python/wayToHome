@@ -3,8 +3,8 @@ Project validators
 ==================
 Module that provides validation functions for all kinds of project's data
 """
+import datetime
 import re
-from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -54,7 +54,7 @@ def date_validator(date):
     """Function that provides validation data type"""
     for mask in DATE_MASK:
         try:
-            date = datetime.strptime(date, mask)
+            date = datetime.datetime.strptime(date, mask).date()
             return date
         except ValueError:
             pass
@@ -62,7 +62,7 @@ def date_validator(date):
 
 def start_date_validator(start_date):
     """Function validates start_date field"""
-    today = datetime.now() - timedelta(days=1)
+    today = datetime.date.today()
     start_date = date_validator(start_date)
     if not start_date:
         return False
@@ -74,7 +74,7 @@ def start_date_validator(start_date):
 
 def end_date_validator(end_date, start_date):
     """Function validates end_date field"""
-    start_date = date_validator(start_date) if start_date else datetime.now() - timedelta(days=1)
+    start_date = date_validator(start_date) if start_date else datetime.date.today()
     end_date = date_validator(end_date)
     if not (start_date or end_date):
         return False
@@ -87,7 +87,7 @@ def end_date_validator(end_date, start_date):
 def time_validator(time):
     """Function validates time field in Notification model"""
     try:
-        datetime.strptime(time, TIME_MASK)
+        datetime.datetime.strptime(time, TIME_MASK)
     except ValueError:
         return False
 
@@ -122,7 +122,7 @@ def notification_data_validator(data, update=False):
     filtered_data = {key: data.get(key) for key in notification_model_fields}
     validation_rules = {
         'start_time': start_date_validator,
-        'end_time': lambda val: end_date_validator(val, data.get('start_date')),
+        'end_time': lambda val: end_date_validator(val, data.get('start_time')),
         'week_day': week_day_validator,
         'time': time_validator,
     }
