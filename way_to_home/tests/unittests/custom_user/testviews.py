@@ -414,3 +414,42 @@ class CustomUserViewTest(TestCase):
             update.return_value = False
             response = self.client.put(url, json.dumps(test_data), content_type='application/json')
         self.assertEquals(response.status_code, 400)
+
+    def get_succes(self):
+        """Provides test for a (GET) request to retrieve user information"""
+        self.client.login(email='user@mail.com', password='1111Bb')
+        url = reverse('user_info')
+        expected_response = {
+            'id': 1001,
+            'email': 'user@mail.com',
+            'phone_number': '+380111111111'
+        }
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertJSONEqual(json.dumps(expected_response), json.loads(response.content))
+
+    def change_phone_succes(self):
+        """Provides test for a (PUT) request to change user's phone"""
+        self.client.login(email='user@mail.com', password='1111Bb')
+        url = reverse('change_phone')
+        new_phone={'phone': '+380123456789'}
+        response = self.client.put(url, json.dumps(new_phone), content_type='application/json')
+        self.assertEquals(response.status_code, 200)
+
+    def change_phone_validation_fail(self):
+        """Provides test for a (PUT) request to change user's phone"""
+        self.client.login(email='user@mail.com', password='1111Bb')
+        url = reverse('change_phone')
+        new_phone = {'phone': '+38012bb'}
+        response = self.client.put(url, json.dumps(new_phone), content_type='application/json')
+        self.assertEquals(response.status_code, 400)
+
+    def change_phone_db_fail(self):
+        """Provides test for a (PUT) request to change user's phone"""
+        self.client.login(email='user@mail.com', password='1111Bb')
+        url = reverse('change_phone')
+        new_phone = {'phone': '+380123456789'}
+        with mock.patch('custom_user.models.CustomUser.update') as update:
+            update.return_value = False
+            response = self.client.put(url, json.dumps(new_phone), content_type='application/json')
+        self.assertEquals(response.status_code, 400)

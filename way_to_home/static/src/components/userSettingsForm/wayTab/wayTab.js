@@ -8,7 +8,7 @@ import NewWayItem from './newWayItem/newWayItem'
 import CustomizedSnackbars from '../../message/message';
 import './wayTab.css';
 
-const url = 'http://127.0.0.1:8000/api/v1/';
+const url = 'api/v1/';
 
 
 export default class WayTab extends Component{

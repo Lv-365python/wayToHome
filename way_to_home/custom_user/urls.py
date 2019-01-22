@@ -9,7 +9,9 @@ from custom_user.views import (signup,
                                reset_password,
                                confirm_reset_password,
                                change_password,
-                               delete_account)
+                               delete_account,
+                               get_info,
+                               change_phone)
 
 urlpatterns = [
     path('register', signup, name='signup'),
@@ -23,5 +25,7 @@ urlpatterns = [
     re_path(r'^reset_password/(?P<token>.+)$', confirm_reset_password, name='confirm_reset_password'),
     path('change_password', change_password, name='change_password'),
     path('delete_account', delete_account, name='delete_account'),
+    path('', get_info, name='user_info'),
+    path('phone', change_phone, name='change_phone'),
 ]
 
