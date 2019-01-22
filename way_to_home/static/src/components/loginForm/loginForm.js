@@ -24,7 +24,7 @@ class LoginForm extends Component {
         pass_error: false,
         disable_button: true,
         ajax_error: undefined,
-        save_cookies: false,
+        remember_me: false,
     };
 
     onClickChangeType = () => {
@@ -49,7 +49,7 @@ class LoginForm extends Component {
         axios.post('/api/v1/user/' + type, {
             email: this.state.email,
             password: this.state.first_pass,
-            remember_me: this.state.save_cookies,
+            remember_me: this.state.remember_me,
         })
             .then(() => {
                 this.props.history.go(0)
@@ -117,12 +117,12 @@ class LoginForm extends Component {
     };
 
     changeSaveCookies = () => {
-        this.setState({save_cookies: !this.state.save_cookies});
+        this.setState({remember_me: !this.state.remember_me});
     };
 
     render() {
         const {email_error, email, pass_error, first_pass, repeat_display,second_pass,
-               change_button, disable_button, confirm_button, ajax_error, save_cookies} = this.state;
+               change_button, disable_button, confirm_button, ajax_error, remember_me} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -162,7 +162,7 @@ class LoginForm extends Component {
                     value={second_pass}
                     onChange={this.onChangeSecondPassword}/>
                 <div>
-                    <FormControlLabel checked={save_cookies}
+                    <FormControlLabel checked={remember_me}
                                       onChange={this.changeSaveCookies}
                                       control={<Checkbox value="checkedC"/>}
                                       label="Запам'ятати мене"/>
