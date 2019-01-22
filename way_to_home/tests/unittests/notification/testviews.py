@@ -144,7 +144,6 @@ class NotificationViewsTestCase(TestCase):
         }
 
         expected_data = {
-            'id': 2,
             'way': 100,
             'start_time': '2019-10-29',
             'end_time': '2019-12-29',
@@ -156,6 +155,7 @@ class NotificationViewsTestCase(TestCase):
                       kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
         response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
         response_dict = json.loads(response.content)
+        response_dict.pop('id')
         self.assertEqual(response.status_code, 201)
         self.assertDictEqual(response_dict, expected_data)
 
