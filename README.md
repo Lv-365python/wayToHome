@@ -104,7 +104,13 @@ $ systemctl status rabbitmq-server
 #### Frontend
 1. Go to the folder with `package.json` and run command:
     ```
-    nmp install
+    npm install
+    ```
+2. Create `settings.py` in `way_to_home/static/src` with following settings:
+    ```js
+    // Required keys for Here App API
+    export const HERE_APP_ID = '<here_app_api_id>';
+    export const HERE_APP_CODE = '<here_app_api_code>';
     ```
 ## Running
 1. Go to the project root folder and run watcher: 
