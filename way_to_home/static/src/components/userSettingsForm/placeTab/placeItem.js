@@ -23,21 +23,26 @@ class PlaceItem extends React.Component {
         text: this.props.place.name
     };
 
+
     onClickDelete = () => {
         this.setState({openDeleteModal: true});
     };
+
 
     modalDeleteClose = () => {
         this.setState({openDeleteModal: false});
     };
 
+
     onClickEdit = () => {
         this.setState({openEditModel: true});
     };
 
+
     modalEditClose = () => {
         this.setState({openEditModel: false});
     };
+
 
     hoverOn = () => {
         this.setState({
@@ -45,13 +50,15 @@ class PlaceItem extends React.Component {
         });
     };
 
+
     hoverOff = () => {
         this.setState({
             text: this.props.place.name
         });
     };
 
-    render(){
+
+    render() {
         let {place} = this.props;
 
         return (
@@ -63,51 +70,58 @@ class PlaceItem extends React.Component {
                     variant='outlined'
                     onClick={this.onClickEdit}
                     onMouseEnter={this.hoverOn}
-                    onMouseLeave={this.hoverOff}
-                        />
-                <IconButton className='removeButton' color='secondary'  onClick={this.onClickDelete}>
+                    onMouseLeave={this.hoverOff}/>
+
+                <IconButton
+                    className='removeButton'
+                    color='secondary'
+                    onClick={this.onClickDelete}>
                     <DeleteIcon />
                 </IconButton>
 
                 <Modal
                     open={this.state.openEditModel}
                     onClose={this.modalEditClose}
-                    disableAutoFocus='True'>
+                    disableAutoFocus={true}>
                     <PlaceForm
                         updatePlace={this.props.updatePlace}
                         form_type='Зберегти'
                         place={place}
-                        close={this.modalEditClose} />
+                        close={this.modalEditClose}/>
                 </Modal>
 
                 <Dialog
-                  open={this.state.openDeleteModal}
-                  aria-labelledby="alert-dialog-title"
-                  aria-describedby="alert-dialog-description"
-                >
-                  <DialogTitle id="alert-dialog-title">{"Видалити місце ?"}</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                      Ви впевнені що хочете видалити місце?
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                        onClick={this.modalDeleteClose}
-                        variant="outlined"
-                        color="primary"
-                    >
-                      Скасувати
-                    </Button>
-                    <Button
-                        onClick={() => this.props.deleteButton(this.props.place.id)}
-                        variant="outlined"
-                        color="primary"
-                        autoFocus
-                    >
-                      Видалити
-                    </Button>
-                  </DialogActions>
+                    open={this.state.openDeleteModal}
+                    aria-labelledby='alert-dialog-title'
+                    aria-describedby='alert-dialog-description'>
+
+                    <DialogTitle
+                        id='alert-dialog-title'>
+                        {'Видалити місце?'}
+                    </DialogTitle>
+
+                    <DialogContent>
+                        <DialogContentText id='alert-dialog-description'>
+                            Ви впевнені, що хочете видалити місце?
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button
+                            onClick={this.modalDeleteClose}
+                            variant='outlined'
+                            color='primary'>
+                            Скасувати
+                        </Button>
+
+                        <Button
+                            onClick={() => this.props.deleteButton(place.id)}
+                            variant='outlined'
+                            color='primary'
+                            autoFocus>
+                            Видалити
+                        </Button>
+                    </DialogActions>
                 </Dialog>
             </div>
         );

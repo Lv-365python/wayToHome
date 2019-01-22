@@ -25,7 +25,7 @@ class LoginBtn extends Component{
             <div className='LoginBtnDiv'>
                 <Modal open={this.state.open}
                        onClose={this.modalClose}
-                       disableAutoFocus="True">
+                       disableAutoFocus={true}>
 
                 <LoginForm close={this.modalClose} />
 

@@ -9,35 +9,32 @@ import PlaceItem from './placeItem.js'
 import './place.css'
 
 export const place_api_url = '/api/v1/place/';
+export const here_suggestions_url = 'http://autocomplete.geocoder.api.here.com/6.2/suggest.json';
+export const here_geocoder_url = 'http://geocoder.api.here.com/6.2/geocode.json';
 
 
 export default class PlaceTab extends React.Component {
 
     state = {
-        open: false,
+        openAddModal: false,
         places: []
     };
 
+
     onClickAddBtn = () => {
-        this.setState({open: true});
+        this.setState({openAddModal: true});
     };
 
-    modalClose = () => {
-        this.setState({open: false});
+
+    modalAddClose = () => {
+        this.setState({openAddModal: false});
     };
 
-    componentDidMount(){
-        this.getData();
+
+    componentWillMount() {
+        this.getPlaces();
     }
 
-    getData = () => {
-        axios.get(place_api_url)
-            .then((response) => {
-                this.setState({
-                    places: response.data
-                });
-            });
-    };
 
     removePlace = (id) => {
         let places = this.state.places.filter(place => place.id !== id);
@@ -46,6 +43,26 @@ export default class PlaceTab extends React.Component {
             places: places
         });
     };
+
+
+    addPlace = (place) => {
+        let places = [...this.state.places, place];
+
+        this.setState({
+            places: places
+        })
+    };
+
+
+    getPlaces = () => {
+        axios.get(place_api_url)
+            .then(response => {
+                this.setState({
+                    places: response.data
+                });
+            });
+    };
+
 
     updatePlace = (new_place) => {
         let places = this.state.places.map(place => {
@@ -63,56 +80,49 @@ export default class PlaceTab extends React.Component {
         });
     };
 
+
     sendDelete = (id) => {
         axios.delete(place_api_url + id)
-            .then((response) => {
+            .then(response => {
                 this.removePlace(id);
             });
     };
 
-    addPlace = (place) => {
-        this.setState({
-            places: [...this.state.places, place]
-        })
-    };
 
     render(){
         return (
             <div>
                 <div className='placeList'>
-                    {this.state.places.map((place) => (
+                    {this.state.places.map(place => (
                         <PlaceItem
                             key={place.id}
                             place={place}
                             deleteButton={this.sendDelete}
-                            updatePlace={this.updatePlace}
-                        />
+                            updatePlace={this.updatePlace}/>
                     ))}
                     <div>
                         <Modal
-                            open={this.state.open}
-                            onClose={this.modalClose}
-                            disableAutoFocus='True'>
+                            open={this.state.openAddModal}
+                            onClose={this.modalAddClose}
+                            disableAutoFocus={true}>
 
                             <PlaceForm
                                 form_type='Додати'
                                 addPlace={this.addPlace}
-                                close={this.modalClose}
-                            />
+                                close={this.modalAddClose}/>
                         </Modal>
                     </div>
                 </div>
-                <div className="addButton" >
+                <div className='addButton' >
                     <Button
-                        variant="contained"
-                        size="medium"
-                        color="primary"
-                        onClick={this.onClickAddBtn}
-                    >
+                        variant='contained'
+                        size='medium'
+                        color='primary'
+                        onClick={this.onClickAddBtn}>
                       Додати місце
                     </Button>
                 </div>
             </div>
         );
-    }
+    };
 }
