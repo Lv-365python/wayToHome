@@ -10,14 +10,8 @@ from django.http import JsonResponse
 
 from route.models import Route
 from way.models import Way
-from utils.validators import route_data_validator
 from utils.responsehelper import (RESPONSE_400_OBJECT_NOT_FOUND,
-                                  RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_400_INVALID_DATA,
-                                  RESPONSE_400_DB_OPERATION_FAILED,
-                                  RESPONSE_200_UPDATED,
-                                  RESPONSE_200_DELETED)
-
+                                  RESPONSE_403_ACCESS_DENIED)
 
 class RouteView(View):
     """
