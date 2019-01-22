@@ -144,7 +144,7 @@ class NotificationViewsTestCase(TestCase):
         }
 
         expected_data = {
-            'id': 4,
+            'id': 2,
             'way': 100,
             'start_time': '2019-10-29',
             'end_time': '2019-12-29',
@@ -158,17 +158,6 @@ class NotificationViewsTestCase(TestCase):
         response_dict = json.loads(response.content)
         self.assertEqual(response.status_code, 201)
         self.assertDictEqual(response_dict, expected_data)
-
-    def test_post_data_not_required(self):
-        """The method that tests unsuccessful post request for creating notification without fields that required"""
-        data = {
-            'week_day': 6,
-            'time': '23:58:59'
-        }
-        url = reverse('notification',
-                      kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
-        response = self.client.post(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
 
     def test_post_invalid_data(self):
         """Method that tests unsuccessful post request for creating notification with invalid post data."""
