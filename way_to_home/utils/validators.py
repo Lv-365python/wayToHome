@@ -51,6 +51,7 @@ def required_keys_validator(data, keys_required):
 
 
 def none_validator_for_required_keys(data, keys_required):
+    """Provide validation for none required_keys"""
     for key, value in data.items():
         if key in keys_required and value is None:
             return False
