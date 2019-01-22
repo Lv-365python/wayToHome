@@ -243,14 +243,13 @@ def credentials_validator(data):
 def profile_validator(data):
     """Function that provides user_profile data validation"""
     profile_fields = [
-        'first_name'
+        'first_name',
         'last_name'
     ]
     filtered_data = {key: data.get(key) for key in profile_fields}
-
     validation_rules = {
-        'first_name': lambda val: string_validator(val, 64),
-        'last_name': lambda val: string_validator(val, 64)
+        'first_name': lambda val: string_validator(value=val, max_length=64),
+        'last_name': lambda val: string_validator(value=val, max_length=64)
     }
 
     for key, value in filtered_data.items():

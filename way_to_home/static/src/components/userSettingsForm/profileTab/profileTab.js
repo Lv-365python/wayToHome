@@ -11,6 +11,13 @@ import axios from 'axios';
 
 import './profileTab.css';
 
+let savedState = {
+    first_name: '',
+    last_name: '',
+    save_disabled: true,
+    initial_first_name: '',
+    initial_last_name: ''
+}
 
 export default class ProfileTab extends React.Component {
     state = {
@@ -54,7 +61,16 @@ export default class ProfileTab extends React.Component {
     };
 
     componentDidMount(){
-        this.getProfile();
+        if(savedState.save_disabled==true){
+            this.getProfile();
+        } else {
+            this.setState(state=>savedState);
+        }
+
+    };
+
+    componentWillUnmount(){
+        savedState = this.state;
     };
 
     textFieldChangeFirstName = (event) => {
