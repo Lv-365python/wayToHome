@@ -212,7 +212,7 @@ class NotificationViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_db_creating_post(self):
-        """Method that tests when place was not created"""
+        """Method that tests when notification was not created"""
         data = {
             'start_time': '2019-10-29',
             'end_time': '2019-12-29',
