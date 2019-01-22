@@ -1,7 +1,7 @@
 """This module provides tests for Notification model."""
+
 import datetime
 
-import pytz
 from django.test import TestCase
 
 from custom_user.models import CustomUser
@@ -15,23 +15,15 @@ class NotificationModelTestCase(TestCase):
     def setUp(self):
         """Method that provides preparation before testing Notification model's features."""
         user = CustomUser.objects.create(id=100, email='testuser@mail.com', password='testpassword', is_active=True)
-        way = Way.objects.create(id=100, user=user)
-
-        start_date = datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')
-        end_date = datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')
-
-        aware_start_date = pytz.utc.localize(start_date)
-        aware_end_date = pytz.utc.localize(end_date)
-
-        Notification.objects.create(
+        self.way = Way.objects.create(id=100, user=user)
+        self.notification = Notification.objects.create(
             id=100,
-            way=way,
-            start_time=aware_start_date,
-            end_time=aware_end_date,
+            way=self.way,
+            start_time=datetime.date(2019, 10, 29),
+            end_time=datetime.date(2019, 12, 29),
             week_day=6,
             time=datetime.time(23, 58, 59)
         )
-        self.notification = Notification.objects.get(id=100)
 
     def test_get_by_id(self):
         """Provide tests for `get_by_id` method of certain Notification instance."""
@@ -56,16 +48,10 @@ class NotificationModelTestCase(TestCase):
         """Provide tests for `to_dict` method of certain Notification instance."""
         notification = Notification.objects.get(id=self.notification.id)
 
-        start_date = datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')
-        end_date = datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')
-
-        aware_start_date = pytz.utc.localize(start_date)
-        aware_end_date = pytz.utc.localize(end_date)
-
         expected_dict = {
             'id': 100,
-            'start_time': aware_start_date,
-            'end_time': aware_end_date,
+            'start_time': datetime.date(2019, 10, 29),
+            'end_time': datetime.date(2019, 12, 29),
             'week_day': 6,
             'time': datetime.time(23, 58, 59),
             'way': 100
@@ -85,18 +71,13 @@ class NotificationModelTestCase(TestCase):
 
     def test_create(self):
         """Provide tests for `create` method of Notification model."""
-        way = Way.objects.get(id=100)
-
-        start_date = datetime.datetime.strptime('2019-10-29', '%Y-%m-%d')
-        end_date = datetime.datetime.strptime('2019-12-29', '%Y-%m-%d')
-
-        aware_start_date = pytz.utc.localize(start_date)
-        aware_end_date = pytz.utc.localize(end_date)
+        start_date = datetime.date(2019, 10, 29)
+        end_date = datetime.date(2019, 12, 29)
 
         notification = Notification.create(
-            way=way,
-            start_time=aware_start_date,
-            end_time=aware_end_date,
+            way=self.way,
+            start_time=start_date,
+            end_time=end_date,
             week_day=6,
             time='23:58:59'
         )
@@ -123,3 +104,31 @@ class NotificationModelTestCase(TestCase):
         self.assertFalse(is_updated)
         notification = Notification.objects.get(id=self.notification.id)
         self.assertNotEqual(notification.week_day, new_week_day)
+
+    def test_get_expired(self):
+        """Provides tests for `get_expired` method."""
+        today = datetime.date.today()
+
+        expired_notification = Notification.objects.create(
+            id=201,
+            way=self.way,
+            start_time=today - datetime.timedelta(days=31),
+            end_time=today - datetime.timedelta(days=1),
+            week_day=1,
+            time='8:30:00'
+        )
+        relevant_notification = Notification.objects.create(
+            id=202,
+            way=self.way,
+            start_time=today - datetime.timedelta(days=31),
+            end_time=today + datetime.timedelta(days=1),
+            week_day=1,
+            time='8:30:00'
+        )
+
+        expected_query = Notification.objects.filter(end_time__lt=today)
+        actual_query = Notification.get_expired()
+
+        self.assertQuerysetEqual(actual_query, expected_query, transform=lambda x: x)
+        self.assertIn(expired_notification, actual_query)
+        self.assertNotIn(relevant_notification, actual_query)

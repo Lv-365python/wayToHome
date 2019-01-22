@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
-import Header from "../header/header";
-import GoogleApiWrapper from "../map/map";
+import StartBtn from '../startBtn/startBtn';
 
-export default class Home extends Component{
+class Home extends Component {
     render(){
         return(
             <div>
-                <Header/>
-                <GoogleApiWrapper/>
+                <StartBtn/>
             </div>
         )
     }
 }
+
+export default Home;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper } from 'google-maps-react';
+import GOOGLE_MAP_API from "src/settings"
 import './map.css'
 
 export class MapContainer extends Component {
@@ -20,7 +21,5 @@ export class MapContainer extends Component {
 
 export default GoogleApiWrapper({
 
-    //Google Map Api you can find in telegram
-
-    apiKey: ''
+    apiKey: GOOGLE_MAP_API
 })(MapContainer);

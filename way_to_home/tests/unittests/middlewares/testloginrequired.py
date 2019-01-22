@@ -67,3 +67,13 @@ class LoginRequiredTestCase(TestCase):
 
         response = self.user_client.get(path)
         self.assertEqual(response.status_code, 200)
+
+    def test_success_request_for_home(self):
+        """Provide tests for success requests on `home` URL both for user and guest."""
+        path = reverse('index')
+
+        response = self.guest_client.get(path)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.user_client.get(path)
+        self.assertEqual(response.status_code, 200)
