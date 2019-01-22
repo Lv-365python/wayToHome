@@ -6,6 +6,12 @@ import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import {withRouter} from 'react-router-dom'
 
 import axios from 'axios';
 
@@ -21,9 +27,10 @@ let savedState = {
     initial_phone_number: '',
     phone_error: false,
     email: '',
+    deleteAlertOpen: false,
 };
 
-export default class ProfileTab extends React.Component {
+class ProfileTab extends React.Component {
     state = {
         first_name: '',
         last_name: '',
@@ -34,6 +41,7 @@ export default class ProfileTab extends React.Component {
         initial_phone_number: '',
         phone_error: false,
         email: '',
+        deleteAlertOpen: false,
     };
 
 
@@ -99,6 +107,20 @@ export default class ProfileTab extends React.Component {
     saveToDatabase = (event) => {
          this.saveProfile();
          this.savePhone();
+         this.setState({
+            save_disabled: true,
+         });
+    };
+
+    deleteButtonClick = (event) => {
+        let url = 'api/v1/user/delete_account'
+        axios.delete(url)
+            .then(response => {
+                this.props.history.push('/home');
+            })
+            .catch(error => {
+                console.log(error);
+            })
     };
 
     componentDidMount(){
@@ -140,6 +162,17 @@ export default class ProfileTab extends React.Component {
         }
     }
 
+    handleOpenDeleteAlert = (event) => {
+        this.setState({
+            deleteAlertOpen: true
+        });
+    }
+
+    handleCloseDeleteAlert = (event) => {
+        this.setState({
+            deleteAlertOpen: false
+        });
+    }
 
     textFieldChangePhoneNumber = (event) => {
         let checked = event.target.value;
@@ -218,7 +251,49 @@ export default class ProfileTab extends React.Component {
                     onClick={this.saveToDatabase}>
                     Зберегти
                 </Button>
+
+                <Button
+                    className="deleteButton"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={this.handleOpenDeleteAlert}>
+                    Видалити користувача
+                </Button>
+
+                <Dialog
+                  open={this.state.deleteAlertOpen}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Видалити користувача ?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Ви впевнені що хочете видалити свій аккаунт?
+                            Також будуть видалені збережені нотифікації, шляхи та місця!
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={this.handleCloseDeleteAlert}
+                            variant="outlined"
+                            color="primary"
+                        >
+                            Скасувати
+                        </Button>
+                        <Button
+                            onClick={this.deleteButtonClick}
+                            variant="outlined"
+                            color="primary"
+                            autoFocus
+                        >
+                            Видалити
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
             )
         }
 }
+
+export default withRouter(ProfileTab);
