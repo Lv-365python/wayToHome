@@ -269,8 +269,8 @@ class ProfileTab extends React.Component {
                     <DialogTitle id="alert-dialog-title">{"Видалити користувача ?"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Ви впевнені що хочете видалити свій аккаунт?
-                            Також будуть видалені збережені нотифікації, шляхи та місця!
+                            Ви впевнені, що хочете видалити свій аккаунт?
+                            Також будуть видалені збережені сповіщення, шляхи та місця!
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

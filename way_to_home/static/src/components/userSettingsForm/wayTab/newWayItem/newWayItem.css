@@ -13,3 +13,9 @@
 .arrow {
     margin: 0 2% 0 2%;
 }
+
+.buttonProgress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}

@@ -121,3 +121,6 @@ way_to_home/static/public/
 
 # EasyWay data directory
 easy_way_data/
+
+# React settings
+settings.js
