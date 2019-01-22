@@ -23,43 +23,59 @@ class RouteSearchForm extends Component {
         }));
     };
 
-    getCurrentPosition = (props) => {
+    getCurrentPosition = point => {
         if (!navigator.geolocation){
-            self.setError("Geolocation is not supported by your browser");
+            this.setError("Geolocation is not supported by your browser");
             return;
         }
-        function success(position) {
-            let latitude  = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            let url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+latitude+'&lon='+longitude;
-            axios.get(url)
-                .then((response) => {
-                    const data = response.data.address;
-                    let addr = `${data.town || data.city}, ${data.road}`;
-                    if (data.house_number){
-                        addr += `, ${data.house_number}`;
-                    }
-                    if (addr.includes("undefined")){
-                        addr = "Неможливо визначити."
-                    }
-                    props === 'A' ? self.setPointA(addr) :  self.setPointB(addr);
-                })
-                .catch((error) => {
-                    this.setError(error);
-                });
-        }
-        function error() {
-            self.setError("Unable to retrieve your location");
-        }
-        navigator.geolocation.getCurrentPosition(success, error);
+        navigator.geolocation.getCurrentPosition(
+            position => this.handleSuccess(position, point),
+            () => this.handleError("Unable to retrieve your location")
+        );
     };
 
-    setPointA = (value) => {
-        this.setState({pointA: value})
+    handleSuccess = (position, point) => {
+        let latitude  = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        let url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+latitude+'&lon='+longitude;
+        axios.get(url)
+            .then(response => {
+                const address = this.getAddress(response);
+                if (point === 'A'){
+                    this.setPointA(address);
+                }else{
+                    this.setPointB(address);
+                }
+            })
+            .catch(error => {
+                    this.setError(error.response.data);
+            });
+    }
+
+    getAddress = response => {
+        const data = response.data.address;
+        let addr = `${data.town || data.city}, ${data.road}`;
+
+        if (data.house_number) {
+            addr += `, ${data.house_number}`;
+        }
+
+        if (addr.includes("undefined")){
+            addr = "Неможливо визначити.";
+        }
+        return addr;
+    }
+
+    handleError = error => {
+        this.setError(error);
+    }
+
+    setPointA = pointA => {
+        this.setState({ pointA });
     };
 
-    setPointB = (value) => {
-        this.setState({pointB: value})
+    setPointB = pointB => {
+        this.setState({ pointB });
     };
 
     closeRouteResult = () =>{
