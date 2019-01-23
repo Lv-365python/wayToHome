@@ -4,10 +4,9 @@
     top: 0;
 }
 
-p.Title {
-    display: absolute;
-    vertical-align: middle;
-    margin-bottom: 10;
+.Title > p {
+    margin: 0;
+    margin-top: .4rem;
 }
 
 .Title {
@@ -21,9 +20,6 @@ p.Title {
     background-color: #3f51b5;
     text-align: center;
     font-size: 1.5rem;
-    line-height: 0px;
     z-index: 1101;
     color: white;
-    padding: 5;
-
 }
