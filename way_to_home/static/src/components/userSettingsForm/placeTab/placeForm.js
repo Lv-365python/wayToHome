@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import Autosuggest from 'react-autosuggest';
 import axios from 'axios';
+import Autosuggest from 'react-autosuggest';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
@@ -76,14 +76,13 @@ class PlaceForm extends Component {
             this.sendUpdate();
         else
             this.sendPost();
-
-        this.props.close();
     };
 
 
     sendUpdate = () => {
         const id = this.props.place.id;
         const {name, address, longitude, latitude} = this.state;
+
         let place = {
             id: id,
             name: name,
@@ -95,10 +94,15 @@ class PlaceForm extends Component {
         axios.put(place_api_url + id,  {
             'name': name,
             'address': address,
-            'longitude': longitude,
-            'latitude': latitude
+            'longitude': parseFloat(longitude),
+            'latitude': parseFloat(latitude)
         }).then(response => {
             this.props.updatePlace(place);
+            this.props.handleChangeName(name);
+            this.props.close();
+        }).catch(error =>{
+            this.props.close();
+            this.props.setError("Невдалось редагувати місце. Спробуйте ще раз.");
         });
     };
 
@@ -111,8 +115,12 @@ class PlaceForm extends Component {
             'address': address,
             'longitude': longitude,
             'latitude': latitude
-        }).then(({data}) => {
-            this.props.addPlace(data);
+        }).then(response => {
+            this.props.addPlace(response.data);
+            this.props.close();
+        }).catch(error => {
+            this.props.close();
+            this.props.setError("Невдалось створити місце. Спробуйте ще раз.");
         });
     };
 
