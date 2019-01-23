@@ -203,12 +203,18 @@ def _create_route(way, position, **kwargs):
 
     if isinstance(start_place, int):
         start_place = Place.get_by_id(start_place)
+        start_place.pk = None
+        start_place.user_id = None
+        start_place.save()
     else:
         start_place = Place.create(longitude=start_place['longitude'],
                                    latitude=start_place['latitude'])
 
     if isinstance(end_place, int):
         end_place = Place.get_by_id(end_place)
+        end_place.pk = None
+        end_place.user_id = None
+        end_place.save()
     else:
         end_place = Place.create(longitude=end_place['longitude'],
                                  latitude=end_place['latitude'])
