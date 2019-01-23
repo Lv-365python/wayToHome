@@ -71,11 +71,8 @@ def date_validator(date):
 
 def start_date_validator(start_date):
     """Function validates start_date field"""
-    today = datetime.date.today()
     start_date = date_validator(start_date)
     if not start_date:
-        return False
-    if today > start_date:
         return False
 
     return True
