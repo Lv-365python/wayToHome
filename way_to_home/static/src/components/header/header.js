@@ -9,6 +9,7 @@ import ToggleDisplay from 'react-toggle-display';
 
 import LoginBtn from '../loginBtn/loginBtn.js';
 import MenuButton from './menuButton/menuButton.js';
+import {isAuthenticated} from '../../main_router'
 import './header.css'
 
 const style = {
@@ -23,7 +24,7 @@ class Header extends Component {
     };
 
     isLoggined = () => {
-        return document.cookie.indexOf('sessionid') !== -1;
+        return isAuthenticated();
     };
 
     render(){
