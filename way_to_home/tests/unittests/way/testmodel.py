@@ -112,3 +112,12 @@ class WayModelTestCase(TestCase):
 
         actual_dict = way.get_way_with_routes()
         self.assertDictEqual(expected_dict, actual_dict)
+
+    def test_str(self):
+        """Provide tests for `__str__` method of certain Way instance."""
+        way = Way.get_by_id(obj_id=self.way.id)
+
+        expected_string = f'Way id: {self.way.id}, user id: {self.way.user.id}'
+        actual_string = way.__str__()
+
+        self.assertEqual(expected_string, actual_string)

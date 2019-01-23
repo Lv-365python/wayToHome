@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import ProfileTab from './profileTab/profileTab'
 import WayTab from './wayTab/wayTab';
 import PlaceTab from './placeTab/placeTab';
 import './userSettingsForm.css';
@@ -30,8 +31,7 @@ export default class UserSettingsForm extends React.Component {
                         <Tab label="Шляхи" className="settingsTab" />
                     </Tabs>
                 </AppBar>
-
-                {value === 0 && <div>TODO: user profile tab</div>}
+                {value === 0 && <ProfileTab/>}
                 {value === 1 && <PlaceTab/>}
                 {value === 2 && <WayTab/>}
             </div>

@@ -111,6 +111,7 @@ $ systemctl status rabbitmq-server
     // Required keys for Here App API
     export const HERE_APP_ID = '<here_app_api_id>';
     export const HERE_APP_CODE = '<here_app_api_code>';
+    export const GOOGLE_MAP_API = '<google_map_api_key>'
     ```
 ## Running
 1. Go to the project root folder and run watcher: 
