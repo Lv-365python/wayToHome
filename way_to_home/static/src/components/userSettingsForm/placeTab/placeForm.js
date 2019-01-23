@@ -160,6 +160,13 @@ class PlaceForm extends Component {
         return suggestions;
     };
 
+    removeDuplicateSuggestions = (suggestions) => {
+        let uniq_suggestions = suggestions.filter(suggestion =>
+            !uniq_suggestions[suggestion.address] && (uniq_suggestions[suggestion.address] = true)
+        );
+        return uniq_suggestions;
+    };
+
     getSuggestions = ({value}) => {
         axios.get(here_suggestions_url,  {
             crossdomain: true,
@@ -179,6 +186,7 @@ class PlaceForm extends Component {
                 }
             });
             suggestions = this.formatSuggestions(suggestions);
+            suggestions = this.removeDuplicateSuggestions(suggestions);
             this.setState({
                 suggestions: suggestions
             });
