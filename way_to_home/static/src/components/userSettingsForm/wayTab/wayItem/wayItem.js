@@ -37,7 +37,9 @@ export default class WayItem extends Component{
 
         this.setState({
             startPlace: startPlace,
-            endPlace: endPlace
+            endPlace: endPlace,
+            startPlaceName: startPlace.name,
+            endPlaceName: endPlace.name,
         });
     };
 
@@ -70,15 +72,17 @@ export default class WayItem extends Component{
     };
 
     render(){
+
+        let {startPlaceName, endPlaceName, startPlace, endPlace } = this.state;
         return(
             <div className="wayItem">
                <Chip
                    className="textField"
                    color="primary"
-                   onMouseEnter={() => this.setState({startPlaceName: this.state.startPlace.address})}
-                   onMouseLeave={() => this.setState({startPlaceName: this.state.startPlace.name})}
+                   onMouseEnter={() => this.setState({startPlaceName: startPlace.address})}
+                   onMouseLeave={() => this.setState({startPlaceName: startPlace.name})}
                    icon={<PlaceIcon />}
-                   label={this.state.startPlaceName}
+                   label={startPlaceName === '' ? startPlace.address : startPlaceName}
                    variant="outlined"
                />
 
@@ -86,10 +90,10 @@ export default class WayItem extends Component{
                <Chip
                    className="textField"
                    color="primary"
-                   onMouseEnter={() => this.setState({endPlaceName: this.state.endPlace.address})}
-                   onMouseLeave={() => this.setState({endPlaceName: this.state.endPlace.name})}
+                   onMouseEnter={() => this.setState({endPlaceName: endPlace.address})}
+                   onMouseLeave={() => this.setState({endPlaceName: endPlace.name})}
                    icon={<PlaceIcon color="secondary"/>}
-                   label={this.state.endPlaceName}
+                   label={endPlaceName === '' ? endPlace.address : endPlaceName}
                    variant="outlined"
                />
 

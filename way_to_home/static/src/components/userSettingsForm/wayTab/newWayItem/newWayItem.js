@@ -23,10 +23,10 @@ export default class NewWayItem extends Component{
         placeB: 'Виберіть місце Б',
         mapOpen: false,
         loading: false,
-        routes: []
+        routes: [],
     };
 
-    handleClickModalOpen = async () => {
+    handleClickModalOpen = () => {
         this.setState({loading:true});
 
         let today = new Date();
@@ -37,17 +37,19 @@ export default class NewWayItem extends Component{
 
         const url = `https://transit.api.here.com/v3/route.json?dep=${placeA.latitude}%2C${placeA.longitude}&arr=${placeB.latitude}%2C${placeB.longitude}&time=${tomorrow}&app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&routing=tt`;
 
-         await axios.get(url)
+        axios.get(url)
             .then(response => {
                 let listRoutes = response.data.Res.Connections.Connection;
                 this.setState({
                     routes: listRoutes,
                     mapOpen: true,
+                    loading: false
                 });
             })
-             .catch(error => this.props.setError("Між між місцями неможливо прокласти маршрут. Виберіть інші місця"));
-
-         this.setState({loading:false})
+             .catch(error => {
+                 this.props.setError("Між між місцями неможливо прокласти маршрут. Виберіть інші місця");
+                 this.setState({loading:false})
+             });
     };
 
     handleModalClose = () => {
@@ -96,7 +98,7 @@ export default class NewWayItem extends Component{
                 >
                     {places.map(place => (
                         <MenuItem key={place.id} value={place.id}>
-                            {place.name}
+                            {place.name === '' ? place.address : place.name}
                         </MenuItem>
                     ))}
                 </TextField>
@@ -114,7 +116,7 @@ export default class NewWayItem extends Component{
                 >
                     {places.map(place => (
                         <MenuItem key={place.id} value={place.id}>
-                            {place.name}
+                            {place.name === '' ? place.address : place.name}
                         </MenuItem>
                     ))}
                 </TextField>
@@ -145,8 +147,8 @@ export default class NewWayItem extends Component{
                 <Dialog open={this.state.mapOpen} >
                     <ModalMap
                         onClose={this.handleModalClose}
-                        routes={this.state.routes}
                         saveRoute={this.saveButton}
+                        routes={this.state.routes}
                     />
                 </Dialog>
 
