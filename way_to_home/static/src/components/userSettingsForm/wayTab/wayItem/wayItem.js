@@ -14,6 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import './wayItem.css';
+import NotificationForm from "src/components/userSettingsForm/notificationForm/notificationForm";
 
 
 export default class WayItem extends Component{
@@ -23,8 +24,9 @@ export default class WayItem extends Component{
         endPlace: {},
         startPlaceName: 'PlaceA',
         endPlaceName: 'PlaceB',
-        notificationOpen: false,
         deleteAlertOpen: false,
+        isWayFormOpen: true,
+        isNotificationFormOpen: false,
     };
 
     getData = () => {
@@ -45,95 +47,101 @@ export default class WayItem extends Component{
         this.getData();
     };
 
-    handleOpenNotification = () => {
-        this.setState({
-            notificationOpen: true
-        })
+    toggleNotificationForm = () => {
+        this.setState(state => ({
+            isNotificationFormOpen: !state.isNotificationFormOpen,
+            isWayFormOpen: !state.isWayFormOpen
+        }));
     };
 
-    handleCloseNotification = () => {
-        this.setState({
-            notificationOpen: false
-        })
+    toggleDeleteAlert = () => {
+        this.setState(state => ({
+            deleteAlertOpen: !state.deleteAlertOpen
+        }));
     };
 
-    handleOpenDeleteAlert = () => {
-        this.setState({
-            deleteAlertOpen: true
-        })
-    };
-
-    handleCloseDeleteAlert = () => {
-        this.setState({
-            deleteAlertOpen: false
-        })
-    };
 
     render(){
         return(
-            <div className="wayItem">
-               <Chip
-                   className="textField"
-                   color="primary"
-                   onMouseEnter={() => this.setState({startPlaceName: this.state.startPlace.address})}
-                   onMouseLeave={() => this.setState({startPlaceName: this.state.startPlace.name})}
-                   icon={<PlaceIcon />}
-                   label={this.state.startPlaceName}
-                   variant="outlined"
-               />
-
-               <TrendingFlat className="arrow" />
-               <Chip
-                   className="textField"
-                   color="primary"
-                   onMouseEnter={() => this.setState({endPlaceName: this.state.endPlace.address})}
-                   onMouseLeave={() => this.setState({endPlaceName: this.state.endPlace.name})}
-                   icon={<PlaceIcon color="secondary"/>}
-                   label={this.state.endPlaceName}
-                   variant="outlined"
-               />
-
-
-               <Tooltip title="Нотифікації">
-                   <IconButton color="primary" aria-label="Нотифікації" onClick={this.handleOpenNotification}>
-                       <NotificationIcon />
-                   </IconButton>
-               </Tooltip>
-                <Tooltip title="Видалити">
-                    <IconButton color="secondary" aria-label="Видалити" onClick={this.handleOpenDeleteAlert}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-
-                <Dialog
-                  open={this.state.deleteAlertOpen}
-                  aria-labelledby="alert-dialog-title"
-                  aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Видалити шлях ?"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Ви впевнені що хочете видалити шлях? Також будуть видалені збережені нотифікації для вибраного шляху.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            onClick={this.handleCloseDeleteAlert}
-                            variant="outlined"
+            <div>
+                {
+                    this.state.isWayFormOpen &&
+                    <div className="wayItem">
+                        <Chip
+                            className="textField"
                             color="primary"
-                        >
-                            Скасувати
-                        </Button>
-                        <Button
-                            onClick={() => this.props.deleteButton(this.props.way.id)}
+                            onMouseEnter={() => this.setState({startPlaceName: this.state.startPlace.address})}
+                            onMouseLeave={() => this.setState({startPlaceName: this.state.startPlace.name})}
+                            icon={<PlaceIcon/>}
+                            label={this.state.startPlaceName}
                             variant="outlined"
+                        />
+
+                        <TrendingFlat className="arrow"/>
+                        <Chip
+                            className="textField"
                             color="primary"
-                            autoFocus
+                            onMouseEnter={() => this.setState({endPlaceName: this.state.endPlace.address})}
+                            onMouseLeave={() => this.setState({endPlaceName: this.state.endPlace.name})}
+                            icon={<PlaceIcon color="secondary"/>}
+                            label={this.state.endPlaceName}
+                            variant="outlined"
+                        />
+
+
+                        <Tooltip title="Нотифікації">
+                            <IconButton color="primary" aria-label="Нотифікації" onClick={this.toggleNotificationForm}>
+                                <NotificationIcon/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Видалити">
+                            <IconButton color="secondary" aria-label="Видалити" onClick={this.toggleDeleteAlert}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </Tooltip>
+
+
+                        <Dialog
+                            open={this.state.deleteAlertOpen}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
                         >
-                            Видалити
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                            <DialogTitle id="alert-dialog-title">{"Видалити шлях ?"}</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    Ви впевнені що хочете видалити шлях? Також будуть видалені збережені нотифікації для
+                                    вибраного шляху.
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button
+                                    onClick={this.toggleDeleteAlert}
+                                    variant="outlined"
+                                    color="primary"
+                                >
+                                    Скасувати
+                                </Button>
+                                <Button
+                                    onClick={() => this.props.deleteButton(this.props.way.id)}
+                                    variant="outlined"
+                                    color="primary"
+                                    autoFocus
+                                >
+                                    Видалити
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                }
+                {
+                    this.state.isNotificationFormOpen &&
+                    <div>
+                        <NotificationForm way={this.props.way.id}/>
+                        <div className='ComeBackBtn' onClick={this.toggleNotificationForm}>
+                            <p>ПОВЕРНУТИСЬ</p>
+                        </div>
+                    </div>
+                }
             </div>
         )
     }

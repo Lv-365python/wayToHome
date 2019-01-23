@@ -193,10 +193,9 @@ class NotificationForm extends Component {
 
     getData = () => {
         let url = '/api/v1/';
-        let way_id = 1;
-        let type = `way/${way_id}/notification/`;
+        let type = `way/${this.props.way.id}/notification/`;
 
-        axios.get(url + `way/${way_id}`)
+        axios.get(url + `way/${this.props.way.id}}`)
             .then((response) => {
                 let name = response.data.name;
                 this.setState(state => ({
@@ -254,8 +253,7 @@ class NotificationForm extends Component {
 
     sendUpdateDate = (id, start_time, end_time) => {
         let url = '/api/v1/';
-        let way_id = 1;
-        let type = `way/${way_id}/notification/${id}`;
+        let type = `way/${this.props.way.id}}/notification/${id}`;
         axios.put(url + type, {
             start_time: start_time,
             end_time: end_time
@@ -271,8 +269,7 @@ class NotificationForm extends Component {
 
     sendUpdateTime = (id, start_time, end_time, new_time) => {
         let url = '/api/v1/';
-        let way_id = 1;
-        let type = `way/${way_id}/notification/${id}`;
+        let type = `way/${this.props.way.id}}/notification/${id}`;
         axios.put(url + type, {
             start_time: start_time,
             end_time: end_time,
@@ -288,8 +285,7 @@ class NotificationForm extends Component {
 
     sendPost = (start_time, end_time, week_day, time) => {
         let url = '/api/v1/';
-        let way_id = 1;
-        let type = `way/${way_id}/notification/`;
+        let type = `way/${this.props.way.id}}/notification/`;
         axios.post(url + type, {
             start_time: start_time,
             end_time: end_time,
@@ -317,8 +313,7 @@ class NotificationForm extends Component {
 
     sendDelete = (id) => {
         let url = '/api/v1/';
-        let way_id = 1;
-        let type = `way/${way_id}/notification/${id}`;
+        let type = `way/${this.props.way.id}}/notification/${id}`;
         axios.delete(url + type, {})
             .then(function (response) {
                 console.log(response);
