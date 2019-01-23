@@ -1,8 +1,10 @@
 .notificationForm {
     position: absolute;
-    top: 10%;
+    background: #DCDCDC;
+    top: 7.3%;
     width: 100%;
-    height: 90%;
+    height: 100%;
+    z-index: 9;
 }
 
 .notFormUl{

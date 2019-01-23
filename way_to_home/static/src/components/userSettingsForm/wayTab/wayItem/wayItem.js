@@ -136,7 +136,7 @@ export default class WayItem extends Component{
                 {
                     this.state.isNotificationFormOpen &&
                     <div>
-                        <NotificationForm way={this.props.way.id}/>
+                        <NotificationForm way={this.props.way}/>
                         <div className='ComeBackBtn' onClick={this.toggleNotificationForm}>
                             <p>ПОВЕРНУТИСЬ</p>
                         </div>

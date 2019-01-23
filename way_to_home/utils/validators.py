@@ -3,8 +3,8 @@ Project validators
 ==================
 Module that provides validation functions for all kinds of project's data
 """
+import datetime
 import re
-from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -51,11 +51,19 @@ def required_keys_validator(data, keys_required):
     return not keys_required.difference(keys)
 
 
+def none_validator_for_required_keys(data, keys_required):
+    """Provide validation for none required_keys"""
+    for key, value in data.items():
+        if key in keys_required and value is None:
+            return False
+    return True
+
+
 def date_validator(date):
     """Function that provides validation data type"""
     for mask in DATE_MASK:
         try:
-            date = datetime.strptime(date, mask)
+            date = datetime.datetime.strptime(date, mask).date()
             return date
         except ValueError:
             pass
@@ -63,11 +71,8 @@ def date_validator(date):
 
 def start_date_validator(start_date):
     """Function validates start_date field"""
-    today = datetime.now() - timedelta(days=1)
     start_date = date_validator(start_date)
     if not start_date:
-        return False
-    if today > start_date:
         return False
 
     return True
@@ -75,7 +80,7 @@ def start_date_validator(start_date):
 
 def end_date_validator(end_date, start_date):
     """Function validates end_date field"""
-    start_date = date_validator(start_date) if start_date else datetime.now() - timedelta(days=1)
+    start_date = date_validator(start_date) if start_date else datetime.date.today()
     end_date = date_validator(end_date)
     if not (start_date or end_date):
         return False
@@ -88,7 +93,7 @@ def end_date_validator(end_date, start_date):
 def time_validator(time):
     """Function validates time field in Notification model"""
     try:
-        datetime.strptime(time, TIME_MASK)
+        datetime.datetime.strptime(time, TIME_MASK)
     except ValueError:
         return False
 
@@ -110,6 +115,8 @@ def notification_data_validator(data, update=False):
     required_fields = ['start_time', 'end_time', 'week_day', 'time']
 
     if not update:
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
         if not required_keys_validator(data, required_fields):
             return False
 
@@ -123,7 +130,7 @@ def notification_data_validator(data, update=False):
     filtered_data = {key: data.get(key) for key in notification_model_fields}
     validation_rules = {
         'start_time': start_date_validator,
-        'end_time': lambda val: end_date_validator(val, data.get('start_date')),
+        'end_time': lambda val: end_date_validator(val, data.get('start_time')),
         'week_day': week_day_validator,
         'time': time_validator,
     }
@@ -141,6 +148,8 @@ def place_data_validator(data, update=False):
     required_fields = ['longitude', 'latitude', 'address']
 
     if not update:
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
         if not required_keys_validator(data, required_fields):
             return False
 
@@ -174,6 +183,8 @@ def route_data_validator(data, update=False):
     required_fields = ['time', 'position']
 
     if not update:
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
         if not required_keys_validator(data, required_fields):
             return False
 
@@ -229,11 +240,14 @@ def password_validator(password):
     return True
 
 
-def credentials_validator(data):
+def credentials_validator(data, update=False):
     """Function that provides registration and log in validation"""
-    required_keys = ['email', 'password']
-    if not required_keys_validator(data, required_keys):
-        return False
+    required_fields = ['email', 'password']
+    if not update:
+        if not required_keys_validator(data, required_fields):
+            return False
+        if not none_validator_for_required_keys(data, required_fields):
+            return False
     if not email_validator(data.get('email')):
         return False
     if not password_validator(data.get('password')):
