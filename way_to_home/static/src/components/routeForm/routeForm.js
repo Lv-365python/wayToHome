@@ -25,27 +25,32 @@ class RouteSearchForm extends Component {
 
     getCurrentPosition = point => {
         if (!navigator.geolocation){
-            this.setError("Geolocation is not supported by your browser");
+            this.setError("Геолокація не підтримується вашим браузером.");
             return;
         }
         navigator.geolocation.getCurrentPosition(
             position => this.handleSuccess(position, point),
-            () => this.handleError("Unable to retrieve your location")
+            () => this.handleError("Неможливо отримати ваше місцезнаходження.")
         );
     };
 
     handleSuccess = (position, point) => {
         let latitude  = position.coords.latitude;
         let longitude = position.coords.longitude;
-        let url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+latitude+'&lon='+longitude;
-        axios.get(url)
+        let url = 'https://nominatim.openstreetmap.org/reverse';
+        axios.get(url, {
+            params: {
+                format: 'jsonv2',
+                lat: latitude,
+                lon: longitude
+            }
+        })
             .then(response => {
                 const address = this.getAddress(response);
-                if (point === 'A'){
+                if (point === 'A')
                     this.setPointA(address);
-                }else{
+                else
                     this.setPointB(address);
-                }
             })
             .catch(error => {
                     this.setError(error.response.data);
@@ -53,15 +58,15 @@ class RouteSearchForm extends Component {
     }
 
     getAddress = response => {
-        const data = response.data.address;
-        let addr = `${data.town || data.city}, ${data.road}`;
+        const address = response.data.address;
+        let addr = `${address.town || address.city}, ${address.road}`;
 
-        if (data.house_number) {
-            addr += `, ${data.house_number}`;
+        if (address.house_number) {
+            addr += `, ${address.house_number}`;
         }
 
         if (addr.includes("undefined")){
-            addr = "Неможливо визначити.";
+            addr = "Неможливо визначити вашу геолокацію.";
         }
         return addr;
     }
