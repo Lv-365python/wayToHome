@@ -17,3 +17,19 @@
 .arrow {
     margin: 0 2% 0 2%;
 }
+
+.ComeBackBtn{
+    position: absolute;
+    bottom: 10%;
+    left: 40%;
+    width: 20%;
+    text-align: center;
+    background: red;
+    height: 40px;
+    color: white;
+    font-family: Helvetica;
+    border-radius: 5px;
+    line-height: 10px;
+    cursor: pointer;
+    z-index: 10;
+}

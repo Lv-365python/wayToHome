@@ -176,7 +176,6 @@ class LoginForm extends Component {
                                       onChange={this.changeSaveCookies}
                                       control={<Checkbox value="checkedC"/>}
                                       label="Запам'ятати мене"/>
-                    <FormControlLabel control={<Checkbox value="checkedC"/>} label="Remember me"/>
                 </div>
                 <div>
                     <SVGInline svg={ iconSVG }
