@@ -153,10 +153,11 @@ def signin_google(request):
                                              password=user_data.get("email"))
                     user.update(is_active=True)
                     UserProfile.create(user=user)
-                    login(request, user=user)
 
             except (DatabaseError, IntegrityError):
                 return RESPONSE_400_DB_OPERATION_FAILED
+
+        login(request, user=user)
         return HttpResponseRedirect('/')
     return RESPONSE_400_EMPTY_JSON
 
