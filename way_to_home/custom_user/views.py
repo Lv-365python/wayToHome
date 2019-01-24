@@ -149,13 +149,14 @@ def signin_google(request):
         if not user:
             try:
                 with transaction.atomic():
-                    user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
+                    user = CustomUser.create(email=user_data.get("email"),
+                                             password=user_data.get("email"))
                     user.is_active = True
                     UserProfile.create(user=user)
+                    login(request, user=user)
 
             except (DatabaseError, IntegrityError):
                 return RESPONSE_400_DB_OPERATION_FAILED
-        login(request, user=user)
         return HttpResponseRedirect('/')
     return RESPONSE_400_EMPTY_JSON
 
