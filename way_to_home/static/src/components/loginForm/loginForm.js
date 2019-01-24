@@ -54,13 +54,13 @@ class LoginForm extends Component {
             remember_me: this.state.remember_me,
         })
             .then(() => {
-                setTimeout(() => {
-                    this.props.history.go(0)
-                }, 5 * 1000);
 
                 if(this.state.request_type === 'register') {
+                    setTimeout(() => {
+                        this.props.history.go(0)
+                    }, 5 * 1000);
                     this.setError('Підтвердіть Вашу пошту');
-                }
+                }else this.props.history.go(0)
             })
             .catch((error) => {
                 this.setError(error.response.data);
