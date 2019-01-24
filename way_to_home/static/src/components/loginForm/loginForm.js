@@ -5,8 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import axios from 'axios';
+import SVGInline from "react-svg-inline";
+import iconSVG from "./../../../public/images/google.svg";
 import CustomizedSnackbars from '../message/message';
+import axios from 'axios';
 import './loginForm.css';
 
 
@@ -23,7 +25,7 @@ class LoginForm extends Component {
         email_error: false,
         pass_error: false,
         disable_button: true,
-        ajax_error: undefined,
+        error: undefined,
         remember_me: false,
     };
 
@@ -94,6 +96,12 @@ class LoginForm extends Component {
         return regex.test(String(email).toLowerCase());
     };
 
+    setError = (value) => {
+        this.setState({
+            error: value
+        });
+    }
+
     handlePassword = (first_pass, second_pass) => {
         let regex = /^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$/;
         let type = this.state.request_type;
@@ -118,8 +126,14 @@ class LoginForm extends Component {
             this.setState({disable_button: false});
     };
 
-    setError = (error) => {
-        this.setState({ajax_error: error});
+    handleSigninGoogle = () => {
+        axios.get('/api/v1/user/auth_via_google')
+            .then((response ) => {
+                window.location.replace(response.data.url);
+            })
+            .catch((error) => {
+                this.setError(error.response.data);
+            });
     };
 
     changeSaveCookies = () => {
@@ -129,7 +143,7 @@ class LoginForm extends Component {
 
     render() {
         const {email_error, email, pass_error, first_pass, repeat_display,second_pass,
-               change_button, disable_button, confirm_button, ajax_error, remember_me} = this.state;
+            change_button, disable_button, confirm_button, error, remember_me} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -175,6 +189,11 @@ class LoginForm extends Component {
                                       label="Запам'ятати мене"/>
                 </div>
                 <div>
+                    <SVGInline svg={ iconSVG }
+                               onClick={this.handleSigninGoogle}
+                    />
+                </div>
+                <div>
                     <Button color="primary" onClick={this.onClickChangeType}>
                         {change_button}
                     </Button>
@@ -197,7 +216,7 @@ class LoginForm extends Component {
                         відмінити
                     </Button>
                 </div>
-                {ajax_error && <CustomizedSnackbars message={ajax_error} reset={this.setError}/>}
+                { error && <CustomizedSnackbars message={error} reset={this.setError}/>}
             </div>
         )
     };
