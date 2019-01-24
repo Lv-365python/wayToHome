@@ -138,7 +138,7 @@ class CustomUserViewTest(TestCase):
         token = create_token(data={'email': self.inactive_user.email})
         url = reverse('confirm_signup', kwargs={'token': token})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_signup_confirm_invalid_token(self):
         """Provides test for a (GET) request to confirm user sign up with incorrect token."""
