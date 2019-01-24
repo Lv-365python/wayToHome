@@ -121,7 +121,7 @@ def log_in(request):
 def logout_user(request):
     """Logout the existing user"""
     logout(request)
-    response = RESPONSE_200_OK
+    response = HttpResponseRedirect('/')
     return response
 
 

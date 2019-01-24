@@ -1,20 +1,16 @@
 import React from 'react';
 
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Modal from '@material-ui/core/Modal';
+import Tooltip from '@material-ui/core/Tooltip';
 import {withRouter} from 'react-router-dom'
+import IconButton from '@material-ui/core/IconButton';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import axios from 'axios';
 
+import AdvancedSettings from './advancedSettings/advancedSettings.js'
 import './profileTab.css';
 
 let savedState = {
@@ -27,8 +23,10 @@ let savedState = {
     initial_phone_number: '',
     phone_error: false,
     email: '',
-    deleteAlertOpen: false,
+    openAdvancedModal: false,
 };
+
+export const url = '/api/v1/user';
 
 class ProfileTab extends React.Component {
     state = {
@@ -41,14 +39,14 @@ class ProfileTab extends React.Component {
         initial_phone_number: '',
         phone_error: false,
         email: '',
-        deleteAlertOpen: false,
+        openAdvancedModal: false,
     };
 
 
 
     getProfile = () => {
-        let url = 'api/v1/user/profile';
-        axios.get(url)
+        let uri = '/profile';
+        axios.get(url + uri)
             .then(response => {
                 this.setState({
                     first_name: response.data.first_name,
@@ -63,8 +61,7 @@ class ProfileTab extends React.Component {
     };
 
     getUserData = () => {
-        let url = 'api/v1/user/';
-        axios.get(url)
+        axios.get(url +'/')
             .then(response => {
                 this.setState({
                     phone_number: response.data.phone_number,
@@ -78,8 +75,8 @@ class ProfileTab extends React.Component {
     };
 
     saveProfile = () => {
-        let url = 'api/v1/user/profile';
-        axios.put(url, {
+        let uri = '/profile';
+        axios.put(url + uri, {
             first_name: this.state.first_name,
             last_name: this.state.last_name,
         })
@@ -89,11 +86,11 @@ class ProfileTab extends React.Component {
             .catch(error => {
                 console.log(error);
             })
-    }
+    };
 
     savePhone = () => {
-        let url = 'api/v1/user/phone';
-        axios.put(url, {
+        let uri = '/phone';
+        axios.put(url + uri, {
             phone: this.state.phone_number,
         })
             .then(response => {
@@ -102,7 +99,7 @@ class ProfileTab extends React.Component {
             .catch(error => {
                 console.log(error);
             })
-    }
+    };
 
     saveToDatabase = (event) => {
          this.saveProfile();
@@ -110,17 +107,6 @@ class ProfileTab extends React.Component {
          this.setState({
             save_disabled: true,
          });
-    };
-
-    deleteButtonClick = (event) => {
-        let url = 'api/v1/user/delete_account'
-        axios.delete(url)
-            .then(response => {
-                this.props.history.push('/home');
-            })
-            .catch(error => {
-                console.log(error);
-            })
     };
 
     componentDidMount(){
@@ -148,7 +134,7 @@ class ProfileTab extends React.Component {
         this.state.last_name == this.state.initial_last_name){
             this.setState({save_disabled: true});
         }
-    }
+    };
 
     textFieldChangeLastName = (event) => {
         let checked = event.target.value;
@@ -160,19 +146,7 @@ class ProfileTab extends React.Component {
         this.state.phone_number == this.state.initial_phone_number) {
             this.setState({save_disabled: true});
         }
-    }
-
-    handleOpenDeleteAlert = (event) => {
-        this.setState({
-            deleteAlertOpen: true
-        });
-    }
-
-    handleCloseDeleteAlert = (event) => {
-        this.setState({
-            deleteAlertOpen: false
-        });
-    }
+    };
 
     textFieldChangePhoneNumber = (event) => {
         let checked = event.target.value;
@@ -191,17 +165,33 @@ class ProfileTab extends React.Component {
          this.state.last_name == this.state.initial_last_name) ) {
             this.setState({save_disabled: true});
         }
-    }
+    };
 
     handlePhoneNumber = (phone) => {
-        let regex = /^\+380[0-9]{9}$/
+        let regex = /^\+380[0-9]{9}$/;
         return !regex.test(String(phone).toLowerCase());
-    }
+    };
+
+    onClickAdvancedBtn = () => {
+        this.setState({openAdvancedModal: true});
+    };
+
+
+    modalAdvancedClose = () => {
+        this.setState({openAdvancedModal: false});
+    };
 
     render(){
         return(
             <div className="profileTabDiv">
-                <div className="firstName">
+                <TextField
+                    className="emailField"
+                    variant="outlined"
+                    value={this.state.email}
+                    disabled={true}
+                />
+
+                <div className="profileFields">
                     <TextField
                         label="Ім'я"
                         margin="normal"
@@ -211,7 +201,7 @@ class ProfileTab extends React.Component {
                     />
                 </div>
 
-                <div className="lastName">
+                <div className="profileFields">
                     <TextField
                         label="Прізвіще"
                         margin="normal"
@@ -221,7 +211,7 @@ class ProfileTab extends React.Component {
                     />
                 </div>
 
-                <div className="phoneNumber">
+                <div className="profileFields">
                     <TextField
                         label={this.state.phone_error? "Некоректний номер" : "Номер телефону"}
                         margin="normal"
@@ -229,16 +219,6 @@ class ProfileTab extends React.Component {
                         value={this.state.phone_number || "+380"}
                         onChange={this.textFieldChangePhoneNumber}
                         error={this.state.phone_error}
-                    />
-                </div>
-
-                <div className="email">
-                    <TextField
-                        label="Електронна пошта"
-                        margin="normal"
-                        variant="filled"
-                        value={this.state.email}
-                        disabled={true}
                     />
                 </div>
 
@@ -252,45 +232,29 @@ class ProfileTab extends React.Component {
                     Зберегти
                 </Button>
 
-                <Button
-                    className="deleteButton"
-                    variant="contained"
+                <Tooltip title="Додаткові Налаштування">
+                    <IconButton
                     color="primary"
-                    size="large"
-                    onClick={this.handleOpenDeleteAlert}>
-                    Видалити користувача
-                </Button>
+                    aria-label="Додаткові Налаштування"
+                    onClick={this.onClickAdvancedBtn}
+                    size = "medium"
+                    >
+                        <SettingsIcon />
+                    </IconButton>
+                </Tooltip>
 
-                <Dialog
-                  open={this.state.deleteAlertOpen}
-                  aria-labelledby="alert-dialog-title"
-                  aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Видалити користувача ?"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Ви впевнені, що хочете видалити свій аккаунт?
-                            Також будуть видалені збережені сповіщення, шляхи та місця!
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            onClick={this.handleCloseDeleteAlert}
-                            variant="outlined"
-                            color="primary"
-                        >
-                            Скасувати
-                        </Button>
-                        <Button
-                            onClick={this.deleteButtonClick}
-                            variant="outlined"
-                            color="primary"
-                            autoFocus
-                        >
-                            Видалити
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <div>
+                    <Modal
+                        open={this.state.openAdvancedModal}
+                        onClose={this.modalAdvancedClose}
+                        disableAutoFocus={true}>
+                        <AdvancedSettings
+                            close = {this.modalAdvancedClose}
+                        />
+                    </Modal>
+                </div>
+
+
             </div>
             )
         }
