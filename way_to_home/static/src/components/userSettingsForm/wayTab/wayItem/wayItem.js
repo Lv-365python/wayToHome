@@ -113,7 +113,7 @@ export default class WayItem extends Component{
                     <DialogTitle id="alert-dialog-title">{"Видалити шлях ?"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            Ви впевнені що хочете видалити шлях? Також будуть видалені збережені нотифікації для вибраного шляху.
+                            Ви впевнені, що хочете видалити шлях? Також будуть видалені збережені нотифікації для вибраного шляху.
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
