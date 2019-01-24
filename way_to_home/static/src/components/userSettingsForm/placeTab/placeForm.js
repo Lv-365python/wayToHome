@@ -161,10 +161,10 @@ class PlaceForm extends Component {
     };
 
     removeDuplicateSuggestions = (suggestions) => {
-        let uniq_suggestions = suggestions.filter(suggestion =>
-            !uniq_suggestions[suggestion.address] && (uniq_suggestions[suggestion.address] = true)
+        let uniq = {};
+        return suggestions.filter(suggestion =>
+            !uniq[suggestion.address] && (uniq[suggestion.address] = true)
         );
-        return uniq_suggestions;
     };
 
     getSuggestions = ({value}) => {
