@@ -2,7 +2,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import redirect
 from django.db import transaction, DatabaseError, IntegrityError
 from requests_oauthlib import OAuth2Session
 
@@ -15,21 +14,19 @@ from utils.validators import (credentials_validator,
                               password_validator,
                               email_validator,
                               phone_validator)
-from utils.responsehelper import (RESPONSE_200_UPDATED,
+from utils.responsehelper import (RESPONSE_200_OK,
+                                  RESPONSE_200_DELETED,
+                                  RESPONSE_200_UPDATED,
+                                  RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EXISTED_EMAIL,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_400_OBJECT_NOT_FOUND,
-                                  RESPONSE_200_ACTIVATED,
-                                  RESPONSE_498_INVALID_TOKEN,
                                   RESPONSE_400_INVALID_EMAIL,
                                   RESPONSE_400_DB_OPERATION_FAILED,
                                   RESPONSE_400_INVALID_EMAIL_OR_PASSWORD,
-                                  RESPONSE_403_ACCESS_DENIED,
-                                  RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EMPTY_JSON,
-                                  RESPONSE_200_OK,
-                                  RESPONSE_201_CREATED,
-                                  RESPONSE_200_DELETED)
+                                  RESPONSE_403_ACCESS_DENIED,
+                                  RESPONSE_498_INVALID_TOKEN)
 from way_to_home.settings import (DOMAIN,
                                   CLIENT_ID,
                                   CLIENT_SECRET,
@@ -84,7 +81,10 @@ def registration_confirm(request, token):
         with transaction.atomic():
             user.update(is_active=True)
             UserProfile.create(user)
-            return RESPONSE_200_ACTIVATED
+
+        login(request, user=user)
+
+        return HttpResponseRedirect('/')
     except (DatabaseError, IntegrityError):
         return RESPONSE_400_DB_OPERATION_FAILED
 
@@ -102,7 +102,7 @@ def log_in(request):
         return RESPONSE_400_INVALID_DATA
 
     user = authenticate(**credentials)
-    if not user:
+    if not user or not user.is_active:
         return RESPONSE_400_INVALID_EMAIL_OR_PASSWORD
 
     login(request, user=user)
@@ -129,8 +129,7 @@ def auth_google(request):
                                    state=STATE, scope=SCOPE)
     data = google_session.authorization_url(url=AUTH_URL, state=STATE)[0]
     if data:
-        return redirect(data)
-
+        return JsonResponse({"url": data}, status=200)
     return RESPONSE_403_ACCESS_DENIED
 
 
@@ -141,19 +140,16 @@ def signin_google(request):
                                    state=STATE, scope=SCOPE)
     authorization_code = request.GET.get('code')
     if not authorization_code:
-        return RESPONSE_400_INVALID_DATA
+        return RESPONSE_403_ACCESS_DENIED
     google_session.fetch_token(token_url=TOKEN_URL, client_secret=CLIENT_SECRET,
                                code=authorization_code)
     user_data = google_session.get('https://www.googleapis.com/oauth2/v1/userinfo').json()
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
-        if user:
-            login(request, user=user)
-            return RESPONSE_200_ACTIVATED
-        user = CustomUser.create(email=user_data.get('email'), password=user_data.get('email'))
+        if not user:
+            user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
         login(request, user=user)
-        return RESPONSE_201_CREATED
-
+        return HttpResponseRedirect('/')
     return RESPONSE_400_EMPTY_JSON
 
 
