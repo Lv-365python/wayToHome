@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {withRouter} from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
-import InputLabel from '@material-ui/core/InputLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import axios from 'axios';
 
@@ -185,11 +185,11 @@ class ProfileTab extends React.Component {
     render(){
         return(
             <div className="profileTabDiv">
-                <div className="email">
-                    <InputLabel
-                        value={this.state.email}
-                    />
-                </div>
+                <TextField
+                    variant="outlined"
+                    value={this.state.email}
+                    disabled={true}
+                />
 
                 <div className="profileFields">
                     <TextField
