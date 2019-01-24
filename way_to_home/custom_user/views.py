@@ -151,7 +151,7 @@ def signin_google(request):
                 with transaction.atomic():
                     user = CustomUser.create(email=user_data.get("email"),
                                              password=user_data.get("email"))
-                    user.is_active = True
+                    user.update(is_active=True)
                     UserProfile.create(user=user)
 
             except (DatabaseError, IntegrityError):
