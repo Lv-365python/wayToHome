@@ -147,7 +147,10 @@ def signin_google(request):
     if user_data:
         user = CustomUser.get_by_email(user_data['email'])
         if not user:
-            user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
+            with transaction.atomic():
+                user = CustomUser.create(email=user_data.get("email"), password=user_data.get("email"))
+                user.is_active = True
+                UserProfile.create(user=user)
         login(request, user=user)
         return HttpResponseRedirect('/')
     return RESPONSE_400_EMPTY_JSON
