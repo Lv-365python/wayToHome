@@ -52,7 +52,13 @@ class LoginForm extends Component {
             remember_me: this.state.remember_me,
         })
             .then(() => {
-                this.props.history.go(0)
+                setTimeout(() => {
+                    this.props.history.go(0)
+                }, 5 * 1000);
+
+                if(this.state.request_type === 'register') {
+                    this.setError('Підтвердіть Вашу пошту');
+                }
             })
             .catch((error) => {
                 this.setError(error.response.data);
@@ -118,6 +124,7 @@ class LoginForm extends Component {
 
     changeSaveCookies = () => {
         this.setState({remember_me: !this.state.remember_me});
+
     };
 
     render() {
