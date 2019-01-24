@@ -85,7 +85,7 @@ def registration_confirm(request, token):
             user.update(is_active=True)
             UserProfile.create(user)
 
-            login(request, user=user)
+        login(request, user=user)
 
         return HttpResponseRedirect('/')
     except (DatabaseError, IntegrityError):
