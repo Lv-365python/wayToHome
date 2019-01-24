@@ -222,7 +222,7 @@ class CustomUserViewTest(TestCase):
         url_logout = reverse('logout_user')
         resp_logout = self.client.get(url_logout)
         self.assertEqual(resp_logout.cookies['sessionid'].value, '')
-        self.assertEqual(resp_logout.status_code, 200)
+        self.assertEqual(resp_logout.status_code, 302)
 
     def test_google_auth_success(self):
         """Provides test for a (GET) request to authenticate via Google."""
