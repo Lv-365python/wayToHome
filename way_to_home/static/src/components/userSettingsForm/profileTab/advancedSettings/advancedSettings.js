@@ -141,30 +141,31 @@ export default class AdvancedSettings extends Component {
                     type = "new_password"
                     error = {this.state.new_password_error}
                     />
+                <div className="buttonsDiv">
+                    <Button
+                        className="saveButton"
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        disabled={this.state.save_disabled}
+                        onClick={this.saveButtonClick}>
+                        Зберегти
+                    </Button>
 
-                <Button
-                    className="saveButton"
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    disabled={this.state.save_disabled}
-                    onClick={this.saveButtonClick}>
-                    Зберегти
-                </Button>
-
-                <Button
-                    className="closeButton"
-                    variant="contained"
-                    color="secondary"
-                    size="medium"
-                    onClick={this.props.close}>
-                    Вийти
-                </Button>
+                    <Button
+                        className="closeButton"
+                        variant="contained"
+                        color="secondary"
+                        size="medium"
+                        onClick={this.props.close}>
+                        Вийти
+                    </Button>
+                </div>
 
                 <Button
                     className="deleteButton"
-                    variant="contained"
-                    color="secondary"
+                    variant="text"
+                    color="primary"
                     size="small"
                     onClick={this.handleOpenDeleteAlert}>
                     Видалити аккаунт

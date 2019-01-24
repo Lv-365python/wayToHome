@@ -1,6 +1,6 @@
 .advancedSettingsDiv{
     margin: 10% auto;
-    padding: 0 16px 16px 16px;
+    padding: 16px 16px 16px 16px;
     z-index: 10;
     height: auto;
     width: 30%;
@@ -12,11 +12,17 @@
     flex-direction: column;
 }
 
+.buttonsDiv{
+    flex-direction: row;
+    display: flex;
+}
+
 button.deleteButton{
-    margin-top: 4rem;
+    margin-top: 2rem;
 }
 
 
 button.closeButton{
-    margin-top: 1rem;
+    margin-top: 2rem;
+    margin-left: 1rem;
 }
