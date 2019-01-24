@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button'
 
 import PlaceForm from './placeForm.js';
 import PlaceItem from './placeItem.js'
+import CustomizedSnackbars from '../../message/message';
 import './place.css'
 
 export const place_api_url = '/api/v1/place/';
@@ -17,7 +18,8 @@ export default class PlaceTab extends React.Component {
 
     state = {
         openAddModal: false,
-        places: []
+        ajaxError: undefined,
+        places: [],
     };
 
 
@@ -89,6 +91,11 @@ export default class PlaceTab extends React.Component {
     };
 
 
+    setError = (error) => {
+        this.setState({ajaxError: error});
+    };
+
+
     render(){
         return (
             <div>
@@ -98,7 +105,8 @@ export default class PlaceTab extends React.Component {
                             key={place.id}
                             place={place}
                             deleteButton={this.sendDelete}
-                            updatePlace={this.updatePlace}/>
+                            updatePlace={this.updatePlace}
+                            setError={this.setError}/>
                     ))}
                     <div>
                         <Modal
@@ -109,7 +117,8 @@ export default class PlaceTab extends React.Component {
                             <PlaceForm
                                 form_type='Додати'
                                 addPlace={this.addPlace}
-                                close={this.modalAddClose}/>
+                                close={this.modalAddClose}
+                                setError={this.setError}/>
                         </Modal>
                     </div>
                 </div>
@@ -122,6 +131,7 @@ export default class PlaceTab extends React.Component {
                       Додати місце
                     </Button>
                 </div>
+                {this.state.ajaxError && <CustomizedSnackbars message={this.state.ajaxError} reset={this.setError}/>}
             </div>
         );
     };
