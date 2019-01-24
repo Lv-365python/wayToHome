@@ -15,3 +15,7 @@
 button.saveButton{
     margin-top: 2rem;
 }
+
+.emailField{
+   text-align: center;
+}

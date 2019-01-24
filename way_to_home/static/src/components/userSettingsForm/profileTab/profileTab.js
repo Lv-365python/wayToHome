@@ -7,7 +7,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {withRouter} from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
-import FormLabel from '@material-ui/core/FormLabel';
 
 import axios from 'axios';
 
@@ -27,7 +26,7 @@ let savedState = {
     openAdvancedModal: false,
 };
 
-export const url = '/api/v1/user'
+export const url = '/api/v1/user';
 
 class ProfileTab extends React.Component {
     state = {
@@ -166,7 +165,7 @@ class ProfileTab extends React.Component {
          this.state.last_name == this.state.initial_last_name) ) {
             this.setState({save_disabled: true});
         }
-    }
+    };
 
     handlePhoneNumber = (phone) => {
         let regex = /^\+380[0-9]{9}$/;
@@ -186,6 +185,7 @@ class ProfileTab extends React.Component {
         return(
             <div className="profileTabDiv">
                 <TextField
+                    className="emailField"
                     variant="outlined"
                     value={this.state.email}
                     disabled={true}

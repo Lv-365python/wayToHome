@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from "axios";
 
 import TrendingFlat from '@material-ui/icons/TrendingFlat';
 import Chip from '@material-ui/core/Chip';
@@ -13,9 +14,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import './wayItem.css';
-import NotificationForm from "src/components/userSettingsForm/notificationForm/notificationForm";
 
+import NotificationForm from "src/components/userSettingsForm/notificationForm/notificationForm";
+import './wayItem.css';
+
+
+const url = "/api/v1/place/";
 
 export default class WayItem extends Component{
 
@@ -34,13 +38,28 @@ export default class WayItem extends Component{
         let startRoute = routes.find(x => x.position === 0);
         let endRoute = routes.find(x => x.position === routes.length-1);
 
-        let startPlace = this.props.places.find(x => x.id === startRoute.start_place);
-        let endPlace = this.props.places.find(x => x.id === endRoute.end_place);
+        let startPlace = undefined;
+        let endPlace = undefined;
 
-        this.setState({
-            startPlace: startPlace,
-            endPlace: endPlace
-        });
+        axios.get(url + startRoute.start_place)
+            .then(response => {
+                startPlace = response.data;
+                this.setState({
+                    startPlace: startPlace,
+                    startPlaceName: startPlace.name,
+                });
+            })
+            .catch(error => this.setError("Не вдалося завантажити місце"));
+
+        axios.get(url + endRoute.end_place)
+            .then(response => {
+                endPlace = response.data;
+                this.setState({
+                    endPlace: endPlace,
+                    endPlaceName: endPlace.name,
+                });
+            })
+            .catch(error => this.setError("Не вдалося завантажити місце"));
     };
 
     componentWillMount() {
@@ -62,6 +81,8 @@ export default class WayItem extends Component{
 
 
     render(){
+
+        let { startPlaceName, endPlaceName, startPlace, endPlace } = this.state;
         return(
             <div>
                 {
@@ -70,10 +91,10 @@ export default class WayItem extends Component{
                         <Chip
                             className="textField"
                             color="primary"
-                            onMouseEnter={() => this.setState({startPlaceName: this.state.startPlace.address})}
-                            onMouseLeave={() => this.setState({startPlaceName: this.state.startPlace.name})}
+                            onMouseEnter={() => this.setState({startPlaceName: startPlace.address})}
+                            onMouseLeave={() => this.setState({startPlaceName: startPlace.name})}
                             icon={<PlaceIcon/>}
-                            label={this.state.startPlaceName}
+                            label={startPlaceName === '' ? startPlace.address : startPlaceName}
                             variant="outlined"
                         />
 
@@ -81,10 +102,10 @@ export default class WayItem extends Component{
                         <Chip
                             className="textField"
                             color="primary"
-                            onMouseEnter={() => this.setState({endPlaceName: this.state.endPlace.address})}
-                            onMouseLeave={() => this.setState({endPlaceName: this.state.endPlace.name})}
+                            onMouseEnter={() => this.setState({endPlaceName: endPlace.address})}
+                            onMouseLeave={() => this.setState({endPlaceName: endPlace.name})}
                             icon={<PlaceIcon color="secondary"/>}
-                            label={this.state.endPlaceName}
+                            label={this.state.endPlaceName === '' ? endPlace.address : endPlaceName}
                             variant="outlined"
                         />
 
