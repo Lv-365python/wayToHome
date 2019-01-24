@@ -28,7 +28,7 @@ class Place(AbstractModel):
             'name': self.name,
             'address': self.address,
             'stop_id': self.stop_id,
-            'user_id': self.user.id
+            'user_id': self.user_id
         }
 
     @classmethod

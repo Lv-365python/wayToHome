@@ -1,0 +1,28 @@
+.advancedSettingsDiv{
+    margin: 10% auto;
+    padding: 16px 16px 16px 16px;
+    z-index: 10;
+    height: auto;
+    width: 30%;
+    background: rgba(197, 197, 197, 0.685);
+    border-radius: 30px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.buttonsDiv{
+    flex-direction: row;
+    display: flex;
+}
+
+button.deleteButton{
+    margin-top: 2rem;
+}
+
+
+button.closeButton{
+    margin-top: 2rem;
+    margin-left: 1rem;
+}

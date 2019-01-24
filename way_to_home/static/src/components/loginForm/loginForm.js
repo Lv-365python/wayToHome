@@ -54,7 +54,13 @@ class LoginForm extends Component {
             remember_me: this.state.remember_me,
         })
             .then(() => {
-                this.props.history.go(0)
+                setTimeout(() => {
+                    this.props.history.go(0)
+                }, 5 * 1000);
+
+                if(this.state.request_type === 'register') {
+                    this.setError('Підтвердіть Вашу пошту');
+                }
             })
             .catch((error) => {
                 this.setError(error.response.data);
@@ -126,13 +132,18 @@ class LoginForm extends Component {
                 window.location.replace(response.data.url);
             })
             .catch((error) => {
-                self.setError(error.response.data);
+                this.setError(error.response.data);
             });
+    };
+
+    changeSaveCookies = () => {
+        this.setState({remember_me: !this.state.remember_me});
+
     };
 
     render() {
         const {email_error, email, pass_error, first_pass, repeat_display,second_pass,
-               change_button, disable_button, confirm_button, error, remember_me} = this.state;
+            change_button, disable_button, confirm_button, error, remember_me} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField

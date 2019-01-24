@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'home',
 ]
 
+SESSION_COOKIE_HTTPONLY = False
+
 AUTH_USER_MODEL = 'custom_user.CustomUser'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 

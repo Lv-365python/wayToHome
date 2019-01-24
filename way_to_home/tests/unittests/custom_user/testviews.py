@@ -138,7 +138,7 @@ class CustomUserViewTest(TestCase):
         token = create_token(data={'email': self.inactive_user.email})
         url = reverse('confirm_signup', kwargs={'token': token})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_signup_confirm_invalid_token(self):
         """Provides test for a (GET) request to confirm user sign up with incorrect token."""
@@ -222,7 +222,7 @@ class CustomUserViewTest(TestCase):
         url_logout = reverse('logout_user')
         resp_logout = self.client.get(url_logout)
         self.assertEqual(resp_logout.cookies['sessionid'].value, '')
-        self.assertEqual(resp_logout.status_code, 200)
+        self.assertEqual(resp_logout.status_code, 302)
 
     def test_google_auth_success(self):
         """Provides test for a (GET) request to authenticate via Google."""

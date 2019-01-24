@@ -8,7 +8,7 @@ import NewWayItem from './newWayItem/newWayItem'
 import CustomizedSnackbars from '../../message/message';
 import './wayTab.css';
 
-const url = 'api/v1/';
+const url = '/api/v1/';
 
 
 export default class WayTab extends Component{
@@ -36,7 +36,7 @@ export default class WayTab extends Component{
                     this.setError(response.data);
                 }
             })
-            .catch(error => this.setError(error));
+            .catch(error => this.setError("Не вдалося завантантажити шляхи"));
     };
 
     getPlaces = () => {
@@ -53,7 +53,7 @@ export default class WayTab extends Component{
                     this.setError(response.data);
                 }
             })
-            .catch(error => this.setError(error));
+            .catch(error => this.setError("Не вдалося завантажити місця"));
     };
 
     componentDidMount() {

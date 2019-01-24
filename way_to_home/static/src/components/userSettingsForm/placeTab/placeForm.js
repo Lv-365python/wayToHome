@@ -102,7 +102,7 @@ class PlaceForm extends Component {
             this.props.close();
         }).catch(error =>{
             this.props.close();
-            this.props.setError("Невдалось редагувати місце. Спробуйте ще раз.");
+            this.props.setError("Не вдалось редагувати місце. Спробуйте ще раз.");
         });
     };
 
@@ -120,7 +120,7 @@ class PlaceForm extends Component {
             this.props.close();
         }).catch(error => {
             this.props.close();
-            this.props.setError("Невдалось створити місце. Спробуйте ще раз.");
+            this.props.setError("Не вдалось створити місце. Спробуйте ще раз.");
         });
     };
 
@@ -233,7 +233,7 @@ class PlaceForm extends Component {
 
     render() {
         const inputProps = {
-            placeholder: 'Введіть адрес',
+            placeholder: 'Введіть адресу',
             value: this.state.address,
             onChange: this.onChangeAddress,
             type: 'search',
