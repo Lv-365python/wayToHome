@@ -22,11 +22,11 @@
 
 .placeForm{
     margin: 10% auto;
-    padding: 0 16px 16px 16px;
+    padding: 10px 16px 16px 16px;
     z-index: 10;
     height: auto;
-    width: 30%;
-    background: rgba(197, 197, 197, 0.685);
+    width: 20%;
+    background: #DCDCDC;
     border-radius: 30px;
     text-align: center;
 }

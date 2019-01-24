@@ -1,8 +1,10 @@
 """This module provides tests for Way views"""
+
 import json
 
 from django.test import TestCase, Client
 from django.urls import reverse
+from unittest import mock
 
 from custom_user.models import CustomUser
 from way.models import Way
@@ -126,12 +128,8 @@ class WayViewsTestCase(TestCase):
 		}
 
 		expected_data = {
-			'id': 2,
 			'name': 'test_name',
 			'routes': [{
-				'id': 2,
-				'start_place': 11,
-				'end_place': 11,
 				'position': 0,
 				'time': '00:13:00',
 				'transport_id': None,
@@ -141,6 +139,10 @@ class WayViewsTestCase(TestCase):
 		url = reverse('way', args=[])
 		response = self.client.post(url, json.dumps(data), content_type='application/json')
 		response_dict = json.loads(response.content)
+		response_dict.pop('id')
+		response_dict['routes'][0].pop('id')
+		response_dict['routes'][0].pop('start_place')
+		response_dict['routes'][0].pop('end_place')
 
 		self.assertEqual(response.status_code, 201)
 		self.assertDictEqual(response_dict, expected_data)
@@ -191,3 +193,11 @@ class WayViewsTestCase(TestCase):
 		response = self.client.delete(url)
 
 		self.assertEqual(response.status_code, 403)
+
+	def test_delete_db_fail(self):
+		"""Method that tests the unsuccessful request to delete way in case of database failure."""
+		url = reverse('way', kwargs={'way_id': self.way.id})
+		with mock.patch('way.views.Way.delete_by_id') as delete_by_id:
+			delete_by_id.return_value = False
+			response = self.client.delete(url)
+			self.assertEquals(response.status_code, 400)
