@@ -8,6 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
+import {withRouter} from 'react-router-dom'
 import CustomizedSnackbars from '../../../message/message';
 import {url} from '../profileTab.js'
 import './advancedSettings.css';
@@ -24,7 +25,7 @@ let savedState = {
     new_password_error: false,
 };
 
-export default class AdvancedSettings extends Component {
+class AdvancedSettings extends Component {
 
     state = {
         deleteAlertOpen: false,
@@ -158,7 +159,7 @@ export default class AdvancedSettings extends Component {
                         color="secondary"
                         size="medium"
                         onClick={this.props.close}>
-                        Вийти
+                        Скасувати
                     </Button>
                 </div>
 
@@ -215,3 +216,4 @@ export default class AdvancedSettings extends Component {
     }
 }
 
+export default withRouter(AdvancedSettings);

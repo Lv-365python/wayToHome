@@ -28,7 +28,7 @@ class NotificationForm extends Component {
         return (
             <div>
                 {this.state.notifications.map((not) => (
-                    <li className={`not-done-${not.active} notification`}
+                    <li key={not.id} className={`not-done-${not.active} notification`}
                         onClick={() => this.updateNotActive(not.id)}>
                         <span className='changeTimeDiv'
                               onClick={(event) => {

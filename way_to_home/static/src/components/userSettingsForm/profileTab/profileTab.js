@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Modal from '@material-ui/core/Modal';
 import Tooltip from '@material-ui/core/Tooltip';
-import {withRouter} from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 
@@ -260,4 +259,4 @@ class ProfileTab extends React.Component {
         }
 }
 
-export default withRouter(ProfileTab);
+export default ProfileTab;
