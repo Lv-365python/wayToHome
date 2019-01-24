@@ -38,7 +38,7 @@ def delete_expired_notifications(self):
                default_retry_delay=DEFAULT_RETRY_DELAY)
 def prepare_static_easy_way_data(self):
     """Provide preparing static data from EasyWay every Monday at 2 a.m."""
-    url = 'http://track.ua-gis.com/gtfs/lviv/static/zip'
+    url = 'http://track.ua-gis.com/gtfs/lviv/static.zip'
 
     loaded_file = load_file(url, save_to=settings.EASY_WAY_DIR)
     if not loaded_file:

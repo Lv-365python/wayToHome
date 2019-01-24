@@ -24,6 +24,11 @@ class PlaceItem extends React.Component {
     };
 
 
+    handleChangeName = (newName) => {
+        this.setState({text: newName})
+    };
+
+
     onClickDelete = () => {
         this.setState({openDeleteModal: true});
     };
@@ -87,7 +92,9 @@ class PlaceItem extends React.Component {
                         updatePlace={this.props.updatePlace}
                         form_type='Зберегти'
                         place={place}
-                        close={this.modalEditClose}/>
+                        handleChangeName={this.handleChangeName}
+                        close={this.modalEditClose}
+                        setError={this.props.setError}/>
                 </Modal>
 
                 <Dialog

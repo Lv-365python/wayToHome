@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import Autosuggest from 'react-autosuggest';
 import axios from 'axios';
+import Autosuggest from 'react-autosuggest';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
@@ -76,14 +76,13 @@ class PlaceForm extends Component {
             this.sendUpdate();
         else
             this.sendPost();
-
-        this.props.close();
     };
 
 
     sendUpdate = () => {
         const id = this.props.place.id;
         const {name, address, longitude, latitude} = this.state;
+
         let place = {
             id: id,
             name: name,
@@ -95,10 +94,15 @@ class PlaceForm extends Component {
         axios.put(place_api_url + id,  {
             'name': name,
             'address': address,
-            'longitude': longitude,
-            'latitude': latitude
+            'longitude': parseFloat(longitude),
+            'latitude': parseFloat(latitude)
         }).then(response => {
             this.props.updatePlace(place);
+            this.props.handleChangeName(name);
+            this.props.close();
+        }).catch(error =>{
+            this.props.close();
+            this.props.setError("Не вдалось редагувати місце. Спробуйте ще раз.");
         });
     };
 
@@ -111,8 +115,12 @@ class PlaceForm extends Component {
             'address': address,
             'longitude': longitude,
             'latitude': latitude
-        }).then(({data}) => {
-            this.props.addPlace(data);
+        }).then(response => {
+            this.props.addPlace(response.data);
+            this.props.close();
+        }).catch(error => {
+            this.props.close();
+            this.props.setError("Не вдалось створити місце. Спробуйте ще раз.");
         });
     };
 
@@ -134,6 +142,31 @@ class PlaceForm extends Component {
     };
 
 
+    formatSuggestions = (suggestions) => {
+        suggestions = suggestions.map(suggestion => {
+            let houseNumber = suggestion.address.houseNumber || '' ;
+            let address =  suggestion.address.street + ' ' + houseNumber;
+
+            if (address.includes('вулиця'))
+                address = 'вул. ' + address.replace('вулиця', '');
+            else if (address.includes('проспект'))
+                address = 'проспект ' + address.replace('проспект', '');
+
+            return {
+                locationId: suggestion.locationId,
+                address: address,
+            };
+        });
+        return suggestions;
+    };
+
+    removeDuplicateSuggestions = (suggestions) => {
+        let uniq = {};
+        return suggestions.filter(suggestion =>
+            !uniq[suggestion.address] && (uniq[suggestion.address] = true)
+        );
+    };
+
     getSuggestions = ({value}) => {
         axios.get(here_suggestions_url,  {
             crossdomain: true,
@@ -152,21 +185,11 @@ class PlaceForm extends Component {
                     return suggestion;
                 }
             });
-            suggestions = suggestions.map(suggestion => {
-                let houseNumber = suggestion.address.houseNumber || '' ;
-                let address =  suggestion.address.street + ' ' + houseNumber;
-                address = address.replace('вулиця', 'вул.');
-                return {
-                    locationId: suggestion.locationId,
-                    address: address,
-                };
-            });
+            suggestions = this.formatSuggestions(suggestions);
+            suggestions = this.removeDuplicateSuggestions(suggestions);
             this.setState({
                 suggestions: suggestions
             });
-        }).catch(error => {
-            // TODO: message component
-            console.log('Can not retrieve suggestions');
         });
     };
 
@@ -189,8 +212,9 @@ class PlaceForm extends Component {
                 confirmDisabled: false,
             });
         }).catch(error => {
-            // TODO: messeage component
-            console.log('Can not retrieve coordinate');
+            this.setState({
+                confirmDisabled: true,
+            });
         });
     };
 
