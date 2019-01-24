@@ -29,9 +29,6 @@ class MenuButton extends Component{
         .then(() => {
             this.props.history.go(0)
         })
-        .catch(function (error) {
-            console.log(error);
-        });
   };
 
   toSettings = () => {
