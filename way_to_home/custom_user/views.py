@@ -1,6 +1,6 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from django.db import transaction, DatabaseError, IntegrityError
@@ -118,7 +118,7 @@ def log_in(request):
 def logout_user(request):
     """Logout the existing user"""
     logout(request)
-    response = RESPONSE_200_OK
+    response = HttpResponseRedirect('/')
     return response
 
 

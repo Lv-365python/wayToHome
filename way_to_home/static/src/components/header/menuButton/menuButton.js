@@ -29,10 +29,7 @@ class MenuButton extends Component{
         .then(() => {
             this.props.history.go(0)
         })
-        .catch((error) => {
-            this.setError(error.response);
-        });
-  }
+  };
 
   toSettings = () => {
     this.setState({ anchorEl: null });
