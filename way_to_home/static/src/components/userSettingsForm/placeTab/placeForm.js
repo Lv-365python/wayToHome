@@ -233,7 +233,7 @@ class PlaceForm extends Component {
 
     render() {
         const inputProps = {
-            placeholder: 'Введіть адрес',
+            placeholder: 'Введіть адресу',
             value: this.state.address,
             onChange: this.onChangeAddress,
             type: 'search',

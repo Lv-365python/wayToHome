@@ -5,37 +5,13 @@
    flex-direction: column;
 }
 
-.firstName{
+.profileFields{
+   margin-top: 0.5rem;
    display: flex;
-   width: 25rem;
-   flex-direction: column;
-}
-
-.lastName{
-   margin-top: 2rem;
-   display: flex;
-   width: 25rem;
-   flex-direction: column;
-}
-
-.phoneNumber{
-   margin-top: 2rem;
-   display: flex;
-   width: 25rem;
-   flex-direction: column;
-}
-
-.email{
-   margin-top: 2rem;
-   display: flex;
-   width: 25rem;
+   width: 20rem;
    flex-direction: column;
 }
 
 button.saveButton{
-    margin-top: 2rem;
-}
-
-button.deleteButton{
     margin-top: 2rem;
 }
