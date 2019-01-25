@@ -15,11 +15,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { NotificationForm } from "../index";
+import NotificationForm from "src/components/userSettingsForm/notifications/notificationForm";
 import './wayItem.css';
 
-const url = "/api/v1/place/";
 
+const url = "/api/v1/place/";
 
 export default class WayItem extends Component{
 
@@ -157,10 +157,7 @@ export default class WayItem extends Component{
                 {
                     this.state.isNotificationFormOpen &&
                     <div>
-                        <NotificationForm way={this.props.way}/>
-                        <div className='ComeBackBtn' onClick={this.toggleNotificationForm}>
-                            <p>ПОВЕРНУТИСЬ</p>
-                        </div>
+                        <NotificationForm way={this.props.way} toggleNotificationForm={this.toggleNotificationForm}/>
                     </div>
                 }
             </div>
