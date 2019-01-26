@@ -62,8 +62,8 @@ class Notification(AbstractModel):
         today = date.today()
         notifications = cls.objects.filter(
             week_day=today.weekday(),
-            start_time__gte=today,
-            end_time__lte=today,
+            start_time__lte=today,
+            end_time__gte=today,
         )
 
         return notifications

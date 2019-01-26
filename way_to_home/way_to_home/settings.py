@@ -170,8 +170,9 @@ NEXMO_API_SECRET = 'Nexmo API SECRET'
 # Celery settings
 
 CELERY_BROKER_URL = 'amqp://localhost'
-
-
+CELERY_IGNORE_RESULT = True
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = 'Europe/Kiev'
 
 DOMAIN = 'localhost:8000'
 

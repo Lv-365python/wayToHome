@@ -1,7 +1,7 @@
 """This module provides celery tasks."""
 
 from celery.schedules import crontab
-from celery.task import periodic_task
+from celery.task import periodic_task, task
 
 from django.conf import settings
 from notification.models import Notification
@@ -16,7 +16,6 @@ EASYWAY_CTONTAB = crontab(hour=2, day_of_week=1)
 @periodic_task(bind=True,
                name='delete expired notifications',
                run_every=CLEANER_CTONTAB,
-               ignore_result=True,
                default_retry_delay=DEFAULT_RETRY_DELAY)
 def delete_expired_notifications(self):
     """Delete notifications that have expired datetime every day at 1:30 a.m."""
@@ -33,7 +32,6 @@ def delete_expired_notifications(self):
 
 @periodic_task(bind=True,
                name='prepare static easy way data',
-               ignore_results=True,
                run_every=EASYWAY_CTONTAB,
                default_retry_delay=DEFAULT_RETRY_DELAY)
 def prepare_static_easy_way_data(self):
@@ -47,3 +45,8 @@ def prepare_static_easy_way_data(self):
     is_unzipped = unzip_file(loaded_file, unzip_to=settings.EASY_WAY_DIR)
     if not is_unzipped:
         raise self.retry()
+
+
+@task
+def preparing_notification(notification_id):  # pylint: disable=unused-argument
+    """Prepare data about transport arrival time before notify the user."""
