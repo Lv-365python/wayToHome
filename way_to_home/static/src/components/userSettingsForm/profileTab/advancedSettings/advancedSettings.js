@@ -43,9 +43,9 @@ class AdvancedSettings extends Component {
     deleteButtonClick = (event) => {
         let uri = '/delete_account';
         axios.delete(url + uri)
-            .then(response => {
+            .then((response) => {
                 if(response.status === 200){
-                    this.props.history.push('/home');
+                    this.props.history.go(0)
                 } else {
                     this.setError(response.data);
                 }

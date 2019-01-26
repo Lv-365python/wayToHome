@@ -15,7 +15,6 @@ from utils.validators import (credentials_validator,
                               email_validator,
                               phone_validator)
 from utils.responsehelper import (RESPONSE_200_OK,
-                                  RESPONSE_200_DELETED,
                                   RESPONSE_200_UPDATED,
                                   RESPONSE_201_ACTIVATE,
                                   RESPONSE_400_EXISTED_EMAIL,
@@ -158,7 +157,9 @@ def signin_google(request):
                 return RESPONSE_400_DB_OPERATION_FAILED
 
         login(request, user=user)
-        return HttpResponseRedirect('/')
+        response = HttpResponseRedirect('/')
+        response.set_cookie('picture', value=user_data.get('picture'))
+        return response
     return RESPONSE_400_EMPTY_JSON
 
 
@@ -171,7 +172,8 @@ def delete_account(request):
         return RESPONSE_400_DB_OPERATION_FAILED
 
     logout(request)
-    return RESPONSE_200_DELETED
+    response = HttpResponseRedirect('/')
+    return response
 
 
 @require_http_methods(["POST"])
