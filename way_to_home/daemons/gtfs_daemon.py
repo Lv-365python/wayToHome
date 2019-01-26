@@ -1,4 +1,4 @@
-"""This module provides daemon for preparing gtfs data from EasyWay."""
+"""This module provides daemon to work with GTFS data."""
 
 # pylint: disable=wrong-import-position
 
@@ -13,20 +13,25 @@ sys.path.insert(0, SOURCE_PATH)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "way_to_home.settings")
 django.setup()
 
+
 from django.conf import settings
 from utils.file_handlers import load_file
 from utils.easy_way import compile_file
 from utils.redishelper import REDIS_HELPER as redis
-from base_daemon import Daemon
-from helper import parse_args
+from daemons.base_daemon import Daemon
+from daemons.helper import parse_args
 
 
 class GTFSDaemon(Daemon):
     """Daemon class that provides preparing GTFS data from EasyWay."""
 
     def execute(self):
-        """Defines commands for preparing GTFS data from EasyWay."""
-        url = f'http://track.ua-gis.com/gtfs/lviv/vehicle_position'
+        """
+        Defines commands to download file with data about Lviv
+        transport geolocation, compile the loaded file and insert
+        parsed necessary data into Redis in pickled representation.
+        """
+        url = 'http://track.ua-gis.com/gtfs/lviv/vehicle_position'
         redis_gtfs_key = 'gtfs_data'
 
         loaded_file = load_file(url, save_to=settings.EASY_WAY_DIR)
