@@ -251,7 +251,7 @@ class CustomUserViewTest(TestCase):
         self.client.login(username='user@mail.com', password='1111Bb')
         url = reverse('delete_account')
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_delete_account_fail(self):
         """Method that tests failing deleting user account"""

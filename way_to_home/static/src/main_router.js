@@ -36,7 +36,7 @@ export default class MainRouter extends React.Component {
                 <Map/>
                 <Switch>
                     <Route path="/home" component={Home}/>
-                    <PrivateRoute path="/settings" component={UserSettingsForm}/>
+                    <PrivateRoute path="/profile" component={UserSettingsForm}/>
                     <Redirect path="*" to="/home"/>
                 </Switch>
             </main>
