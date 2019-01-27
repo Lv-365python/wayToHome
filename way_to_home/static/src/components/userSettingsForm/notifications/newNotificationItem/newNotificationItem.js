@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 
 import './newNotificationItem.css';
-
+import axios from "axios";
 
 class NewNotificationItem extends Component{
 
@@ -47,44 +47,39 @@ class NewNotificationItem extends Component{
                 label: 'Неділя',
             },
         ],
-        clock: [
-            {value: "06:00"},
-            {value: "06:30"},
-            {value: "07:00"},
-            {value: "07:30"},
-            {value: "08:00"},
-            {value: "08:30"},
-            {value: "09:00"},
-            {value: "09:30"},
-            {value: "10:00"},
-            {value: "10:30"},
-            {value: "11:00"},
-            {value: "11:30"},
-            {value: "12:00"},
-            {value: "12:30"},
-            {value: "13:00"},
-            {value: "13:30"},
-            {value: "14:00"},
-            {value: "14:30"},
-            {value: "15:00"},
-            {value: "15:30"},
-            {value: "16:00"},
-            {value: "16:30"},
-            {value: "17:00"},
-            {value: "17:30"},
-            {value: "18:00"},
-            {value: "18:30"},
-            {value: "19:00"},
-            {value: "19:30"},
-            {value: "20:00"},
-            {value: "20:30"},
-            {value: "21:00"},
-            {value: "21:30"},
-            {value: "22:00"},
-            {value: "22:30"},
-            {value: "23:00"}
-        ]
+        clock: []
     };
+
+    formatDate = (date) => {
+        let d = date,
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    };
+
+    addTime = () => {
+        let minutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+        let times = [];
+        for(let i = 6; i < 23; i++){
+            for(let j = 0; j < minutes.length; j++){
+                let f = (i < 10? '0'+i : i);
+                let t = {value: f + ":" + minutes[j]};
+                times.push(t);
+            }
+        }
+        this.setState({
+            clock: times
+        })
+    };
+
+    componentDidMount(){
+        this.addTime()
+    }
 
     handleChange = name => event => {
         this.setState({
@@ -98,6 +93,24 @@ class NewNotificationItem extends Component{
                     week_day: day.value
                 })
             }
+        });
+    };
+
+    sendPost = () => {
+        let url = '/api/v1/';
+        let type = `way/${this.props.way.id}/notification/`;
+        axios.post(url + type, {
+            start_time: this.formatDate(this.props.StartDate),
+            end_time: this.formatDate(this.props.EndDate),
+            week_day: this.state.week_day,
+            time: this.state.time + ':00'
+        })
+            .then(response => {
+            this.props.saveNotification(response.data);
+            this.props.close();
+        }).catch(error => {
+            this.props.close();
+            this.props.setError("Не вдалось створити місце. Спробуйте ще раз.");
         });
     };
 
@@ -140,7 +153,7 @@ class NewNotificationItem extends Component{
                     <IconButton
                         color="primary"
                         aria-label="Зберегти"
-                        onClick={() => {this.props.saveNotification(this.state.week_day, this.state.time)}}>
+                        onClick={this.sendPost}>
                         <Done/>
                     </IconButton>
                 </Tooltip>

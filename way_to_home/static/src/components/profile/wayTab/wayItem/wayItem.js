@@ -31,6 +31,7 @@ export default class WayItem extends Component{
         deleteAlertOpen: false,
         isWayFormOpen: true,
         isNotificationFormOpen: false,
+        phone_number: undefined,
     };
 
     getData = () => {
@@ -49,7 +50,7 @@ export default class WayItem extends Component{
                     startPlaceName: startPlace.name,
                 });
             })
-            .catch(error => this.setError("Не вдалося завантажити місце"));
+            .catch(error => this.props.setError("Не вдалося завантажити місце"));
 
         axios.get(url + endRoute.end_place)
             .then(response => {
@@ -59,7 +60,15 @@ export default class WayItem extends Component{
                     endPlaceName: endPlace.name,
                 });
             })
-            .catch(error => this.setError("Не вдалося завантажити місце"));
+            .catch(error => this.props.setError("Не вдалося завантажити місце"));
+
+        axios.get('/api/v1/user/')
+            .then(response => {
+                this.setState({
+                    phone_number: response.data.phone_number,
+                });
+            })
+            .catch(error => this.props.setError("Не вдалося завантажити номер телефону"));
     };
 
     componentWillMount() {
@@ -67,10 +76,14 @@ export default class WayItem extends Component{
     };
 
     toggleNotificationForm = () => {
-        this.setState(state => ({
-            isNotificationFormOpen: !state.isNotificationFormOpen,
-            isWayFormOpen: !state.isWayFormOpen
-        }));
+        if (this.state.phone_number === ""){
+            this.props.setError("Спочатку введіть номер телефону")
+        } else {
+            this.setState(state => ({
+                isNotificationFormOpen: !state.isNotificationFormOpen,
+                isWayFormOpen: !state.isWayFormOpen
+            }));
+        }
     };
 
     toggleDeleteAlert = () => {
@@ -78,7 +91,6 @@ export default class WayItem extends Component{
             deleteAlertOpen: !state.deleteAlertOpen
         }));
     };
-
 
     render(){
 
@@ -111,7 +123,9 @@ export default class WayItem extends Component{
 
 
                         <Tooltip title="Нотифікації">
-                            <IconButton color="primary" aria-label="Нотифікації" onClick={this.toggleNotificationForm}>
+                            <IconButton color="primary"
+                                        aria-label="Нотифікації"
+                                        onClick={this.toggleNotificationForm}>
                                 <NotificationIcon/>
                             </IconButton>
                         </Tooltip>
