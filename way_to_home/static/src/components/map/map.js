@@ -7,15 +7,16 @@ import './map.css'
 export class MapContainer extends Component {
     render() {
         return (
-            <Map
-                google={this.props.google}
-                zoom={14}
-                className='map'
-                initialCenter={{
-                    lat: 49.84,
-                    lng: 24.028667
-                }}
-            />
+            <div className='map'>
+                <Map
+                    google={this.props.google}
+                    zoom={14}
+                    initialCenter={{
+                        lat: 49.84,
+                        lng: 24.028667
+                    }}
+                />
+            </div>
         );
     }
 }

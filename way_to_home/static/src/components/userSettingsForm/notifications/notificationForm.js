@@ -88,13 +88,12 @@ class NotificationForm extends Component{
     };
 
     componentDidMount() {
-        alert('dsgsdfg')
         this.getData();
     };
 
     handleAddButtonClick = () => {
         this.setState({
-            newNotifications: [{time: ''}],
+            newNotifications: [{}],
         })
     };
 
@@ -123,26 +122,13 @@ class NotificationForm extends Component{
             .catch(error => this.setError(error));
     };
 
-    handleSaveClick = (week_day, time) => {
-        let url = '/api/v1/';
-        let type = `way/${this.props.way.id}/notification/`;
-        axios.post(url + type, {
-            start_time: this.formatDate(this.state.StartDate),
-            end_time: this.formatDate(this.state.EndDate),
-            week_day: week_day,
-            time: time + ':00'
+    handleSaveClick = (notification) => {
+        let notifications = [...this.state.notifications, notification];
+
+        this.setState({
+            notifications: notifications,
+            newNotifications: []
         })
-            .then(response => {
-                if (response.status === 201) {
-                    this.setState({
-                        notifications: [...this.state.notifications, response.data],
-                        newNotifications: []
-                    })
-                } else {
-                    this.setError(response.data);
-                }
-            })
-            .catch(error => this.setError(error));
     };
 
     toggleStartDate = () => {
@@ -227,7 +213,7 @@ class NotificationForm extends Component{
 
                     {this.state.notifications.map(notification => (
                         <NotificationItem
-                            key={Date.now()}
+                            key={notification.id}
                             id={notification.id}
                             time={notification.time}
                             week_day={notification.week_day}
@@ -236,10 +222,13 @@ class NotificationForm extends Component{
                             way={this.props.way}
                             deleteButton={this.handleDeleteExistItemClick} /> ))}
 
-                    {this.state.newNotifications.map(notification => (
+                    {this.state.newNotifications.map(() => (
                         <NewNotificationItem
                             key={Date.now()}
                             deleteButton={this.handleDeleteNewItemClick}
+                            StartDate={this.state.StartDate}
+                            EndDate={this.state.EndDate}
+                            way={this.props.way}
                             saveNotification={this.handleSaveClick}
                             setError={this.setError} /> ))}
 
