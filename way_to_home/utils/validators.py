@@ -65,7 +65,7 @@ def date_validator(date):
         try:
             date = datetime.datetime.strptime(date, mask).date()
             return date
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
 
@@ -82,7 +82,7 @@ def end_date_validator(end_date, start_date):
     """Function validates end_date field"""
     start_date = date_validator(start_date) if start_date else datetime.date.today()
     end_date = date_validator(end_date)
-    if not (start_date or end_date):
+    if not end_date:
         return False
     if start_date > end_date:
         return False
@@ -94,7 +94,7 @@ def time_validator(time):
     """Function validates time field in Notification model"""
     try:
         datetime.datetime.strptime(time, TIME_MASK)
-    except ValueError:
+    except (ValueError, TypeError):
         return False
 
     return True
@@ -231,12 +231,11 @@ def password_validator(password):
     """Function that provides password validation"""
     if not string_validator(password, max_length=128):
         return False
-    try:
-        template = re.compile(PASSWORD_REG_EXP)
-        if not template.match(password):
-            return False
-    except (TypeError, AttributeError):
+
+    template = re.compile(PASSWORD_REG_EXP)
+    if not template.match(password):
         return False
+
     return True
 
 
