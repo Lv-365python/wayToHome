@@ -1,5 +1,5 @@
 """This module implements class that represents the way entity."""
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 from custom_user.models import CustomUser
@@ -40,4 +40,11 @@ class Way(AbstractModel):
             way.save()
             return way
         except (ValueError, IntegrityError, OperationalError):
+            pass
+
+    def get_first_route(self):
+        """Return first route of way."""
+        try:
+            return self.routes.get(position=0)
+        except (ObjectDoesNotExist, OperationalError):
             pass
