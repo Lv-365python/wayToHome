@@ -48,5 +48,5 @@ def prepare_static_easy_way_data(self):
 
 
 @task
-def preparing_notification(notification_id):  # pylint: disable=unused-argument
-    """Prepare data about transport arrival time before notify the user."""
+def prepare_notification(notification_id):  # pylint: disable=unused-argument
+    """Prepare data about transport arrival time before notifying the user."""
