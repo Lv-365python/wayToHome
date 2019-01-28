@@ -18,9 +18,8 @@ django.setup()
 
 from notification.models import Notification
 from daemons.base_daemon import Daemon
-from daemons.helper import parse_args
 from utils.redishelper import REDIS_HELPER as redis
-from utils.tasks import preparing_notification
+from utils.tasks import prepare_notification
 
 
 DEFAULT_PREPARING_TIME = 60 * 10
@@ -64,7 +63,7 @@ class NotifierDaemon(Daemon):
                     seconds=first_route.time.second
                 )
 
-            celery_task = preparing_notification.apply_async(
+            celery_task = prepare_notification.apply_async(
                 eta=task_time,
                 kwargs={'notification_id': notification.id}
             )
@@ -77,6 +76,5 @@ class NotifierDaemon(Daemon):
 
 
 if __name__ == '__main__':
-    FREQUENCY = parse_args()
-    NOTIFIER_DAEMON = NotifierDaemon(FREQUENCY)
+    NOTIFIER_DAEMON = NotifierDaemon(None)
     NOTIFIER_DAEMON.run()

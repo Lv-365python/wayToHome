@@ -1,9 +1,9 @@
-"""This module provides tests for Route views."""
+"""This module provides tests for Notification views."""
+
 import datetime
 import json
 from unittest import mock
 
-import pytz
 from django.core.serializers.json import DjangoJSONEncoder
 from django.test import TestCase, Client
 from django.urls import reverse

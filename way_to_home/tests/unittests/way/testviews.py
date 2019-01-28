@@ -132,8 +132,8 @@ class WayViewsTestCase(TestCase):
 			'routes': [{
 				'position': 0,
 				'time': '00:13:00',
-				'transport_id': None,
-				'way': 2}],
+				'transport_id': None
+			}],
 			'user_id': 100}
 
 		url = reverse('way', args=[])
@@ -143,6 +143,7 @@ class WayViewsTestCase(TestCase):
 		response_dict['routes'][0].pop('id')
 		response_dict['routes'][0].pop('start_place')
 		response_dict['routes'][0].pop('end_place')
+		response_dict['routes'][0].pop('way')
 
 		self.assertEqual(response.status_code, 201)
 		self.assertDictEqual(response_dict, expected_data)
