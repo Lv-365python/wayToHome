@@ -58,7 +58,7 @@ class LoginForm extends Component {
                 if(this.state.request_type === 'register') {
                     setTimeout(() => {
                         this.props.history.go(0)
-                    }, 5 * 1000);
+                    }, 3 * 1000);
                     this.setError('Підтвердіть Вашу пошту');
                 }else this.props.history.go(0)
             })

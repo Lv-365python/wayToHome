@@ -56,7 +56,7 @@ export default class WayTab extends Component{
             .catch(error => this.setError("Не вдалося завантажити місця"));
     };
 
-    componentDidMount() {
+    componentWillMount() {
         this.getData();
     };
 

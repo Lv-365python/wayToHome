@@ -93,7 +93,6 @@ class WayViewsTestCase(TestCase):
 
 	def test_post(self):
 		"""Method that tests the success post request for creating Way."""
-
 		Place.objects.create(
 			id=11,
 			longitude=49.842601,
@@ -108,42 +107,50 @@ class WayViewsTestCase(TestCase):
 			'start_place': 11,
 			'end_place': 11,
 			"steps": [{
-				"Dep": {
-					"Stn": {
-						"y": 41.8507300,
-						"x": -87.6512600
-					}
+				"travel_mode": "WALKING",
+				"start_location": {
+					"lat": 41.8507300,
+					"lng": -87.6512600
 				},
-				"Arr": {
-					"Stn": {
-						"y": 40.8507300,
-						"x": -77.6512600
-					}
+				"end_location": {
+					"lat": 41.8525800,
+					"lng": -87.6514100
 				},
-
-				"Journey": {
-					"duration": "PT13M"
+				"polyline": {
+					"points": "a~l~Fjk~uOwHJy@P"
 				},
+				"duration": {
+					"value": 190,
+					"text": "1 min"
+				},
+				"html_instructions": "",
+				"distance": {
+					"value": 207,
+					"text": "0.1 mi"
+				}
 			}]
 		}
 
 		expected_data = {
+			'id': 2,
 			'name': 'test_name',
-			'routes': [{
-				'position': 0,
-				'time': '00:13:00',
-				'transport_id': None
-			}],
-			'user_id': 100}
+			'user_id': 100,
+			'routes': [
+				{
+					'id': 2,
+					'start_place': 3,
+					'end_place': 4,
+					'transport_id': None,
+					'position': 0,
+					'way': 2,
+					'time': '00:03:10'
+				}
+			]
+		}
 
 		url = reverse('way', args=[])
 		response = self.client.post(url, json.dumps(data), content_type='application/json')
 		response_dict = json.loads(response.content)
-		response_dict.pop('id')
-		response_dict['routes'][0].pop('id')
-		response_dict['routes'][0].pop('start_place')
-		response_dict['routes'][0].pop('end_place')
-		response_dict['routes'][0].pop('way')
 
 		self.assertEqual(response.status_code, 201)
 		self.assertDictEqual(response_dict, expected_data)
