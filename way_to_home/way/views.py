@@ -1,5 +1,6 @@
 """This module that provides base logic for CRUD of way`s model objects."""
 
+from datetime import datetime, timedelta
 from django.views.generic import View
 from django.http import JsonResponse
 from django.db import transaction
@@ -80,7 +81,7 @@ class WayView(View):
             position = 0
 
             for step in steps:
-                route = _make_route_dict_from_here_maps(step)
+                route = _make_route_dict_from_google_maps(step)
                 if position == 0:
                     route['start_place'] = data.get('start_place')
                 if position == len(steps)-1:
@@ -175,10 +176,11 @@ def _make_route_dict_from_google_maps(step):
                  'latitude': step['end_location']['lat']}
     route['end_place'] = end_place
 
-    route['time'] = step['duration']['value']
+    time = timedelta(seconds=step['duration']['value'])
+    route['time'] = datetime.strptime(str(time), '%H:%M:%S').time()
 
-    if step.get('transit_details'):
-        transport_id = step['transit_details']['line']['short_name']
+    if step.get('transit'):
+        transport_id = step['transit']['line']['short_name']
         route['transport_id'] = transport_id
 
     return route
@@ -224,6 +226,7 @@ def _create_route(way, position, **kwargs):
 
     time = kwargs.get('time')
     transport_id = kwargs.get('transport_id')
+    transport_id = transport_id if isinstance(transport_id, int) else None
     route_obj = Route.create(way=way, start_place=start_place, end_place=end_place,
                              time=time, position=position, transport_id=transport_id)
 
