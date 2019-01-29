@@ -180,6 +180,35 @@ CELERY_TIMEZONE = 'Europe/Kiev'
 
 DOMAIN = 'localhost:8000'
 
+# Logger required settings.
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'formatter': 'default',
+            'filename': os.path.join('/var/log/', 'way_to_home.log')
+        },
+    },
+    'loggers': {
+        'way_to_home': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+    'formatters': {
+        'default': {
+            'format': '{levelname} {asctime} {pathname} line: {lineno:d} '
+                      'message: {message}',
+            'datefmt': '%d/%m/%Y %H:%M:%S',
+            'style': '{'
+        },
+    },
+}
+
 try:
     from way_to_home.local_settings import *
 except ImportError:

@@ -4,6 +4,7 @@ from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
+from utils.utils import LOGGER
 
 
 class Place(AbstractModel):
@@ -45,5 +46,5 @@ class Place(AbstractModel):
             place.user = user
             place.save()
             return place
-        except (ValueError, IntegrityError, OperationalError):
-            pass
+        except (ValueError, IntegrityError, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful place creating. {err}')

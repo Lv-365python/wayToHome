@@ -4,6 +4,8 @@ import os
 import time
 from abc import abstractmethod
 
+from utils.utils import LOGGER
+
 
 class Daemon:
     """Provides basic functionality of daemon."""
@@ -19,11 +21,13 @@ class Daemon:
         """Executes before Daemon instance starts to process user-defined commands."""
         self.pid = os.getpid()
         message = f'{self.name} was successfully started with process id={self.pid}.'
+        LOGGER.info(message)
         print(message)
 
     def stop(self):
         """Executes after Daemon instance has finished processing user-defined commands."""
         message = f'{self.name} with process id={self.pid} was successfully stopped.'
+        LOGGER.info(message)
         print(message)
 
     def run(self):

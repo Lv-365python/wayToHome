@@ -13,8 +13,11 @@ before_script:
 
 script:
   - cd way_to_home
+  - sudo touch /var/log/way_to_home.log
+  - sudo chown -R $USER:$USER /var/log/way_to_home.log
   - pylint --rcfile=.pylintrc *
   - coverage run manage.py test
+
 
 after_success:
   - coveralls

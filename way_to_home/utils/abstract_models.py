@@ -9,6 +9,8 @@ from abc import abstractmethod
 from django.db import models, IntegrityError, transaction
 from django.db.utils import OperationalError
 
+from utils.utils import LOGGER
+
 
 class AbstractModel(models.Model):
     """Model that describes abstract entity."""
@@ -22,10 +24,9 @@ class AbstractModel(models.Model):
         Return object, found by id.
         """
         try:
-            obj = cls.objects.get(id=obj_id)
-        except (cls.DoesNotExist, OperationalError):
-            obj = None
-        return obj
+            return cls.objects.get(id=obj_id)
+        except (cls.DoesNotExist, OperationalError) as err:
+            LOGGER.error(f'Certain {cls.__name__} with id={obj_id} does not exist. {err}')
 
     @classmethod
     def delete_by_id(cls, obj_id):
@@ -36,7 +37,8 @@ class AbstractModel(models.Model):
             obj = cls.objects.get(id=obj_id)
             obj.delete()
             return True
-        except (cls.DoesNotExist, OperationalError):
+        except (cls.DoesNotExist, OperationalError) as err:
+            LOGGER.error(f'Certain {cls.__name__} with id={obj_id} does not delete. {err}')
             return False
 
     @classmethod
@@ -53,7 +55,8 @@ class AbstractModel(models.Model):
             try:
                 self.save()
                 return True
-            except (ValueError, IntegrityError, OperationalError):
+            except (ValueError, IntegrityError, OperationalError) as err:
+                LOGGER.error(f'Unsuccessful object parameters update with id={self.id}. {err}')
                 return False
 
     @abstractmethod

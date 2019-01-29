@@ -4,6 +4,7 @@ from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
+from utils.utils import LOGGER
 
 
 class Way(AbstractModel):
@@ -39,8 +40,8 @@ class Way(AbstractModel):
             way.user = user
             way.save()
             return way
-        except (ValueError, IntegrityError, OperationalError):
-            pass
+        except (ValueError, IntegrityError, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful way creating. {err}')
 
     def get_first_route(self):
         """Return first route of way."""

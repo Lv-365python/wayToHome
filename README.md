@@ -124,11 +124,19 @@ $ systemctl status rabbitmq-server
     # daemon for preparing gtfs data from EasyWay
     python gtfs_daemon.py 11
     ```
-3. Go to the folder with `manage.py` file and run django server: 
+    
+3. Create file `way_to_home.log` in `/var/log/` directory, and add user permissions to that file.
+    ```
+    sudo touch /var/log/way_to_home.log
+    sudo chown -R $USER:$USER /var/log/way_to_home.log
+    ```
+    
+4. Go to the folder with `manage.py` file and run django server: 
     ```
     python manage.py runserver
     ```
-4. Go to the django root folder run celery worker and beat: 
+
+5. Go to the django root folder run celery worker and beat: 
     ```
     celery -A way_to_home worker -l info
     celery -A way_to_home beat -l info
