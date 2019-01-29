@@ -1,11 +1,15 @@
 """This module provides signals for Notification model."""
 
-import pickle
+from datetime import date, datetime
 
-from django.db.models.signals import post_delete
+from celery.exceptions import TaskError
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
-from utils.redishelper import REDIS_HELPER as redis
+from utils.tasks import prepare_notification
+from utils.notificationhelper import (get_prepare_task_time,
+                                      get_notifications_tasks,
+                                      set_notifications_tasks)
 from .models import Notification
 
 
@@ -15,10 +19,60 @@ def revoke_notification_task(sender, instance, **kwargs):  # pylint:disable=unus
     Provides revoking celery appropriate notification
     task and removing data about it from Redis.
     """
-    pickled_notifications = redis.get('notifications')
-    notifications = pickle.loads(pickled_notifications)
-    celery_task = notifications.pop(instance.id)
+    if not instance.week_day == date.today().weekday():
+        return False
 
-    celery_task.revoke()
+    notifications_tasks = get_notifications_tasks()
 
-    redis.set('notifications', pickle.dumps(notifications))
+    try:
+        celery_task = notifications_tasks.pop(instance.id)
+        celery_task.revoke()
+    except (KeyError, TaskError):
+        return False
+
+    if not set_notifications_tasks(notifications_tasks):
+        return False
+
+    return True
+
+
+@receiver(post_save, sender=Notification)
+def create_notification_task(sender, instance, created, update_fields, **kwargs):  # pylint:disable=unused-argument
+    """
+    Assign celery task to prepare sending notification or
+    revoke old task and assign new one if time was updated.
+    """
+    instance = sender.get_by_id(instance.id)
+    if not instance.is_for_today():
+        return False
+
+    notifications_tasks = get_notifications_tasks()
+
+    if not created:
+        if 'time' not in update_fields:
+            return False
+
+        try:
+            celery_task = notifications_tasks.pop(instance.id)
+            celery_task.revoke()
+        except (KeyError, TaskError):
+            return False
+
+    now = datetime.now().time()
+    if instance.time < now:
+        return False
+
+    first_route = instance.way.get_first_route()
+    time_to_stop = first_route.time if first_route else None
+
+    task_time = get_prepare_task_time(instance.time, time_to_stop)
+    celery_task = prepare_notification.apply_async(
+        eta=task_time,
+        kwargs={'notification_id': instance.id}
+    )
+
+    notifications_tasks[instance.id] = celery_task
+    if not set_notifications_tasks(notifications_tasks):
+        return False
+
+    return True
