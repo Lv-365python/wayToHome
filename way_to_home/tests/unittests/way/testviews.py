@@ -132,17 +132,12 @@ class WayViewsTestCase(TestCase):
 		}
 
 		expected_data = {
-			'id': 2,
 			'name': 'test_name',
 			'user_id': 100,
 			'routes': [
 				{
-					'id': 2,
-					'start_place': 3,
-					'end_place': 4,
 					'transport_id': None,
 					'position': 0,
-					'way': 2,
 					'time': '00:03:10'
 				}
 			]
@@ -151,6 +146,11 @@ class WayViewsTestCase(TestCase):
 		url = reverse('way', args=[])
 		response = self.client.post(url, json.dumps(data), content_type='application/json')
 		response_dict = json.loads(response.content)
+		response_dict.pop('id')
+		response_dict['routes'][0].pop('id')
+		response_dict['routes'][0].pop('start_place')
+		response_dict['routes'][0].pop('end_place')
+		response_dict['routes'][0].pop('way')
 
 		self.assertEqual(response.status_code, 201)
 		self.assertDictEqual(response_dict, expected_data)

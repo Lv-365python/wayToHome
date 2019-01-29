@@ -15,7 +15,7 @@ class ModalMap extends React.Component {
 
     componentWillMount() {
         const { routeInfo } = this.props;
-        const colors = ["black", "brown", "green", "purple", "yellow", "blue", "gray", "orange", "red", "white"];
+        const colors = ["black", "brown", "green", "purple", "blue", "gray", "red"];
         let google_static_map = "https://maps.googleapis.com/maps/api/staticmap?size=550x400";
 
         routeInfo.map((info, index) => {
