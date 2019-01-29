@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-
 import Button from '@material-ui/core/Button';
 
-import { CustomizedSnackbars } from '../../index';
-import { ResultForm } from '../index';
+import { CustomizedSnackbars } from '../..';
+import { ResultForm } from '..';
 import InputPoint from './inputPoint';
 import './routeForm.css';
-
 
 export default class RouteSearchForm extends Component {
 
@@ -19,9 +17,17 @@ export default class RouteSearchForm extends Component {
     };
 
     onClick = () => {
-        this.setState((state) => ({
-            open: !state.open
-        }));
+        const { pointA, pointB } = this.state;
+        const markerStart = this.props.pointMarkerStart;
+        const markerEnd = this.props.pointMarkerEnd;
+        if((pointA && pointB) || (markerStart.lat !== markerEnd.lat && markerStart.lng !== markerEnd.lng)){
+            this.props.getCoordsWay();
+            this.setState((state) => ({
+                open: !state.open
+            }));
+            return;
+        }
+        this.setError("Введіть координати початку і кінця маршруту.");
     };
 
     getCurrentPosition = point => {
@@ -73,10 +79,12 @@ export default class RouteSearchForm extends Component {
 
     setPointA = pointA => {
         this.setState({ pointA });
+        this.props.setStartPoint(pointA);
     };
 
     setPointB = pointB => {
         this.setState({ pointB });
+        this.props.setEndPoint(pointB);
     };
 
     closeRouteResult = () =>{
@@ -92,14 +100,14 @@ export default class RouteSearchForm extends Component {
     };
 
     render() {
-        const { open, error } = this.state;
+        const { open, error, pointA, pointB } = this.state;
 
         return (
             <div className='searchForm'>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Точка A' value={this.state.pointA} onChange={this.setPointA}/>
+                <InputPoint name='Точка A' value={pointA} onChange={this.setPointA}/>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Точка Б' value={this.state.pointB} onChange={this.setPointB}/>
+                <InputPoint name='Точка Б' value={pointB} onChange={this.setPointB}/>
                 <div style={{marginTop: '60px'}}></div>
                 <Button variant='contained' color='primary' size='medium' onClick={this.onClick} className='Btn'>
                     ПОШУК
