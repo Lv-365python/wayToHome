@@ -33,7 +33,9 @@ class LoginBtn extends Component{
                     color='primary'
                     size='large'
                     onClick={this.onClickLoginBtn}
-                    className='Btn'>
+                    className='Btn'
+                    style={{borderRadius: 0}}
+                >
                         Увійти
                 </Button>
             </div>

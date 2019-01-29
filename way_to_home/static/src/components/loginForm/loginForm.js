@@ -207,7 +207,7 @@ class LoginForm extends Component {
                     error={pass_error}
                     style={{display: repeat_display}}
                     label={pass_error ? 'Поганий пароль' : 'Повторіть пароль'}
-                    type="password"
+                    type={this.state.showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
                     margin="normal"
                     fullWidth
