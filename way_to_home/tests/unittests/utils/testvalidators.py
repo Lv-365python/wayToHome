@@ -15,9 +15,6 @@ from utils.validators import (string_validator, coordinate_validator, required_k
 
 class ValidatorsTestCase(TestCase):
     """Test Case that provides testing of validators"""
-    def setUp(self):
-        """Method that provides preparation before testing validators."""
-
     def test_string_validator(self):
         """Method that tests the string_validator function"""
         not_str_value = 123
@@ -158,6 +155,10 @@ class ValidatorsTestCase(TestCase):
         result = time_validator(time=invalid_time)
         self.assertFalse(result)
 
+        invalid_time = '25:61:61'
+        result = time_validator(time=invalid_time)
+        self.assertFalse(result)
+
         test_time = '21:43:23'
         result = time_validator(time=test_time)
         self.assertTrue(result)
@@ -182,13 +183,13 @@ class ValidatorsTestCase(TestCase):
 
     def test_notification_data_validator(self):
         """Method that tests the notification_data_validator function"""
-        invalid_data = {'start_time': 123,
-                        'end_time': 123}
+        invalid_data = {'start_time': '2019-01-12',
+                        'end_time': '2019-02-12'}
         result = notification_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        invalid_data = {'start_time': 'invalid time',
-                        'end_time': 'invalid time',
+        invalid_data = {'start_time': '2019-01-12',
+                        'end_time': '2019-02-12',
                         'week_day': 2,
                         'time': None}
         result = notification_data_validator(data=invalid_data)
@@ -231,13 +232,13 @@ class ValidatorsTestCase(TestCase):
 
     def test_place_data_validator(self):
         """Method that tests the place_data_validator function"""
-        invalid_data = {'longitude': 'invalid longitude',
-                        'latitude': 'invalid latitude'}
+        invalid_data = {'longitude': 42.124,
+                        'latitude': 42.124}
         result = place_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        invalid_data = {'longitude': 'invalid longitude',
-                        'latitude': 'invalid latitude',
+        invalid_data = {'longitude': 42.124,
+                        'latitude': 42.124,
                         'address': None}
         result = place_data_validator(data=invalid_data)
         self.assertFalse(result)
@@ -292,11 +293,11 @@ class ValidatorsTestCase(TestCase):
 
     def test_route_data_validator(self):
         """Method that tests the route_data_validator function"""
-        invalid_data = {'time': 123}
+        invalid_data = {'time': '21:43:23'}
         result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        invalid_data = {'time': 123,
+        invalid_data = {'time': '21:43:23',
                         'position': None}
         result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
