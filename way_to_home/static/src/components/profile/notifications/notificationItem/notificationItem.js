@@ -52,7 +52,7 @@ export default class NotificationItem extends Component{
                 label: 'Субота',
             },
             {
-                value: 5,
+                value: 6,
                 label: 'Неділя',
             },
         ],
@@ -97,16 +97,16 @@ export default class NotificationItem extends Component{
     };
 
     onChangeTime = (newTime) => {
-        let StartDate = this.formatDate(this.props.start_date);
-        let EndDate = this.formatDate(this.props.end_date);
-        let Time = newTime + ':00';
+        let startDate = this.formatDate(this.props.start_date);
+        let endDate = this.formatDate(this.props.end_date);
+        let time = newTime + ':00';
 
         let url = '/api/v1/';
         let type = `way/${this.props.way.id}/notification/${this.state.id}`;
         axios.put(url + type, {
-            start_time: StartDate,
-            end_time: EndDate,
-            time: Time
+            start_time: startDate,
+            end_time: endDate,
+            time: time
         })
             .then(response => {
                 if (response.status === 200) {

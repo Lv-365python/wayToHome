@@ -15,10 +15,10 @@ class NotificationForm extends Component{
     state = {
         pointA: String(undefined),
         pointB: String(undefined),
-        OpenStartDate: false,
-        OpenEndDate: false,
-        StartDate: new Date(),
-        EndDate: new Date(),
+        openStartDate: false,
+        openEndDate: false,
+        startDate: new Date(),
+        endDate: new Date(),
         notifications: [],
         newNotifications: [],
         ajaxError: undefined,
@@ -52,7 +52,6 @@ class NotificationForm extends Component{
         axios.get(url + type)
             .then((response) => {
                 if (response.status === 200) {
-
                     let start_date;
                     let end_date;
 
@@ -75,16 +74,16 @@ class NotificationForm extends Component{
                         end_date.substring(8, 10));
 
                     this.setState(() => ({
-                        StartDate: parsed_start_date,
-                        EndDate: parsed_end_date
+                        startDate: parsed_start_date,
+                        endDate: parsed_end_date
                     }));
 
                     this.setState({notifications: response.data});
                 } else {
-                    this.setError(response.data);
+                    this.setError("Не вдалося завантажити нотифікації");
                 }
             })
-            .catch(error => this.setError("Не вдалося завантантажити нотифікації"));
+            .catch(error => this.setError("Не вдалося завантажити нотифікації"));
     };
 
     componentDidMount() {
@@ -116,10 +115,10 @@ class NotificationForm extends Component{
                     let notifications = this.state.notifications.filter(notification => notification.id !== id);
                     this.setState({notifications: notifications})
                 } else {
-                    this.setError(response.data);
+                    this.setError("Не вдалося видалити нотифікацію");
                 }
             })
-            .catch(error => this.setError(error));
+            .catch(error => this.setError("Не вдалося видалити нотифікацію"));
     };
 
     handleSaveClick = (notification) => {
@@ -133,27 +132,27 @@ class NotificationForm extends Component{
 
     toggleStartDate = () => {
         this.setState(state => ({
-            OpenStartDate: !state.OpenStartDate
+            openStartDate: !state.openStartDate
         }));
     };
 
     toggleEndDate = () => {
         this.setState(state => ({
-            OpenEndDate: !state.OpenEndDate
+            openEndDate: !state.openEndDate
         }));
     };
 
     onChangeStartDate = (newDate) => {
         if (newDate >= this.state.EndDate){
-            alert('Початкова дата не може бути більшою або рівною за кінцеву')
+            this.setError('Початкова дата не може бути більшою або рівною за кінцеву')
         } else {
-            this.setState({StartDate: newDate});
+            this.setState({startDate: newDate});
 
             this.state.notifications.map(notification => {
                 this.sendUpdateDate(
                     notification.id,
                     this.formatDate(newDate),
-                    this.formatDate(this.state.EndDate)
+                    this.formatDate(this.state.endDate)
                 );
             });
             this.toggleStartDate();
@@ -162,15 +161,15 @@ class NotificationForm extends Component{
 
     onChangeEndDate = (newDate) => {
         let today = new Date();
-        if (newDate <= this.state.StartDate || newDate <= today){
-            alert('Кінцева дата не може бути меншою або рівною за початкову та сьогоднішню дату')
+        if (newDate <= this.state.startDate || newDate <= today){
+            this.setError('Кінцева дата не може бути меншою або рівною за початкову та сьогоднішню дату')
         } else {
             this.setState({EndDate: newDate});
 
             this.state.notifications.map(notification => {
                 this.sendUpdateDate(
                     notification.id,
-                    this.formatDate(this.state.StartDate),
+                    this.formatDate(this.state.startDate),
                     this.formatDate(newDate)
                 );
             });
@@ -188,10 +187,8 @@ class NotificationForm extends Component{
             .then(function (response) {
                 console.log(response);
             })
-            .catch(function (error) {
-                console.log(error);
-            });
-    };
+            .catch(error => this.setError("Не вдалося обновити нотифікацію"))
+            };
 
     render(){
         return(
@@ -217,8 +214,8 @@ class NotificationForm extends Component{
                             id={notification.id}
                             time={notification.time}
                             week_day={notification.week_day}
-                            start_date={this.state.StartDate}
-                            end_date={this.state.EndDate}
+                            start_date={this.state.startDate}
+                            end_date={this.state.endDate}
                             way={this.props.way}
                             deleteButton={this.handleDeleteExistItemClick} /> ))}
 
@@ -226,8 +223,8 @@ class NotificationForm extends Component{
                         <NewNotificationItem
                             key={Date.now()}
                             deleteButton={this.handleDeleteNewItemClick}
-                            StartDate={this.state.StartDate}
-                            EndDate={this.state.EndDate}
+                            startDate={this.state.startDate}
+                            endDate={this.state.endDate}
                             way={this.props.way}
                             saveNotification={this.handleSaveClick}
                             setError={this.setError} /> ))}
@@ -248,7 +245,7 @@ class NotificationForm extends Component{
                             size="medium"
                             color="primary"
                             onClick={this.toggleStartDate} >
-                            Змінити початкову дату: {this.formatDate(this.state.StartDate)}
+                            Змінити початкову дату: {this.formatDate(this.state.startDate)}
                         </Button>
                     </div>
                     <div className="pickEndDate" >
@@ -257,7 +254,7 @@ class NotificationForm extends Component{
                             size="medium"
                             color="primary"
                             onClick={this.toggleEndDate} >
-                            Змінити кінцеву дату: {this.formatDate(this.state.EndDate)}
+                            Змінити кінцеву дату: {this.formatDate(this.state.endDate)}
                         </Button>
                     </div>
                     <div className="returnButton" >
@@ -269,15 +266,15 @@ class NotificationForm extends Component{
                             Повернутись
                         </Button>
                     </div>
-                    { this.state.OpenStartDate &&
+                    { this.state.openStartDate &&
                     <div className='startDate'>
                         <Calendar onChange={this.onChangeStartDate}
-                                  value={this.state.StartDate} />
+                                  value={this.state.startDate} />
                     </div> }
-                    { this.state.OpenEndDate &&
+                    { this.state.openEndDate &&
                     <div className='endDate'>
                         <Calendar onChange={this.onChangeEndDate}
-                                  value={this.state.EndDate} />
+                                  value={this.state.endDate} />
                     </div> }
                     {this.state.ajaxError && <CustomizedSnackbars message={this.state.ajaxError} reset={this.setError}/>}
                 </div>
