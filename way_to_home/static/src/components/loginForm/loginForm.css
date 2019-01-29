@@ -22,3 +22,16 @@ button.confirmButton{
 div.loginField{
     margin-top: 0;
 }
+
+.blow svg:hover {
+    cursor: pointer;
+    animation-name: icon_rotate;
+    animation-duration: 2s;
+    animation-delay: .5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes icon_rotate {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}

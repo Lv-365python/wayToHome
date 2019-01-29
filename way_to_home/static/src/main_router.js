@@ -4,7 +4,7 @@ import {Home, UserSettingsForm, Header, Map} from './components';
 
 export const isAuthenticated = function() {
     return document.cookie.indexOf('sessionid') !== -1;
-}
+};
 
 
 function PrivateRoute({ component: Component, ...rest }) {

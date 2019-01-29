@@ -132,3 +132,35 @@ class NotificationModelTestCase(TestCase):
         self.assertQuerysetEqual(actual_query, expected_query, transform=lambda x: x)
         self.assertIn(expired_notification, actual_query)
         self.assertNotIn(relevant_notification, actual_query)
+
+    def test_get_today_scheduled(self):
+        """Provides tests for `get_today_scheduled` method."""
+        today = datetime.date.today()
+
+        today_notification = Notification.objects.create(
+            id=201,
+            way=self.way,
+            start_time=today - datetime.timedelta(days=1),
+            end_time=today + datetime.timedelta(days=31),
+            week_day=today.weekday(),
+            time='8:30:00'
+        )
+        another_day_notification = Notification.objects.create(
+            id=202,
+            way=self.way,
+            start_time=today - datetime.timedelta(days=1),
+            end_time=today + datetime.timedelta(days=31),
+            week_day=100,
+            time='8:30:00'
+        )
+
+        expected_query = Notification.objects.filter(
+            week_day=today.weekday(),
+            start_time__lte=today,
+            end_time__gte=today,
+        )
+        actual_query = Notification.get_today_scheduled()
+
+        self.assertQuerysetEqual(actual_query, expected_query, transform=lambda x: x)
+        self.assertIn(today_notification, actual_query)
+        self.assertNotIn(another_day_notification, actual_query)

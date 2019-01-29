@@ -30,7 +30,7 @@ class RouteSearchForm extends Component {
         }
         navigator.geolocation.getCurrentPosition(
             position => this.handleSuccess(position, point),
-            () => this.handleError("Неможливо отримати ваше місцезнаходження.")
+            () => this.setError("Неможливо отримати ваше місцезнаходження.")
         );
     };
 
@@ -53,27 +53,22 @@ class RouteSearchForm extends Component {
                     this.setPointB(address);
             })
             .catch(error => {
-                    this.setError(error.response.data);
+                this.setError("Неможливо визначити адресу.");
             });
-    }
+    };
 
     getAddress = response => {
         const address = response.data.address;
-        let addr = `${address.town || address.city}, ${address.road}`;
+        let addr = `${address.town || address.city}, ${address.road || address.path || address.suburb}`;
 
-        if (address.house_number) {
+        if (address.house_number)
             addr += `, ${address.house_number}`;
-        }
 
-        if (addr.includes("undefined")){
+        if (addr.includes("undefined"))
             addr = "Неможливо визначити вашу геолокацію.";
-        }
-        return addr;
-    }
 
-    handleError = error => {
-        this.setError(error);
-    }
+        return addr;
+    };
 
     setPointA = pointA => {
         this.setState({ pointA });
@@ -101,14 +96,14 @@ class RouteSearchForm extends Component {
         return (
             <div className='searchForm'>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Point A' value={this.state.pointA} onChange={this.setPointA}/>
+                <InputPoint name='Точка A' value={this.state.pointA} onChange={this.setPointA}/>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Point B' value={this.state.pointB} onChange={this.setPointB}/>
+                <InputPoint name='Точка Б' value={this.state.pointB} onChange={this.setPointB}/>
                 <div style={{marginTop: '60px'}}></div>
                 <Button variant='contained' color='primary' size='medium' onClick={this.onClick} className='Btn'>
                     ПОШУК
                 </Button>
-                { error && <CustomizedSnackbars message={this.state.error} reset={this.setError}/>}
+                { error && <CustomizedSnackbars message={error} reset={this.setError}/>}
                 <button onClick={this.props.onClose} className="hideBtn">X</button>
                 <button onClick={() => this.getCurrentPosition('A')} className="currPosBtn_1">O</button>
                 <button onClick={() => this.getCurrentPosition('B')} className="currPosBtn_2">O</button>

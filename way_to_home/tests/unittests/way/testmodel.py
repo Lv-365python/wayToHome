@@ -3,11 +3,11 @@
 import datetime
 
 from django.test import TestCase
+
 from way.models import Way
 from custom_user.models import CustomUser
 from place.models import Place
 from route.models import Route
-
 
 
 class WayModelTestCase(TestCase):
@@ -15,19 +15,16 @@ class WayModelTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Way model's features."""
-        user = CustomUser.objects.create(id=100, email='mail@gmail.com', password='Password1234', is_active=True)
+        self.user = CustomUser.objects.create(id=100, email='mail@gmail.com', password='Password1234', is_active=True)
         start_place = Place.objects.create(id=100, longitude=111.123456, latitude=84.123456)
         end_place = Place.objects.create(id=200, longitude=120.123456, latitude=89.123456)
 
-        Way.objects.create(
+        self.way = Way.objects.create(
             id=100,
             name='test_name',
-            user=user
+            user=self.user
         )
-
-        self.way = Way.objects.get(id=100)
-
-        Route.objects.create(
+        self.route = Route.objects.create(
             id=100,
             time='23:58:59',
             transport_id=None,
@@ -70,9 +67,7 @@ class WayModelTestCase(TestCase):
 
     def test_create(self):
         """Provide tests for `create` method of Way model."""
-        user = CustomUser.objects.get(id=100)
-
-        way = Way.create(user=user, name='name')
+        way = Way.create(user=self.user, name='name')
         self.assertIsInstance(way, Way)
         self.assertIsNotNone(Way.objects.get(id=way.id))
 
@@ -115,9 +110,16 @@ class WayModelTestCase(TestCase):
 
     def test_str(self):
         """Provide tests for `__str__` method of certain Way instance."""
-        way = Way.get_by_id(obj_id=self.way.id)
-
         expected_string = f'Way id: {self.way.id}, user id: {self.way.user.id}'
-        actual_string = way.__str__()
+        actual_string = self.way.__str__()
 
         self.assertEqual(expected_string, actual_string)
+
+    def test_get_first_route(self):
+        """Provide tests for `get_first_route` method of certain Way instance."""
+        expected_route = self.way.get_first_route()
+        self.assertEqual(expected_route, self.route)
+
+        way_without_routes = Way.objects.create(user=self.user)
+        expected_route = way_without_routes.get_first_route()
+        self.assertIsNone(expected_route)

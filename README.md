@@ -95,6 +95,7 @@ $ systemctl status rabbitmq-server
     # Google settings
     CLIENT_ID = '<client_id>'
     CLIENT_SECRET = '<client_secret>'
+    GOOGLE_API_KEY = '<google_api_key>'
     ```
 3. Go to the folder with `manage.py` file and run migrate: 
     ```

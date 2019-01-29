@@ -167,11 +167,16 @@ JWT_ALGORITHM = 'HS384'
 NEXMO_API_KEY = 'Nexmo API KEY'
 NEXMO_API_SECRET = 'Nexmo API SECRET'
 
+# Required setting for Google Maps API
+
+GOOGLE_API_KEY = 'Google API key'
+
 # Celery settings
 
 CELERY_BROKER_URL = 'amqp://localhost'
-
-
+CELERY_IGNORE_RESULT = True
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = 'Europe/Kiev'
 
 DOMAIN = 'localhost:8000'
 

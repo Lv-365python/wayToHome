@@ -1,9 +1,9 @@
 """This module that provides base logic for CRUD of way`s model objects."""
 
+from datetime import datetime, timedelta
 from django.views.generic import View
 from django.http import JsonResponse
 from django.db import transaction
-import isodate
 from way.models import Way
 from place.models import Place
 from route.models import Route
@@ -80,7 +80,7 @@ class WayView(View):
             position = 0
 
             for step in steps:
-                route = _make_route_dict_from_here_maps(step)
+                route = _make_route_dict_from_google_maps(step)
                 if position == 0:
                     route['start_place'] = data.get('start_place')
                 if position == len(steps)-1:
@@ -125,40 +125,6 @@ class WayView(View):
         return RESPONSE_200_DELETED
 
 
-def _make_route_dict_from_here_maps(step):
-    """
-    Function for creation dict from here maps api
-
-    :param step: Step data. Is required
-    :type step: dict
-
-    :return dict with route information
-    """
-    route = {}
-
-    dep = step.get('Dep')
-    start_point = dep.get('Stn') or dep.get('Addr')
-
-    start_place = {'longitude': start_point.get('x'),
-                   'latitude': start_point.get('y')}
-
-    arr = step.get('Arr')
-    end_point = arr.get('Stn') or arr.get('Addr')
-
-    end_place = {'longitude': end_point.get('x'),
-                 'latitude': end_point.get('y')}
-
-    route['start_place'] = start_place
-    route['end_place'] = end_place
-    route['time'] = str(isodate.parse_duration(step['Journey'].get('duration')))
-
-    transport = dep.get('Transport')
-    if transport and transport.get('name'):
-        route['transport_id'] = transport.get('name')
-
-    return route
-
-
 def _make_route_dict_from_google_maps(step):
     """
     Function for creation dict from google maps api
@@ -175,10 +141,11 @@ def _make_route_dict_from_google_maps(step):
                  'latitude': step['end_location']['lat']}
     route['end_place'] = end_place
 
-    route['time'] = step['duration']['value']
+    time = timedelta(seconds=step['duration']['value'])
+    route['time'] = datetime.strptime(str(time), '%H:%M:%S').time()
 
-    if step.get('transit_details'):
-        transport_id = step['transit_details']['line']['short_name']
+    if step.get('transit'):
+        transport_id = step['transit']['line']['short_name']
         route['transport_id'] = transport_id
 
     return route
@@ -224,6 +191,7 @@ def _create_route(way, position, **kwargs):
 
     time = kwargs.get('time')
     transport_id = kwargs.get('transport_id')
+    transport_id = transport_id if isinstance(transport_id, int) else None
     route_obj = Route.create(way=way, start_place=start_place, end_place=end_place,
                              time=time, position=position, transport_id=transport_id)
 

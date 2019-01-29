@@ -55,3 +55,15 @@ class Notification(AbstractModel):
         expired_notifications = cls.objects.filter(end_time__lt=today)
 
         return expired_notifications
+
+    @classmethod
+    def get_today_scheduled(cls):
+        """Retrieve notifications that are scheduled for today."""
+        today = date.today()
+        notifications = cls.objects.filter(
+            week_day=today.weekday(),
+            start_time__lte=today,
+            end_time__gte=today,
+        )
+
+        return notifications

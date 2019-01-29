@@ -1,5 +1,5 @@
+/* global google */
 import React, {Component} from 'react';
-import axios from "axios";
 
 import TrendingFlat from '@material-ui/icons/TrendingFlat';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -13,7 +13,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import ModalMap from './modalMap';
 import './newWayItem.css';
-import { HERE_APP_CODE, HERE_APP_ID } from "src/settings";
 
 
 export default class NewWayItem extends Component{
@@ -23,33 +22,65 @@ export default class NewWayItem extends Component{
         placeB: 'Виберіть місце Б',
         mapOpen: false,
         loading: false,
-        routes: [],
+        route: undefined,
+        routeInfo: undefined
     };
 
     handleClickModalOpen = () => {
-        this.setState({loading:true});
-
-        let today = new Date();
-        let tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000)).toISOString();
+        this.setState({loading: true});
 
         let placeA = this.props.places.find(place => place.id === this.state.placeA);
         let placeB = this.props.places.find(place => place.id === this.state.placeB);
 
-        const url = `https://transit.api.here.com/v3/route.json?dep=${placeA.latitude}%2C${placeA.longitude}&arr=${placeB.latitude}%2C${placeB.longitude}&time=${tomorrow}&app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&routing=tt`;
+        let from = {
+            lat: placeA.latitude,
+            lng: placeA.longitude
+        };
+        let to = {
+            lat: placeB.latitude,
+            lng: placeB.longitude
+        };
+        this.getDirections(from, to);
 
-        axios.get(url)
-            .then(response => {
-                let listRoutes = response.data.Res.Connections.Connection;
+    };
+
+    getDirections = (from, to) => {
+        const DirectionsService = new google.maps.DirectionsService();
+
+        DirectionsService.route({
+            origin: new google.maps.LatLng(from.lat, from.lng),
+            destination: new google.maps.LatLng(to.lat, to.lng),
+            travelMode: google.maps.TravelMode.TRANSIT,
+
+        }, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                let routeInfo = [];
+                let route = result.routes[0].legs[0].steps;
+                route.map(step => {
+                    routeInfo.push({
+                        polyline: step.polyline.points,
+                        start_location: {
+                            lat: step.start_location.lat,
+                            lng: step.start_location.lng
+                        },
+                        end_location: {
+                            lat: step.end_location.lat,
+                            lng: step.end_location.lng
+                        },
+                        duration: step.duration.text
+                    })
+                });
                 this.setState({
-                    routes: listRoutes,
+                    route: route,
+                    routeInfo: routeInfo,
                     mapOpen: true,
                     loading: false
-                });
-            })
-             .catch(error => {
-                 this.props.setError("Між між місцями неможливо прокласти маршрут. Виберіть інші місця");
-                 this.setState({loading:false})
-             });
+                })
+
+            } else {
+                this.props.setError("Не вдалось прокласти маршрут")
+            }
+        });
     };
 
     handleModalClose = () => {
@@ -79,6 +110,7 @@ export default class NewWayItem extends Component{
             mapOpen: false
         });
         this.props.saveRoute(this.state.placeA, this.state.placeB, route);
+
         this.setState({loading:false})
     };
 
@@ -148,7 +180,8 @@ export default class NewWayItem extends Component{
                     <ModalMap
                         onClose={this.handleModalClose}
                         saveRoute={this.saveButton}
-                        routes={this.state.routes}
+                        route={this.state.route}
+                        routeInfo={this.state.routeInfo}
                     />
                 </Dialog>
 
