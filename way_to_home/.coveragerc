@@ -11,6 +11,8 @@ source =
     user_profile
     utils
     way
+    daemons
+    home
 
 omit =
     *migrations*

@@ -6,6 +6,8 @@ from django.db import models, IntegrityError, transaction
 from django.core.exceptions import ValidationError
 from django.db.utils import OperationalError
 
+from utils.utils import LOGGER
+
 
 class CustomUser(AbstractBaseUser):
     """Model for User entity."""
@@ -44,7 +46,8 @@ class CustomUser(AbstractBaseUser):
             try:
                 self.save()
                 return True
-            except (ValueError, ValidationError, OperationalError):
+            except (ValueError, ValidationError, OperationalError) as err:
+                LOGGER.error(f'Unsuccessful user\' parameters updating with id={self.id}. {err}')
                 return False
 
     @classmethod
@@ -52,16 +55,16 @@ class CustomUser(AbstractBaseUser):
         """Method for returns user by email"""
         try:
             return cls.objects.get(email=email)
-        except (ValueError, cls.DoesNotExist, OperationalError):
-            pass
+        except (ValueError, cls.DoesNotExist, OperationalError) as err:
+            LOGGER.error(f'Failed returns user by email={email} {err}')
 
     @classmethod
     def get_by_id(cls, obj_id):
         """Method for returns user by id"""
         try:
             return cls.objects.get(id=obj_id)
-        except (ValueError, cls.DoesNotExist, OperationalError):
-            pass
+        except (ValueError, cls.DoesNotExist, OperationalError) as err:
+            LOGGER.error(f'Failed returns user by id={obj_id} {err}')
 
     @classmethod
     def create(cls, email, password, google_token='', phone_number=''):
@@ -75,8 +78,8 @@ class CustomUser(AbstractBaseUser):
         try:
             user.save()
             return user
-        except (ValueError, IntegrityError, OperationalError):
-            pass
+        except (ValueError, IntegrityError, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful user creating. {err}')
 
     @classmethod
     def delete_by_id(cls, obj_id):
@@ -85,5 +88,6 @@ class CustomUser(AbstractBaseUser):
             user = cls.objects.get(id=obj_id)
             user.delete()
             return True
-        except (cls.DoesNotExist, OperationalError):
+        except (cls.DoesNotExist, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful user deleting with id={obj_id}. {err}')
             return False

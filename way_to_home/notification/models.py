@@ -6,6 +6,7 @@ from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 
 from utils.abstract_models import AbstractModel
+from utils.utils import LOGGER
 from way.models import Way
 
 
@@ -45,8 +46,8 @@ class Notification(AbstractModel):
             notification.way = way
             notification.save()
             return notification
-        except (ValueError, IntegrityError, OperationalError):
-            pass
+        except (ValueError, IntegrityError, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful notification creating. {err}')
 
     @classmethod
     def get_expired(cls):

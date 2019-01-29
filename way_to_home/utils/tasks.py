@@ -7,6 +7,7 @@ from celery.task import periodic_task, task
 
 from django.conf import settings
 from notification.models import Notification
+from utils.utils import LOGGER
 from .file_handlers import load_file, unzip_file
 from .redishelper import REDIS_HELPER as redis
 from .easy_way import parse_routes_data, parse_trips_data, parse_stops_data
@@ -34,6 +35,7 @@ def delete_expired_notifications(self):
     notifications = Notification.get_expired()
     for notification_id in notifications.values_list('id', flat=True):
         if not Notification.delete_by_id(obj_id=notification_id):
+            LOGGER.info(f'Notification with {self.notification_id} doesn\'t delete')
             retry = True
 
     if retry:
@@ -54,10 +56,12 @@ def prepare_static_easyway_data(self):
 
     loaded_file = load_file(url, save_to=EASYWAY_DIR)
     if not loaded_file:
+        LOGGER.info('File doesn\'t load.')
         raise self.retry()
 
     is_unzipped = unzip_file(loaded_file, unzip_to=EASYWAY_DIR)
     if not is_unzipped:
+        LOGGER.info('File doesn\'t unzip.')
         raise self.retry()
 
     for data_identifier, parser in EASYWAY_PARSERS.items():

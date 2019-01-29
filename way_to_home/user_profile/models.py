@@ -4,6 +4,7 @@ from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
+from utils.utils import LOGGER
 
 
 class UserProfile(AbstractModel):
@@ -36,5 +37,5 @@ class UserProfile(AbstractModel):
             user_profile.user = user
             user_profile.save()
             return user_profile
-        except (ValueError, IntegrityError, OperationalError):
-            pass
+        except (ValueError, IntegrityError, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful user profile creating. {err}')

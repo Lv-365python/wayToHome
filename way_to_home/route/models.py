@@ -3,6 +3,7 @@
 from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 from utils.abstract_models import AbstractModel
+from utils.utils import LOGGER
 from way.models import Way
 from place.models import Place
 
@@ -52,5 +53,5 @@ class Route(AbstractModel):
             route.end_place = end_place
             route.save()
             return route
-        except (ValueError, IntegrityError, OperationalError):
-            pass
+        except (ValueError, IntegrityError, OperationalError) as err:
+            LOGGER.error(f'Unsuccessful route creating. {err}')
