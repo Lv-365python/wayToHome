@@ -1,4 +1,4 @@
-.settingsForm{
+.settingsForm {
     position: fixed;
     top: 12%;
     left: 20%;
@@ -9,4 +9,9 @@
     overflow-y:auto;
     height:80%;
     background: #DCDCDC;
+}
+
+.showMessage {
+    text-align: center;
+    color:gray;
 }

@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import axios from 'axios';
 
 import Button from "@material-ui/core/Button";
+import WarningIcon from '@material-ui/icons/Warning'
 
 import WayItem from './wayItem/wayItem';
 import NewWayItem from './newWayItem/newWayItem'
 import CustomizedSnackbars from '../../message/message';
 import './wayTab.css';
+import '../userSettingsForm.css'
 
 const url = '/api/v1/';
 
@@ -36,7 +38,6 @@ export default class WayTab extends Component{
                     this.setError(response.data);
                 }
             })
-            .catch(error => this.setError("Не вдалося завантантажити шляхи"));
     };
 
     getPlaces = () => {
@@ -45,15 +46,11 @@ export default class WayTab extends Component{
         axios.get(url + requestPlaces)
             .then(response => {
                 if (response.status === 200) {
-                    if (response.data.length === 0){
-                        this.setError("Спочатку збережіть місця");
-                    }
                     this.setState({places: response.data});
                 } else {
                     this.setError(response.data);
                 }
             })
-            .catch(error => this.setError("Не вдалося завантажити місця"));
     };
 
     componentWillMount() {
@@ -118,9 +115,17 @@ export default class WayTab extends Component{
     render(){
 
         let { ajaxError, ways, newWay, places} = this.state;
+        let showMessage = ways.length > 0 ? false : true;
 
         return(
             <div>
+                {showMessage &&
+                <div className="showMessage">
+                    <WarningIcon style={{'fontSize': '58px', 'paddingTop':'3%', 'color': 'orange'}}/>
+                    <h1>Список Ваших шляхів порожній</h1>
+                    <h2>Додайте шляхи по кнопці нижче</h2>
+                </div>}
+
                 {ways.map(way => (
                     <WayItem
                         key={way.id}
