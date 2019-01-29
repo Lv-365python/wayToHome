@@ -3,11 +3,13 @@ import React from 'react';
 import axios from 'axios';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button'
+import WarningIcon from '@material-ui/icons/Warning'
 
 import PlaceForm from './placeForm.js';
 import PlaceItem from './placeItem.js'
 import CustomizedSnackbars from '../../message/message';
 import './place.css'
+import '../userSettingsForm.css'
 
 export const place_api_url = '/api/v1/place/';
 export const here_suggestions_url = 'http://autocomplete.geocoder.api.here.com/6.2/suggest.json';
@@ -97,10 +99,20 @@ export default class PlaceTab extends React.Component {
 
 
     render(){
+
+        const { places } = this.state;
+        let showMessage = places.length > 0 ? false : true;
+
         return (
             <div>
+                {showMessage &&
+                <div className="showMessage">
+                    <WarningIcon style={{'fontSize': '58px', 'paddingTop':'3%', 'color': 'orange'}}/>
+                    <h1>Список Ваших місць порожній</h1>
+                    <h2>Додайте місця по кнопці порожній</h2>
+                </div>}
                 <div className='placeList'>
-                    {this.state.places.map(place => (
+                    {places.map(place => (
                         <PlaceItem
                             key={place.id}
                             place={place}
