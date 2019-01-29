@@ -48,16 +48,19 @@ class AbstractModel(models.Model):
 
     def update(self, **kwargs):
         """Update object parameters."""
+        update_fields = []
         with transaction.atomic():
             for key, value in kwargs.items():
                 if value:
                     setattr(self, key, value)
+                    update_fields.append(key)
             try:
-                self.save()
-                return True
+                self.save(update_fields=update_fields)
             except (ValueError, IntegrityError, OperationalError) as err:
                 LOGGER.error(f'Unsuccessful object parameters update with id={self.id}. {err}')
                 return False
+
+        return True
 
     @abstractmethod
     def to_dict(self):
