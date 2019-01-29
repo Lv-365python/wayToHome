@@ -54,13 +54,13 @@ class LoginForm extends Component {
             remember_me: this.state.remember_me,
         })
             .then(() => {
-                setTimeout(() => {
-                    this.props.history.go(0)
-                }, 5 * 1000);
 
                 if(this.state.request_type === 'register') {
+                    setTimeout(() => {
+                        this.props.history.go(0)
+                    }, 5 * 1000);
                     this.setError('Підтвердіть Вашу пошту');
-                }
+                }else this.props.history.go(0)
             })
             .catch((error) => {
                 this.setError(error.response.data);
@@ -100,7 +100,7 @@ class LoginForm extends Component {
         this.setState({
             error: value
         });
-    }
+    };
 
     handlePassword = (first_pass, second_pass) => {
         let regex = /^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$/;
@@ -132,13 +132,12 @@ class LoginForm extends Component {
                 window.location.replace(response.data.url);
             })
             .catch((error) => {
-                this.setError(error.response.data);
+                this.setError("Не вдалося авторизуватись через Google.");
             });
     };
 
     changeSaveCookies = () => {
         this.setState({remember_me: !this.state.remember_me});
-
     };
 
     render() {
@@ -188,7 +187,7 @@ class LoginForm extends Component {
                                       control={<Checkbox value="checkedC"/>}
                                       label="Запам'ятати мене"/>
                 </div>
-                <div>
+                <div className="blow">
                     <SVGInline svg={ iconSVG }
                                onClick={this.handleSigninGoogle}
                     />
