@@ -18,34 +18,13 @@ class NewNotificationItem extends Component{
         isTimePickerOpen: false,
         day: 'Понеділок',
         days: [
-            {
-                value: 0,
-                label: 'Понеділок',
-            },
-            {
-                value: 1,
-                label: 'Вівторок',
-            },
-            {
-                value: 2,
-                label: 'Середа',
-            },
-            {
-                value: 3,
-                label: 'Четвер',
-            },
-            {
-                value: 4,
-                label: 'Пятниця',
-            },
-            {
-                value: 5,
-                label: 'Субота',
-            },
-            {
-                value: 5,
-                label: 'Неділя',
-            },
+            { value: 0, label: 'Понеділок'},
+            { value: 1, label: 'Вівторок'},
+            { value: 2, label: 'Середа'},
+            { value: 3, label: 'Четвер'},
+            { value: 4, label: 'Пятниця'},
+            { value: 5, label: 'Субота'},
+            { value: 6, label: 'Неділя'}
         ],
         clock: []
     };
@@ -64,14 +43,13 @@ class NewNotificationItem extends Component{
 
     addTime = () => {
         let minutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+        let hours = ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
         let times = [];
-        for(let i = 6; i < 23; i++){
-            for(let j = 0; j < minutes.length; j++){
-                let f = (i < 10? '0'+i : i);
-                let t = {value: f + ":" + minutes[j]};
-                times.push(t);
-            }
-        }
+        hours.forEach(h => {
+            minutes.forEach(m => {
+                times.push(h + ':' + m);
+            })
+        });
         this.setState({
             clock: times
         })
@@ -100,17 +78,15 @@ class NewNotificationItem extends Component{
         let url = '/api/v1/';
         let type = `way/${this.props.way.id}/notification/`;
         axios.post(url + type, {
-            start_time: this.formatDate(this.props.StartDate),
-            end_time: this.formatDate(this.props.EndDate),
+            start_time: this.formatDate(this.props.startDate),
+            end_time: this.formatDate(this.props.endDate),
             week_day: this.state.week_day,
             time: this.state.time + ':00'
         })
             .then(response => {
-            this.props.saveNotification(response.data);
-            this.props.close();
+                this.props.saveNotification(response.data);
         }).catch(error => {
-            this.props.close();
-            this.props.setError("Не вдалось створити місце. Спробуйте ще раз.");
+                this.props.setError("Не вдалось створити місце. Спробуйте ще раз.");
         });
     };
 
@@ -141,8 +117,8 @@ class NewNotificationItem extends Component{
                     onChange={this.handleChange("time")}
                     >
                 {this.state.clock.map(time => (
-                        <MenuItem key={time.value} value={time.value}>
-                            {time.value}
+                        <MenuItem key={time} value={time}>
+                            {time}
                         </MenuItem>
                     ))}
                 </TextField>
