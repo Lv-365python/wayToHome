@@ -33,6 +33,18 @@ class Notification(AbstractModel):
             'way': self.way_id
         }
 
+    def is_for_today(self):
+        """Return `True` if the notification was scheduled for today."""
+        today = date.today()
+
+        if not today.weekday() == self.week_day:
+            return False
+
+        if not self.start_time <= today <= self.end_time:
+            return False
+
+        return True
+
     @classmethod
     def create(cls, way, start_time, end_time, week_day, time):  # pylint: disable=arguments-differ
         """Method for object creation."""

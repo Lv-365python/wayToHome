@@ -327,7 +327,7 @@ class NotificationViewsTestCase(TestCase):
         url = reverse('notification',
                       kwargs={'way_id': self.notification.way_id, 'notification_id': self.notification.id})
 
-        with mock.patch('utils.abstract_models.AbstractModel.update') as notification_update:
+        with mock.patch('notification.models.Notification.update') as notification_update:
             notification_update.return_value = False
 
             response = self.client.put(url, json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
