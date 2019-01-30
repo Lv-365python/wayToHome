@@ -1,19 +1,18 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import ToggleDisplay from 'react-toggle-display';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Avatar from '@material-ui/core/Avatar';
-import ToggleDisplay from 'react-toggle-display';
-import Cookies from 'js-cookie';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import axios from 'axios';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
 
-import LoginBtn from '../loginBtn/loginBtn.js';
+import { LoginBtn } from './index';
 import {isAuthenticated} from '../../main_router';
 import './header.css';
 
@@ -55,12 +54,12 @@ class Header extends Component {
   toSettings = () => {
     this.setState({ anchorEl: null });
     this.props.history.push('/profile');
-  }
+  };
 
   toHome = () => {
     this.setState({ anchorEl: null });
     this.props.history.push('/home');
-  }
+  };
 
     render(){
         const {anchorEl} = this.state;
@@ -94,7 +93,6 @@ class Header extends Component {
 
                     </div>
 
-
                     <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
@@ -111,6 +109,6 @@ class Header extends Component {
             </div>
         )
     }
-};
+}
 
 export default withRouter(Header);

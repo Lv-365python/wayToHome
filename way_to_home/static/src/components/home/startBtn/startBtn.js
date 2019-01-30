@@ -1,27 +1,29 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button';
-import RouteSearchForm from '../routeForm/routeForm';
+
+import { RouteSearchForm } from '../index';
 import './startBtn.css'
 
-class StartBtn extends Component{
 
+export default class StartBtn extends Component{
     state = {
         isRouteFormOpen: false
-    }
+    };
 
-     toggleRouteForm = () => {
-         this.setState(prevState => ({
+    toggleRouteForm = () => {
+        this.setState(prevState => ({
             isRouteFormOpen: !prevState.isRouteFormOpen
-         }));
-     }
+        }));
+    };
 
-     closeRouteForm = () => {
-         this.setState({
-             isRouteFormOpen: false
-         });
-     }
+    closeRouteForm = () => {
+        this.setState({
+            isRouteFormOpen: false
+        });
+    };
 
     render(){
+
         const { isRouteFormOpen } = this.state;
 
         return(
@@ -37,5 +39,3 @@ class StartBtn extends Component{
         )
     }
 }
-
-export default StartBtn;

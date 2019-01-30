@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
+
 import Calendar from 'react-calendar'
 import TimeField from 'react-simple-timefield';
 import axios from 'axios'
+
 import './notificationForm.css';
 
-class NotificationForm extends Component {
+
+export default class NotificationForm extends Component {
 
     state = {
         pointA: String(undefined),
@@ -362,5 +365,3 @@ class NotificationForm extends Component {
         )
     }
 }
-
-export default NotificationForm

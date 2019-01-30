@@ -5,9 +5,9 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button'
 import WarningIcon from '@material-ui/icons/Warning'
 
+import { CustomizedSnackbars } from '../../index';
 import PlaceForm from './placeForm.js';
 import PlaceItem from './placeItem.js'
-import CustomizedSnackbars from '../../message/message';
 import './place.css'
 import '../userSettingsForm.css'
 
@@ -24,21 +24,17 @@ export default class PlaceTab extends React.Component {
         places: [],
     };
 
-
     onClickAddBtn = () => {
         this.setState({openAddModal: true});
     };
-
 
     modalAddClose = () => {
         this.setState({openAddModal: false});
     };
 
-
     componentWillMount() {
         this.getPlaces();
     }
-
 
     removePlace = (id) => {
         let places = this.state.places.filter(place => place.id !== id);
@@ -48,7 +44,6 @@ export default class PlaceTab extends React.Component {
         });
     };
 
-
     addPlace = (place) => {
         let places = [...this.state.places, place];
 
@@ -56,7 +51,6 @@ export default class PlaceTab extends React.Component {
             places: places
         })
     };
-
 
     getPlaces = () => {
         axios.get(place_api_url)
@@ -66,7 +60,6 @@ export default class PlaceTab extends React.Component {
                 });
             });
     };
-
 
     updatePlace = (new_place) => {
         let places = this.state.places.map(place => {
@@ -84,7 +77,6 @@ export default class PlaceTab extends React.Component {
         });
     };
 
-
     sendDelete = (id) => {
         axios.delete(place_api_url + id)
             .then(response => {
@@ -92,25 +84,18 @@ export default class PlaceTab extends React.Component {
             });
     };
 
-
     setError = (error) => {
         this.setState({ajaxError: error});
     };
 
-
     render(){
 
         const { places } = this.state;
-        let showMessage = places.length > 0 ? false : true;
+        let showMessage = places.length === 0 ? true : false;
 
         return (
             <div>
-                {showMessage &&
-                <div className="showMessage">
-                    <WarningIcon style={{'fontSize': '58px', 'paddingTop':'3%', 'color': 'orange'}}/>
-                    <h1>Список Ваших місць порожній</h1>
-                    <h2>Додайте місця по кнопці порожній</h2>
-                </div>}
+
                 <div className='placeList'>
                     {places.map(place => (
                         <PlaceItem
@@ -134,6 +119,14 @@ export default class PlaceTab extends React.Component {
                         </Modal>
                     </div>
                 </div>
+
+                {showMessage &&
+                <div className="showMessage">
+                    <WarningIcon style={{'fontSize': '58px', 'paddingTop':'3%', 'color': 'orange'}}/>
+                    <h1>Список Ваших місць порожній</h1>
+                    <h2>Додайте місця по кнопці порожній</h2>
+                </div>}
+
                 <div className='addButton' >
                     <Button
                         variant='contained'

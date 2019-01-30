@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -6,8 +7,6 @@ import Modal from '@material-ui/core/Modal';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
-
-import axios from 'axios';
 
 import AdvancedSettings from './advancedSettings/advancedSettings.js'
 import './profileTab.css';
@@ -27,7 +26,9 @@ let savedState = {
 
 export const url = '/api/v1/user';
 
-class ProfileTab extends React.Component {
+
+export default class ProfileTab extends React.Component {
+
     state = {
         first_name: '',
         last_name: '',
@@ -40,8 +41,6 @@ class ProfileTab extends React.Component {
         email: '',
         openAdvancedModal: false,
     };
-
-
 
     getProfile = () => {
         let uri = '/profile';
@@ -258,5 +257,3 @@ class ProfileTab extends React.Component {
             )
         }
 }
-
-export default ProfileTab;

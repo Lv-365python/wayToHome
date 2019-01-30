@@ -15,11 +15,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import NotificationForm from "src/components/userSettingsForm/notificationForm/notificationForm";
+import { NotificationForm } from "../index";
 import './wayItem.css';
 
-
 const url = "/api/v1/place/";
+
 
 export default class WayItem extends Component{
 

@@ -15,7 +15,7 @@ import PlaceForm from './placeForm';
 import './place.css'
 
 
-class PlaceItem extends React.Component {
+export default class PlaceItem extends React.Component {
 
     state = {
         openDeleteModal: false,
@@ -64,7 +64,7 @@ class PlaceItem extends React.Component {
 
 
     render() {
-        let {place} = this.props;
+        let { place } = this.props;
 
         return (
             <div>
@@ -134,5 +134,3 @@ class PlaceItem extends React.Component {
         );
     };
 }
-
-export default PlaceItem;
