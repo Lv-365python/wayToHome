@@ -91,14 +91,18 @@ class PlaceModelTest(TestCase):
 
     def test_update(self):
         """Provide tests for `update` method of certain Place instance."""
-        new_name = 'Робота'
-        new_longitude = Decimal('23.968412')
-        is_updated = self.place.update(name=new_name, longitude=new_longitude)
+        update_data = {
+            'name': 'Робота',
+            'longitude': Decimal('23.968412'),
+            'latitude': Decimal('48.968412'),
+            'address': 'Степана Бандери 12, 79052'
+        }
+        is_updated = self.place.update(**update_data)
         self.assertTrue(is_updated)
 
         place = Place.objects.get(id=self.place.id)
-        self.assertEqual(place.name, new_name)
-        self.assertEqual(place.longitude, new_longitude)
+        for key, value in update_data.items():
+            self.assertEqual(place.__dict__[key], value)
 
         new_stop_id = -1
         is_updated = self.place.update(stop_id=new_stop_id)

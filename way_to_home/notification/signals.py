@@ -42,7 +42,7 @@ def create_notification_task(sender, instance, created, update_fields, **kwargs)
     Assign celery task to prepare sending notification or
     revoke old task and assign new one if time was updated.
     """
-    instance = sender.get_by_id(instance.id)
+    instance.refresh_from_db()
     if not instance.is_for_today():
         return False
 

@@ -89,14 +89,17 @@ class RouteModelTestCase(TestCase):
 
     def test_update(self):
         """Provide tests for `update` method of certain Route instance."""
-        new_time = datetime.time(1, 2, 3)
-        new_position = 99
-        is_updated = self.route.update(time=new_time, position=new_position)
+        update_data = {
+            'time':  datetime.time(23, 58, 59),
+            'transport_id': 51,
+            'position': 0,
+        }
+        is_updated = self.route.update(**update_data)
         self.assertTrue(is_updated)
 
         route = Route.objects.get(id=self.route.id)
-        self.assertEqual(route.position, new_position)
-        self.assertEqual(route.time, new_time)
+        for key, value in update_data.items():
+            self.assertEqual(route.__dict__[key], value)
 
         new_position = -1
         is_updated = self.route.update(position=new_position)

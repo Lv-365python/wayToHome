@@ -15,7 +15,7 @@ NOTIFICATIONS_TASKS_KEY = 'notifications'
 
 def get_seconds_until_midnight():
     """Return number of seconds until midnight from now."""
-    tomorrow = datetime.now() + timedelta(1)
+    tomorrow = datetime.now() + timedelta(days=1)
     midnight = tomorrow.replace(hour=0, minute=0, second=0)
 
     return (midnight - datetime.now()).seconds
@@ -25,7 +25,7 @@ def get_notifications_tasks():
     """Retrieve dictionary with data about notifications tasks from Redis."""
     pickled_notifications = redis.get(NOTIFICATIONS_TASKS_KEY)
     if not pickled_notifications:
-        return None
+        return dict()
 
     notifications_tasks = pickle.loads(pickled_notifications)
     return notifications_tasks

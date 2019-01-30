@@ -62,10 +62,8 @@ class NotificationModelTestCase(TestCase):
 
     def test_str(self):
         """Provide tests for `__str__` method of certain Notification instance."""
-        notification = Notification.objects.get(id=self.notification.id)
-
         expected_string = 'notification at: 6 23:58:59'
-        actual_string = notification.__str__()
+        actual_string = self.notification.__str__()
 
         self.assertEqual(expected_string, actual_string)
 
@@ -90,14 +88,19 @@ class NotificationModelTestCase(TestCase):
 
     def test_update(self):
         """Provide tests for `update` method of certain Notification instance."""
-        new_time = datetime.time(1, 2, 3)
-        new_week_day = 2
-        is_updated = self.notification.update(time=new_time, week_day=new_week_day)
+        update_data = {
+            'time': datetime.time(1, 2, 3),
+            'week_day': 2,
+            'start_time': datetime.date(2019, 10, 29),
+            'end_time': datetime.date(2019, 12, 29)
+        }
+
+        is_updated = self.notification.update(**update_data)
         self.assertTrue(is_updated)
 
         notification = Notification.objects.get(id=self.notification.id)
-        self.assertEqual(notification.week_day, new_week_day)
-        self.assertEqual(notification.time, new_time)
+        for key, value in update_data.items():
+            self.assertEqual(notification.__dict__[key], value)
 
         new_week_day = -1
         is_updated = self.notification.update(week_day=new_week_day)
@@ -164,3 +167,36 @@ class NotificationModelTestCase(TestCase):
         self.assertQuerysetEqual(actual_query, expected_query, transform=lambda x: x)
         self.assertIn(today_notification, actual_query)
         self.assertNotIn(another_day_notification, actual_query)
+
+    def test_is_for_today(self):
+        """Provides tests for `is_for_today` method of certain Notification instance."""
+        today = datetime.date.today()
+        notification_data = {
+            'way': self.way,
+            'start_time': today - datetime.timedelta(days=1),
+            'end_time': today + datetime.timedelta(days=31),
+            'week_day': today.weekday(),
+            'time': '8:30:00',
+        }
+
+        notification = Notification.objects.create(**notification_data)
+        is_for_today = notification.is_for_today()
+        self.assertTrue(is_for_today)
+
+        another_week_day = 100
+        notification_data['week_day'] = another_week_day
+        notification = Notification.objects.create(**notification_data)
+        is_for_today = notification.is_for_today()
+        self.assertFalse(is_for_today)
+
+        wrong_start_time = today + datetime.timedelta(days=1)
+        notification_data['start_time'] = wrong_start_time
+        notification = Notification.objects.create(**notification_data)
+        is_for_today = notification.is_for_today()
+        self.assertFalse(is_for_today)
+
+        wrong_end_time = today - datetime.timedelta(days=1)
+        notification_data['end_time'] = wrong_end_time
+        notification = Notification.objects.create(**notification_data)
+        is_for_today = notification.is_for_today()
+        self.assertFalse(is_for_today)
