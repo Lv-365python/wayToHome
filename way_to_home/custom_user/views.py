@@ -1,6 +1,7 @@
 """Authentication views module"""
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse, HttpResponseRedirect
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.db import transaction, DatabaseError, IntegrityError
 from requests_oauthlib import OAuth2Session
@@ -8,7 +9,6 @@ from requests_oauthlib import OAuth2Session
 from user_profile.models import UserProfile
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token, decode_token
-from utils.passwordreseting import send_email_password_update, send_successful_update_email
 from utils.senderhelper import send_email
 from utils.validators import (credentials_validator,
                               password_validator,
@@ -61,7 +61,11 @@ def signup(request):
         'token': create_token(data={'email': user.email})
     }
 
-    send_email((user.email,), 'registration.html', ctx)
+    mail_subject = 'Активувати акаунт'
+    message = 'Активувати акаунт'
+    html_message = render_to_string('emails/' + 'registration.html', ctx)
+
+    send_email((user.email,), html_message, mail_subject, message)
 
     return RESPONSE_201_ACTIVATE
 
@@ -192,7 +196,12 @@ def reset_password(request):
         'domain': DOMAIN,
         'token': create_token(data={'email': user.email})
     }
-    send_email_password_update((user.email,), 'change_password_link.html', ctx)
+
+    mail_subject = 'Скинути пароль'
+    message = 'Скинути пароль'
+    html_message = render_to_string('emails/' + 'change_password_link.html', ctx)
+
+    send_email((user.email,), html_message, mail_subject, message)
 
     return RESPONSE_200_OK
 
@@ -218,7 +227,11 @@ def confirm_reset_password(request, token):
     if not is_updated:
         return RESPONSE_400_DB_OPERATION_FAILED
 
-    send_successful_update_email(user)
+    mail_subject = 'Успішне відновлення паролю'
+    message = 'Успішне відновлення паролю'
+    html_message = render_to_string('emails/' + 'update_password.html')
+
+    send_email((user.email,), html_message, mail_subject, message)
     return RESPONSE_200_UPDATED
 
 
