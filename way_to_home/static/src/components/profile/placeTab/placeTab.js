@@ -124,7 +124,7 @@ export default class PlaceTab extends React.Component {
                 <div className="showMessage">
                     <WarningIcon style={{'fontSize': '58px', 'paddingTop':'3%', 'color': 'orange'}}/>
                     <h1>Список Ваших місць порожній</h1>
-                    <h2>Додайте місця по кнопці порожній</h2>
+                    <h2>Додайте місця по кнопці нижче</h2>
                 </div>}
 
                 <div className='addButton' >
