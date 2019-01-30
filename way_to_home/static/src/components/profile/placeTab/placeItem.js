@@ -94,7 +94,7 @@ export default class PlaceItem extends React.Component {
                         place={place}
                         handleChangeName={this.handleChangeName}
                         close={this.modalEditClose}
-                        setError={this.props.setError}/>
+                        setMessage={this.props.setMessage}/>
                 </Modal>
 
                 <Dialog

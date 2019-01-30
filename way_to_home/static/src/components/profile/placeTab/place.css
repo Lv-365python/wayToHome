@@ -31,10 +31,13 @@
     text-align: center;
 }
 
-.formButtons{
-    margin-top: 16px;
+.locationIcon{
+    margin-top: 10px;
 }
 
+.formButtons{
+    margin-top: 10px;
+}
 
 .react-autosuggest__input {
     width: 100%;
