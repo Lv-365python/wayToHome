@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
+import axios from 'axios';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,13 +10,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-import {withRouter} from 'react-router-dom'
-import CustomizedSnackbars from '../../../message/message';
-import {url} from '../profileTab.js'
+import { CustomizedSnackbars } from '../../../index';
+import { url } from '../profileTab.js'
 import './advancedSettings.css';
 import '../profileTab.css'
-
-import axios from 'axios';
 
 let savedState = {
     deleteAlertOpen: false,
@@ -24,6 +23,7 @@ let savedState = {
     ajaxError: undefined,
     new_password_error: false,
 };
+
 
 class AdvancedSettings extends Component {
 

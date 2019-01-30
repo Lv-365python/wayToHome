@@ -4,10 +4,11 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
 import { GOOGLE_MAP_API } from "src/settings"
 
 
-class ModalMap extends React.Component {
+export default class ModalMap extends React.Component {
 
     state = {
         map: undefined
@@ -57,5 +58,3 @@ class ModalMap extends React.Component {
       );
   }
 }
-
-export default ModalMap;

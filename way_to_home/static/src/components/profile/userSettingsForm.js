@@ -1,11 +1,10 @@
 import React from 'react';
+
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import ProfileTab from './profileTab/profileTab'
-import WayTab from './wayTab/wayTab';
-import PlaceTab from './placeTab/placeTab';
+import { ProfileTab, PlaceTab, WayTab } from './index';
 import './userSettingsForm.css';
 
 

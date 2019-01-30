@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
+
 import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
-import LoginForm from '../loginForm/loginForm.js';
+
+import { LoginForm } from '../index';
 import './loginBtn.css'
 
 
-class LoginBtn extends Component{
+export default class LoginBtn extends Component{
 
     state = {
         open: false
@@ -42,5 +44,3 @@ class LoginBtn extends Component{
         )
     }
 }
-
-export default LoginBtn

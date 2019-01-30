@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-
 import axios from 'axios';
 import Autosuggest from 'react-autosuggest';
+
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
@@ -9,7 +9,7 @@ import {place_api_url, here_geocoder_url, here_suggestions_url} from './placeTab
 import { HERE_APP_CODE, HERE_APP_ID } from "src/settings";
 
 
-class PlaceForm extends Component {
+export default class PlaceForm extends Component {
 
     state = {
         name: !this.props.place ? '': this.props.place.name,
@@ -281,5 +281,3 @@ class PlaceForm extends Component {
         );
     };
 }
-
-export default PlaceForm;

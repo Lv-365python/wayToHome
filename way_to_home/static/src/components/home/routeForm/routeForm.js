@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import Button from '@material-ui/core/Button';
-import ResultForm from '../routeResult/routeResult';
-import InputPoint from './inputPoint';
 import axios from 'axios';
-import CustomizedSnackbars from '../message/message';
+
+import Button from '@material-ui/core/Button';
+
+import { CustomizedSnackbars } from '../../index';
+import { ResultForm } from '../index';
+import InputPoint from './inputPoint';
 import './routeForm.css';
 
 
-class RouteSearchForm extends Component {
-
+export default class RouteSearchForm extends Component {
 
     state = {
         pointA: undefined,
@@ -112,5 +113,3 @@ class RouteSearchForm extends Component {
         )
     }
 }
-
-export default RouteSearchForm

@@ -4,9 +4,8 @@ import axios from 'axios';
 import Button from "@material-ui/core/Button";
 import WarningIcon from '@material-ui/icons/Warning'
 
-import WayItem from './wayItem/wayItem';
-import NewWayItem from './newWayItem/newWayItem'
-import CustomizedSnackbars from '../../message/message';
+import { WayItem, NewWayItem } from './index';
+import { CustomizedSnackbars } from '../../index';
 import './wayTab.css';
 import '../userSettingsForm.css'
 
@@ -20,6 +19,7 @@ export default class WayTab extends Component{
         places: [],
         newWay: [],
         ajaxError: undefined,
+        showMessage: false
     };
 
     getData = () => {
@@ -36,6 +36,10 @@ export default class WayTab extends Component{
                     this.setState({ways: response.data});
                 } else {
                     this.setError(response.data);
+                }
+
+                if (this.state.ways.length === 0){
+                    this.setState({showMessage: true})
                 }
             })
     };
@@ -115,7 +119,7 @@ export default class WayTab extends Component{
     render(){
 
         let { ajaxError, ways, newWay, places} = this.state;
-        let showMessage = ways.length > 0 ? false : true;
+        let showMessage = ways.length === 0 ? true : false;
 
         return(
             <div>

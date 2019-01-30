@@ -1,22 +1,18 @@
-
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom'
+import axios from 'axios';
+
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import SVGInline from "react-svg-inline";
-import iconSVG from "./../../../public/images/google.svg";
-import CustomizedSnackbars from '../message/message';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-
-import axios from 'axios';
+import { CustomizedSnackbars, iconSVG } from '../../index';
+import SVGInline from "react-svg-inline";
 import './loginForm.css';
 
 
@@ -85,7 +81,7 @@ class LoginForm extends Component {
     };
 
     onChangeFirstPassword = (event) => {
-        this.handleChange()
+        this.handleChange();
         let first_pass = event.target.value;
         this.setState({first_pass: first_pass});
         let pass_error = !this.handlePassword(first_pass);
@@ -151,12 +147,12 @@ class LoginForm extends Component {
     };
 
     handleChange = prop => event => {
-    this.setState({ [prop]: event.target.value });
-  };
+        this.setState({ [prop]: event.target.value });
+    };
 
-  handleClickShowPassword = () => {
-    this.setState(state => ({ showPassword: !state.showPassword }));
-  };
+    handleClickShowPassword = () => {
+        this.setState(state => ({ showPassword: !state.showPassword }));
+    };
 
     render() {
         const {email_error, email, pass_error, first_pass, repeat_display, second_pass,
@@ -176,32 +172,31 @@ class LoginForm extends Component {
                     value={email}
                     onChange={this.onChangeEmail}/>
 
-              <TextField
-                        error={pass_error}
-                        id="filled-adornment-password"
-                        label={pass_error ? 'Поганий пароль' : 'Пароль'}
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        autoComplete="current-password"
-                        margin="normal"
-                        variant="filled"
-                        value={first_pass}
-                        onChange={this.onChangeFirstPassword}
-                        style={{paddingRight: '25px', width: '300px'}}
+                <TextField
+                    error={pass_error}
+                    id="filled-adornment-password"
+                    label={pass_error ? 'Поганий пароль' : 'Пароль'}
+                    type={this.state.showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    margin="normal"
+                    variant="filled"
+                    value={first_pass}
+                    onChange={this.onChangeFirstPassword}
+                    style={{paddingRight: '25px', width: '300px'}}
 
-                        InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
                                 <IconButton
-                                  aria-label="Toggle password visibility"
-                                  onClick={this.handleClickShowPassword}
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
                                 >
-                                  {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
                                 </IconButton>
-                              </InputAdornment>
-                            ),
-                        }}
-              />
-
+                            </InputAdornment>
+                        ),
+                    }}
+                />
 
                 <TextField
                     error={pass_error}
@@ -215,28 +210,33 @@ class LoginForm extends Component {
                     value={second_pass}
                     onChange={this.onChangeSecondPassword}/>
                 <div>
-                    <FormControlLabel checked={remember_me}
-                                      onChange={this.changeSaveCookies}
-                                      control={<Checkbox value="checkedC"/>}
-                                      label="Запам'ятати мене"/>
+                    <FormControlLabel
+                        checked={remember_me}
+                        onChange={this.changeSaveCookies}
+                        control={<Checkbox value="checkedC"/>}
+                        label="Запам'ятати мене"/>
                 </div>
                 <div className="blow">
-                    <SVGInline svg={ iconSVG }
-                               onClick={this.handleSigninGoogle}
+                    <SVGInline
+                        svg={ iconSVG }
+                        onClick={this.handleSigninGoogle}
                     />
                 </div>
                 <div>
-                    <Button color="primary" onClick={this.onClickChangeType}>
+                    <Button
+                        color="primary"
+                        onClick={this.onClickChangeType}>
                         {change_button}
                     </Button>
                 </div>
                 <div className="loginButtons">
-                    <Button className='confirmButton'
-                            variant='contained'
-                            color='primary'
-                            size='medium'
-                            disabled={disable_button}
-                            onClick={this.onClickConfirm}>
+                    <Button
+                        className='confirmButton'
+                        variant='contained'
+                        color='primary'
+                        size='medium'
+                        disabled={disable_button}
+                        onClick={this.onClickConfirm}>
                         {confirm_button}
                     </Button>
                     <Button
