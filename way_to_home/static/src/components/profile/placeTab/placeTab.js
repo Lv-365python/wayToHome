@@ -20,7 +20,8 @@ export default class PlaceTab extends React.Component {
 
     state = {
         openAddModal: false,
-        ajaxError: undefined,
+        message: undefined,
+        message_type: undefined,
         places: [],
     };
 
@@ -58,6 +59,8 @@ export default class PlaceTab extends React.Component {
                 this.setState({
                     places: response.data
                 });
+            }).catch(error => {
+                this.props.setMessage('Не вдалось отримати ваші збережні місця.');
             });
     };
 
@@ -81,21 +84,26 @@ export default class PlaceTab extends React.Component {
         axios.delete(place_api_url + id)
             .then(response => {
                 this.removePlace(id);
+                this.setMessage('Успішне видалення!', 'success');
+            }).catch(error => {
+                this.setMessage('Не вдалось видалити місце. Спробуйте ще раз.');
             });
     };
 
-    setError = (error) => {
-        this.setState({ajaxError: error});
+    setMessage = (message, message_type) => {
+        this.setState({
+            message: message,
+            message_type: message_type
+        });
     };
 
     render(){
 
-        const { places } = this.state;
+        const {places, message, message_type } = this.state;
         let showMessage = places.length === 0 ? true : false;
 
         return (
             <div>
-
                 <div className='placeList'>
                     {places.map(place => (
                         <PlaceItem
@@ -103,7 +111,7 @@ export default class PlaceTab extends React.Component {
                             place={place}
                             deleteButton={this.sendDelete}
                             updatePlace={this.updatePlace}
-                            setError={this.setError}/>
+                            setMessage={this.setMessage}/>
                     ))}
                     <div>
                         <Modal
@@ -115,7 +123,7 @@ export default class PlaceTab extends React.Component {
                                 form_type='Додати'
                                 addPlace={this.addPlace}
                                 close={this.modalAddClose}
-                                setError={this.setError}/>
+                                setMessage={this.setMessage}/>
                         </Modal>
                     </div>
                 </div>
@@ -136,7 +144,11 @@ export default class PlaceTab extends React.Component {
                       Додати місце
                     </Button>
                 </div>
-                {this.state.ajaxError && <CustomizedSnackbars message={this.state.ajaxError} reset={this.setError}/>}
+                {message &&
+                <CustomizedSnackbars
+                    message={message}
+                    variant={message_type}
+                    reset={this.setMessage}/>}
             </div>
         );
     };
