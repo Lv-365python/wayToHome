@@ -18,4 +18,9 @@ button.saveButton{
 
 .emailField{
    text-align: center;
+   width: auto;
+}
+
+.telegramChip{
+   margin-top: 2rem;
 }
