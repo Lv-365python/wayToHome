@@ -14,7 +14,7 @@ from utils.responsehelper import (RESPONSE_403_ACCESS_DENIED,
                                   RESPONSE_400_INVALID_DATA,
                                   RESPONSE_200_DELETED)
 
-from utils.validators import way_data_validator
+from utils.validators import way_data_validator, route_data_validator
 
 
 class WayView(View):
@@ -81,10 +81,14 @@ class WayView(View):
 
             for step in steps:
                 route = _make_route_dict_from_google_maps(step)
+                if not route_data_validator(route):
+                    return RESPONSE_400_INVALID_DATA
+
                 if position == 0:
                     route['start_place'] = data.get('start_place')
                 if position == len(steps)-1:
                     route['end_place'] = data.get('end_place')
+
                 was_created = _create_route(way, position, **route)
 
                 if not was_created:
