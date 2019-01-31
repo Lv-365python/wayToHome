@@ -58,7 +58,7 @@ class RouteViewsTestCase(TestCase):
     def test_get_one(self):
         """Provide tests for request to retrieve certain Route instance."""
         expected_response = {
-            "id": 100, "time": "23:58:59", "transport_id": None, "position": 0,
+            "id": 100, "time": "23:58:59", "transport_name": '', "position": 0,
             "way": 100,  "end_place": 200, "start_place": 100
         }
         url = reverse('route', kwargs={'way_id': self.route.way_id, 'route_id': self.route.id})
@@ -70,11 +70,11 @@ class RouteViewsTestCase(TestCase):
         """Provide tests for request to retrieve all way`s routes"""
         expected_response = [
             {
-                'id': 100, 'time': '23:58:59', 'transport_id': None, 'position': 0,
+                'id': 100, 'time': '23:58:59', 'transport_name': '', 'position': 0,
                 'way': 100,  'start_place': 100, 'end_place': 200
              },
             {
-                'id': 101, 'time': '01:02:03', 'transport_id': None, 'position': 1,
+                'id': 101, 'time': '01:02:03', 'transport_name': '', 'position': 1,
                 'way': 100, 'start_place': 100, 'end_place': 200
             }
         ]
