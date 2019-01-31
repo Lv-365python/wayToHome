@@ -1,6 +1,6 @@
 ## JIRA
 
-* [Main JIRA ticket](https://ssu-jira.softserveinc.com/secure/RapidBoard.jspa?rapidView=777)
+* [Main JIRA ticket](https://ssu-jira.softserveinc.com/browse/PYTHON-)
 
 
 ## Code reviewers

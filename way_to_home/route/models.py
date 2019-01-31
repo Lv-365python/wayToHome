@@ -18,7 +18,7 @@ class Route(AbstractModel):
                                   related_name='end_routes',
                                   on_delete=models.CASCADE)
     time = models.TimeField()
-    transport_id = models.PositiveIntegerField(null=True)
+    transport_name = models.CharField(max_length=5, blank=True)
     position = models.PositiveSmallIntegerField()
 
     def __str__(self):
@@ -30,21 +30,20 @@ class Route(AbstractModel):
         return {
             'id': self.id,
             'time': self.time,
-            'transport_id': self.transport_id,
+            'transport_name': self.transport_name,
             'position': self.position,
             'way': self.way.id,
             'start_place': self.start_place.id,
             'end_place': self.end_place.id
-
         }
 
     @classmethod
     def create(cls, way, start_place, end_place, time,  # pylint: disable=arguments-differ
-               position, transport_id=None):
+               position, transport_name=''):
         """Method for object creation."""
         route = cls()
         route.time = time
-        route.transport_id = transport_id
+        route.transport_name = transport_name if transport_name is not None else ''
         route.position = position
 
         try:
