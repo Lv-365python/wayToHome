@@ -162,6 +162,10 @@ DEFAULT_FROM_EMAIL = 'DEFAULT_FROM_EMAIL'
 JWT_TOKEN_KEY = 'any secret word'
 JWT_ALGORITHM = 'HS384'
 
+# Required settings for telegram bot
+
+TELEGRAM_BOT_TOKEN = 'TELEGRAM_BOT_TOKEN'
+
 # Required setting for NEXMO
 
 NEXMO_API_KEY = 'Nexmo API KEY'

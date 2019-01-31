@@ -7,8 +7,13 @@ import Modal from '@material-ui/core/Modal';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Chip from '@material-ui/core/Chip';
+import Avatar from '@material-ui/core/Avatar';
 
-import AdvancedSettings from './advancedSettings/advancedSettings.js'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons'
+
+import AdvancedSettings from './advancedSettings/advancedSettings.js';
 import './profileTab.css';
 import {CustomizedSnackbars} from "src/components/index";
 
@@ -25,13 +30,16 @@ let savedState = {
     openAdvancedModal: false,
     ajaxMessage: '',
     message_type: '',
+    user_id: '',
+    telegram_id: '',
 };
 
 export const url = '/api/v1/user';
+const telegram_bot_name = 'WayToHomeBot';
+const telegram_bot_url = 'https://telegram.me/' + telegram_bot_name;
 
 
 export default class ProfileTab extends React.Component {
-
     state = {
         first_name: '',
         last_name: '',
@@ -45,6 +53,8 @@ export default class ProfileTab extends React.Component {
         openAdvancedModal: false,
         ajaxMessage: '',
         message_type: '',
+        user_id: '',
+        telegram_id: '',
     };
 
     setMessage = (message, type) => {
@@ -63,6 +73,7 @@ export default class ProfileTab extends React.Component {
                     last_name: response.data.last_name,
                     initial_first_name: response.data.first_name,
                     initial_last_name: response.data.last_name,
+                    telegram_id: response.data.telegram_id,
                 });
             })
             .catch(error => {
@@ -74,6 +85,7 @@ export default class ProfileTab extends React.Component {
         axios.get(url +'/')
             .then(response => {
                 this.setState({
+                    user_id: response.data.id,
                     phone_number: response.data.phone_number,
                     initial_phone_number: response.data.phone_number,
                     email: response.data.email,
@@ -194,9 +206,29 @@ export default class ProfileTab extends React.Component {
         this.setState({openAdvancedModal: false});
     };
 
+    removeTelegramClick = (event) => {
+        let uri = '/profile';
+        axios.put(url + uri, {
+            telegram_id: ''
+        })
+            .then(response => {
+                console.log(response);
+                this.setState({telegram_id: ''})
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    };
+
+    telegramRedirectClick = (event) => {
+        this.setState({telegram_id:'placeholder'})
+        window.open(telegram_bot_url + "?start=" + this.state.user_id, "_blank")
+    };
+
     render(){
         return(
             <div className="profileTabDiv">
+
                 <TextField
                     className="emailField"
                     variant="outlined"
@@ -234,6 +266,20 @@ export default class ProfileTab extends React.Component {
                         error={this.state.phone_error}
                     />
                 </div>
+
+                <Chip
+                    className="telegramChip"
+                    color="primary"
+                    label={this.state.telegram_id? "Відключити телеграм": "Підключити телеграм"}
+                    onClick={this.state.telegram_id? null: this.telegramRedirectClick}
+                    onDelete={this.state.telegram_id? this.removeTelegramClick: null}
+                    clickable={!this.state.telegram_id}
+                    avatar={
+                        <Avatar>
+                            <FontAwesomeIcon icon={faTelegram} />
+                        </Avatar>
+                    }
+                />
 
                 <Button
                     className="saveButton"

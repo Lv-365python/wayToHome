@@ -4,6 +4,10 @@
   "description": "The main idea of project – planning routes and get a notification",
   "main": "index.js",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.13",
+    "@fortawesome/free-brands-svg-icons": "^5.7.0",
+    "@fortawesome/free-solid-svg-icons": "^5.7.0",
+    "@fortawesome/react-fontawesome": "^0.1.4",
     "@material-ui/icons": "^3.0.1",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
