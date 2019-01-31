@@ -5,7 +5,7 @@ from datetime import datetime, date, timedelta
 
 import pytz
 
-from utils.redishelper import REDIS_HELPER as redis
+from .redishelper import REDIS_HELPER
 
 
 KIEV_TZ = pytz.timezone('Europe/Kiev')
@@ -15,17 +15,18 @@ NOTIFICATIONS_TASKS_KEY = 'notifications'
 
 def get_seconds_until_midnight():
     """Return number of seconds until midnight from now."""
-    tomorrow = datetime.now() + timedelta(days=1)
+    today = datetime.now()
+    tomorrow = today + timedelta(days=1)
     midnight = tomorrow.replace(hour=0, minute=0, second=0)
 
-    return (midnight - datetime.now()).seconds
+    return (midnight - today).seconds
 
 
 def get_notifications_tasks():
     """Retrieve dictionary with data about notifications tasks from Redis."""
-    pickled_notifications = redis.get(NOTIFICATIONS_TASKS_KEY)
+    pickled_notifications = REDIS_HELPER.get(NOTIFICATIONS_TASKS_KEY)
     if not pickled_notifications:
-        return dict()
+        return {}
 
     notifications_tasks = pickle.loads(pickled_notifications)
     return notifications_tasks
@@ -34,7 +35,7 @@ def get_notifications_tasks():
 def set_notifications_tasks(notifications_tasks):
     """Set pickled dictionary with data about notification tasks to Redis."""
     cache_time = get_seconds_until_midnight()
-    inserted = redis.set(
+    inserted = REDIS_HELPER.set(
         NOTIFICATIONS_TASKS_KEY,
         pickle.dumps(notifications_tasks),
         cache_time=cache_time

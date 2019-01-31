@@ -174,7 +174,7 @@ class NotificationModelTestCase(TestCase):
         notification_data = {
             'way': self.way,
             'start_time': today - datetime.timedelta(days=1),
-            'end_time': today + datetime.timedelta(days=31),
+            'end_time': today + datetime.timedelta(days=1),
             'week_day': today.weekday(),
             'time': '8:30:00',
         }
@@ -183,20 +183,20 @@ class NotificationModelTestCase(TestCase):
         is_for_today = notification.is_for_today()
         self.assertTrue(is_for_today)
 
-        another_week_day = 100
-        notification_data['week_day'] = another_week_day
-        notification = Notification.objects.create(**notification_data)
+        wrong_notification_data = notification_data.copy()
+        wrong_notification_data['week_day'] = 100
+        notification = Notification.objects.create(**wrong_notification_data)
         is_for_today = notification.is_for_today()
         self.assertFalse(is_for_today)
 
-        wrong_start_time = today + datetime.timedelta(days=1)
-        notification_data['start_time'] = wrong_start_time
-        notification = Notification.objects.create(**notification_data)
+        wrong_notification_data = notification_data.copy()
+        wrong_notification_data['start_time'] = today + datetime.timedelta(days=100)
+        notification = Notification.objects.create(**wrong_notification_data)
         is_for_today = notification.is_for_today()
         self.assertFalse(is_for_today)
 
-        wrong_end_time = today - datetime.timedelta(days=1)
-        notification_data['end_time'] = wrong_end_time
-        notification = Notification.objects.create(**notification_data)
+        wrong_notification_data = notification_data.copy()
+        wrong_notification_data['end_time'] = today - datetime.timedelta(days=100)
+        notification = Notification.objects.create(**wrong_notification_data)
         is_for_today = notification.is_for_today()
         self.assertFalse(is_for_today)

@@ -17,7 +17,7 @@ django.setup()
 from django.conf import settings
 from utils.file_handlers import load_file
 from utils.easy_way import compile_file
-from utils.redishelper import REDIS_HELPER as redis
+from utils.redishelper import REDIS_HELPER
 from utils.utils import LOGGER
 from daemons.base_daemon import Daemon
 from daemons.helper import parse_args
@@ -37,17 +37,17 @@ class GTFSDaemon(Daemon):
 
         loaded_file = load_file(url, save_to=settings.EASY_WAY_DIR)
         if not loaded_file:
-            LOGGER.info(f'Unsuccessful gtfs data file load')
+            LOGGER.error('Unsuccessful gtfs data file load.')
             return False
 
         gtfs_data = compile_file(loaded_file)
         if not gtfs_data:
-            LOGGER.info(f'Unsuccessful compilation of gtfs data file.')
+            LOGGER.error('Unsuccessful compilation of gtfs data file.')
             return False
 
         gtfs_data = pickle.dumps(gtfs_data)
-        if not redis.set(redis_gtfs_key, gtfs_data):
-            LOGGER.info(f'Unsuccessful sets gtfs data in redis.')
+        if not REDIS_HELPER.set(redis_gtfs_key, gtfs_data):
+            LOGGER.error('Unsuccessful sets gtfs data in redis.')
             return False
 
         return True
