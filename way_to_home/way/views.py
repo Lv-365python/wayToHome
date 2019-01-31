@@ -145,8 +145,21 @@ def _make_route_dict_from_google_maps(step):
     route['time'] = datetime.strptime(str(time), '%H:%M:%S').time()
 
     if step.get('transit'):
-        transport_id = step['transit']['line']['short_name']
-        route['transport_id'] = transport_id
+        short_name = step['transit']['line']['short_name']
+        vehicle_type = step['transit']['line']['vehicle']['type']
+
+        if vehicle_type == 'TROLLEYBUS':
+            pre_name = 'Тр'
+        elif vehicle_type == 'TRAM':
+            pre_name = 'Т'
+        elif vehicle_type == 'SHARE_TAXI':
+            pre_name = 'А'
+        elif vehicle_type == 'BUS':
+            pre_name = 'А'
+            short_name = short_name.replace('А', '')
+
+        short_name = short_name.rjust(2, '0')
+        route['transport_name'] = pre_name + short_name
 
     return route
 
@@ -190,10 +203,9 @@ def _create_route(way, position, **kwargs):
         return False
 
     time = kwargs.get('time')
-    transport_id = kwargs.get('transport_id')
-    transport_id = transport_id if isinstance(transport_id, int) else None
+    transport_name = kwargs.get('transport_name')
     route_obj = Route.create(way=way, start_place=start_place, end_place=end_place,
-                             time=time, position=position, transport_id=transport_id)
+                             time=time, position=position, transport_name=transport_name)
 
     if not route_obj:
         return False
