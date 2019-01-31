@@ -7,9 +7,9 @@ from celery.task import periodic_task, task
 
 from django.conf import settings
 from notification.models import Notification
-from utils.utils import LOGGER
+from .utils import LOGGER
 from .file_handlers import load_file, unzip_file
-from .redishelper import REDIS_HELPER as redis
+from .redishelper import REDIS_HELPER
 from .easy_way import parse_routes_data, parse_trips_data, parse_stops_data
 
 
@@ -68,7 +68,7 @@ def prepare_static_easyway_data(self):
         file_path = f'{EASYWAY_DIR}/{data_identifier}.txt'
         parsed_data = parser(file_path)
         pickled_data = pickle.dumps(parsed_data)
-        redis.set(data_identifier, pickle.dumps(pickled_data))
+        REDIS_HELPER.set(data_identifier, pickle.dumps(pickled_data))
 
 
 @task

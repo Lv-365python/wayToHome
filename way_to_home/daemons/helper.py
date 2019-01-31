@@ -27,7 +27,6 @@ def parse_args():
     )
 
     args = parser.parse_args()
-
     arg_frequency = args.frequency
     if args.minutes:
         arg_frequency = args.frequency * 60

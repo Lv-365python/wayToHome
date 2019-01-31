@@ -12,7 +12,7 @@ class Daemon:
 
     def __init__(self, frequency):
         """Initializes the new Daemon instance."""
-        self.is_processed = True
+        self.is_processed = False
         self.frequency = frequency
         self.pid = None
         self.name = self.__class__.__name__
@@ -22,13 +22,13 @@ class Daemon:
         self.pid = os.getpid()
         message = f'{self.name} was successfully started with process id={self.pid}.'
         LOGGER.info(message)
-        print(message)
+        self.is_processed = True
 
     def stop(self):
         """Executes after Daemon instance has finished processing user-defined commands."""
         message = f'{self.name} with process id={self.pid} was successfully stopped.'
         LOGGER.info(message)
-        print(message)
+        self.is_processed = False
 
     def run(self):
         """Implements permanent repetition for the execution of certain commands."""

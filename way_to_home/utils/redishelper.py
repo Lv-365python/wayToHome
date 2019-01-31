@@ -1,28 +1,30 @@
 """This module provides helper functionality for redis interaction."""
 
-import redis
+from redis import Redis, RedisError
+
+__all__ = ["REDIS_HELPER"]
 
 
 class RedisWorker:
     """Provide functionality for redis interaction."""
-    instance = None
-    redis = redis.Redis()
+    __instance = None
+    __redis = Redis()
 
     def __new__(cls):
         """
         Creates a new instance if not exist, otherwise
         returns reference to already created instance.
         """
-        if cls.instance is None:
-            cls.instance = super(RedisWorker, cls).__new__(cls)
+        if cls.__instance is None:
+            cls.__instance = super(RedisWorker, cls).__new__(cls)
 
-        return cls.instance
+        return cls.__instance
 
     def set(self, key, value, cache_time=None):
         """Sets data in redis database with specifying the expire time."""
         try:
-            self.redis.set(key, value, cache_time)
-        except redis.RedisError:
+            self.__redis.set(key, value, cache_time)
+        except RedisError:
             return False
 
         return True
@@ -30,8 +32,8 @@ class RedisWorker:
     def get(self, key):
         """Retrieves object from redis database by `key`."""
         try:
-            obj = self.redis.get(key)
-        except redis.RedisError:
+            obj = self.__redis.get(key)
+        except RedisError:
             return None
 
         return obj
