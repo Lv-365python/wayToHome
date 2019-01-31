@@ -56,7 +56,7 @@ class RouteModelTestCase(TestCase):
         expected_dict = {
             'id': 100,
             'time':  datetime.time(23, 58, 59),
-            'transport_id': None,
+            'transport_name': '',
             'position': 0,
             'way': 100,
             'start_place': 100,

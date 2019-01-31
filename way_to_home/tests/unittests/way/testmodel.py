@@ -27,7 +27,7 @@ class WayModelTestCase(TestCase):
         self.route = Route.objects.create(
             id=100,
             time='23:58:59',
-            transport_id=None,
+            transport_name='',
             position=0,
             way=self.way,
             start_place=start_place,
@@ -95,7 +95,7 @@ class WayModelTestCase(TestCase):
                 {
                     'id': 100,
                     'time': datetime.time(23, 58, 59),
-                    'transport_id': None,
+                    'transport_name': '',
                     'position': 0,
                     'way': 100,
                     'start_place': 100,

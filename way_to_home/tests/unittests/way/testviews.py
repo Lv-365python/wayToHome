@@ -136,7 +136,7 @@ class WayViewsTestCase(TestCase):
 			'user_id': 100,
 			'routes': [
 				{
-					'transport_id': None,
+					'transport_name': '',
 					'position': 0,
 					'time': '00:03:10'
 				}

@@ -39,7 +39,7 @@ class Route(AbstractModel):
 
     @classmethod
     def create(cls, way, start_place, end_place, time,  # pylint: disable=arguments-differ
-               position, transport_name=''):
+               position, transport_name=None):
         """Method for object creation."""
         route = cls()
         route.time = time
