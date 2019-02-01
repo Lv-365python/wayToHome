@@ -20,7 +20,8 @@ let savedState = {
     old_password: "",
     new_password: "",
     save_disabled: true,
-    ajaxError: undefined,
+    ajaxMessage: undefined,
+    message_type: undefined,
     new_password_error: false,
 };
 
@@ -32,12 +33,16 @@ class AdvancedSettings extends Component {
         old_password: "",
         new_password: "",
         save_disabled: true,
-        ajaxError: undefined,
+        ajaxMessage: undefined,
+        message_type: undefined,
         new_password_error: false,
     };
 
-    setError = (error) => {
-        this.setState({ajaxError: error});
+    setMessage = (message, type) => {
+        this.setState({
+            ajaxMessage: message,
+            message_type: type,
+        });
     };
 
     deleteButtonClick = (event) => {
@@ -45,13 +50,14 @@ class AdvancedSettings extends Component {
         axios.delete(url + uri)
             .then((response) => {
                 if(response.status === 200){
+                    this.setMessage('Аккаунт видалено', 'success');
                     this.props.history.go(0)
                 } else {
-                    this.setError(response.data);
+                    this.setMessage('Не вдалось видалити аккаунт', 'error');
                 }
             })
             .catch(error => {
-                console.log(error);
+               this.setMessage('Не вдалось видалити аккаунт', 'error');
             })
     };
 
@@ -75,6 +81,10 @@ class AdvancedSettings extends Component {
     componentDidMount(){
         if(savedState.old_password!==""||savedState.new_password!==""){
             this.setState(state=>savedState);
+            this.setState({
+                ajaxMessage: undefined,
+                ajaxType: undefined,
+            })
         }
     };
 
@@ -113,13 +123,13 @@ class AdvancedSettings extends Component {
         })
             .then(response =>{
                 if(response.status === 200){
-                    alert("Пароль збережено");
+                    this.setMessage('Пароль збережено', 'success');
                 } else {
-                    this.setError("Не вірний старий пароль");
+                    this.setMessage('Не вірний старий пароль', 'error');
                 }
             })
             .catch(error => {
-                this.setError("Не вірний старий пароль");
+                this.setMessage('Не вірний старий пароль', 'error');
             })
     };
 
@@ -205,10 +215,11 @@ class AdvancedSettings extends Component {
 
                     </DialogActions>
                 </Dialog>
-                {this.state.ajaxError &&
+                {this.state.ajaxMessage &&
                 <CustomizedSnackbars
-                    message={this.state.ajaxError}
+                    message={this.state.ajaxMessage}
                     reset={this.setError}
+                    variant={this.state.message_type}
                 />
                 }
             </div>

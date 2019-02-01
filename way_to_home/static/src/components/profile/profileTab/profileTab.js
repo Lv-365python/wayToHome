@@ -10,6 +10,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import AdvancedSettings from './advancedSettings/advancedSettings.js'
 import './profileTab.css';
+import {CustomizedSnackbars} from "src/components/index";
 
 let savedState = {
     first_name: '',
@@ -22,6 +23,8 @@ let savedState = {
     phone_error: false,
     email: '',
     openAdvancedModal: false,
+    ajaxMessage: '',
+    message_type: '',
 };
 
 export const url = '/api/v1/user';
@@ -40,7 +43,16 @@ export default class ProfileTab extends React.Component {
         phone_error: false,
         email: '',
         openAdvancedModal: false,
+        ajaxMessage: '',
+        message_type: '',
     };
+
+    setMessage = (message, type) => {
+        this.setState({
+            ajaxMessage: message,
+            message_type: type,
+        })
+    }
 
     getProfile = () => {
         let uri = '/profile';
@@ -54,7 +66,7 @@ export default class ProfileTab extends React.Component {
                 });
             })
             .catch(error => {
-                console.log(error);
+                this.setMessage('Не вдалося завантажити данні.', 'error')
             })
     };
 
@@ -68,7 +80,7 @@ export default class ProfileTab extends React.Component {
                 });
             })
             .catch(error => {
-                console.log(error);
+                this.setMessage('Не вдалося завантажити данні.', 'error')
             })
     };
 
@@ -79,10 +91,10 @@ export default class ProfileTab extends React.Component {
             last_name: this.state.last_name,
         })
             .then(response => {
-                console.log(response);
+                this.setMessage('Зміни профілю збережено', 'success')
             })
             .catch(error => {
-                console.log(error);
+                this.setMessage('Не вдалося зберегти данні.', 'error')
             })
     };
 
@@ -92,27 +104,29 @@ export default class ProfileTab extends React.Component {
             phone: this.state.phone_number,
         })
             .then(response => {
-                console.log(response);
+                this.setMessage('Зміни номеру телефону збережено.', 'success')
             })
             .catch(error => {
-                console.log(error);
+                this.setMessage('Не вдалося зберегти данні', 'error')
             })
     };
 
     saveToDatabase = (event) => {
+         if(!this.state.phone_error) {
+             this.savePhone();
+         }
          this.saveProfile();
-         this.savePhone();
          this.setState({
             save_disabled: true,
          });
     };
 
     componentDidMount(){
-        if(savedState.save_disabled==true && savedState.phone_error==false){
+        if(savedState.save_disabled===true && savedState.phone_error===false){
             this.getProfile();
             this.getUserData();
         } else {
-            this.setState(state=>savedState);
+            this.setState(savedState);
         }
 
     };
@@ -121,48 +135,49 @@ export default class ProfileTab extends React.Component {
         savedState = this.state;
     };
 
+    checkSaveActive = (name, surname, number, error) => {
+        if(name === this.state.initial_first_name &&
+        surname === this.state.initial_last_name){
+            if(error){
+                this.setState({save_disabled: true});
+            }
+            else if (number !== this.state.initial_phone_number){
+                this.setState({save_disabled: false});
+            }
+            else {
+                this.setState({save_disabled: true});
+            }
+        }
+        else {
+            this.setState({save_disabled: false});
+        }
+    };
+
     textFieldChangeFirstName = (event) => {
         let checked = event.target.value;
         this.setState({first_name: checked})
-
-        if (checked !== this.state.initial_first_name){
-            this.setState({save_disabled: false});
-        }
-        else if(this.state.last_name == this.state.initial_last_name &&
-        this.state.last_name == this.state.initial_last_name){
-            this.setState({save_disabled: true});
-        }
+        this.checkSaveActive(checked, this.state.last_name,
+            this.state.phone_number, this.state.phone_error)
     };
 
     textFieldChangeLastName = (event) => {
         let checked = event.target.value;
-        this.setState({last_name: checked})
-
-        if (checked != this.state.initial_last_name){
-            this.setState({save_disabled: false});
-        } else if (this.state.first_name == this.state.initial_first_name &&
-        this.state.phone_number == this.state.initial_phone_number) {
-            this.setState({save_disabled: true});
-        }
+        this.setState({last_name: checked});
+        this.checkSaveActive(this.state.first_name, checked,
+            this.state.phone_number, this.state.phone_error)
     };
 
     textFieldChangePhoneNumber = (event) => {
         let checked = event.target.value;
-        let phone_error = this.handlePhoneNumber(checked);
+        let error = this.handlePhoneNumber(checked);
+        console.log(error);
         this.setState({
             phone_number: checked,
-            phone_error: phone_error,
+            phone_error: error,
         });
-
-
-        if (phone_error){
-            this.setState({save_disabled: true});
-        } else if (checked != this.state.initial_phone_number){
-            this.setState({save_disabled: false});
-        } else if ((this.state.first_name == this.state.initial_first_name &&
-         this.state.last_name == this.state.initial_last_name) ) {
-            this.setState({save_disabled: true});
-        }
+        console.log(this.state.phone_error);
+        this.checkSaveActive(this.state.first_name, this.state.last_name,
+            checked, error)
     };
 
     handlePhoneNumber = (phone) => {
@@ -214,7 +229,7 @@ export default class ProfileTab extends React.Component {
                         label={this.state.phone_error? "Некоректний номер" : "Номер телефону"}
                         margin="normal"
                         variant="filled"
-                        value={this.state.phone_number || "+380"}
+                        value={this.state.phone_number}
                         onChange={this.textFieldChangePhoneNumber}
                         error={this.state.phone_error}
                     />
@@ -252,6 +267,13 @@ export default class ProfileTab extends React.Component {
                     </Modal>
                 </div>
 
+                {this.state.ajaxMessage &&
+                <CustomizedSnackbars
+                    message={this.state.ajaxMessage}
+                    reset={this.setMessage}
+                    variant={this.state.message_type}
+                />
+                }
 
             </div>
             )
