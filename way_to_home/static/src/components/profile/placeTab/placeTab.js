@@ -5,7 +5,7 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button'
 import WarningIcon from '@material-ui/icons/Warning'
 
-import { CustomizedSnackbars } from '../../index';
+import { CustomizedSnackbars } from '../';
 import PlaceForm from './placeForm.js';
 import PlaceItem from './placeItem.js'
 import './place.css'

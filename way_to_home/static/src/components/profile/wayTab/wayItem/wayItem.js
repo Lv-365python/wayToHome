@@ -15,11 +15,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import {NotificationForm} from "../index";
+import { NotificationForm } from "../";
 import './wayItem.css';
 
-
 const url = "/api/v1/place/";
+
 
 export default class WayItem extends Component{
 
@@ -50,7 +50,7 @@ export default class WayItem extends Component{
                     startPlaceName: startPlace.name,
                 });
             })
-            .catch(error => this.props.setError("Не вдалося завантажити місце"));
+            .catch(error => this.setError("Не вдалося завантажити місце"));
 
         axios.get(url + endRoute.end_place)
             .then(response => {
@@ -60,7 +60,7 @@ export default class WayItem extends Component{
                     endPlaceName: endPlace.name,
                 });
             })
-            .catch(error => this.props.setError("Не вдалося завантажити місце"));
+            .catch(error => this.setError("Не вдалося завантажити місце"));
 
         axios.get('/api/v1/user/')
             .then(response => {
@@ -77,7 +77,7 @@ export default class WayItem extends Component{
 
     toggleNotificationForm = () => {
         if (this.state.phone_number === ""){
-            this.props.setError("Спочатку введіть номер телефону")
+            this.setError("Спочатку введіть номер телефону")
         } else {
             this.setState(state => ({
                 isNotificationFormOpen: !state.isNotificationFormOpen,
@@ -91,6 +91,7 @@ export default class WayItem extends Component{
             deleteAlertOpen: !state.deleteAlertOpen
         }));
     };
+
 
     render(){
 

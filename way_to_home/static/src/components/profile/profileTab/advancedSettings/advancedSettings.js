@@ -10,7 +10,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-import { CustomizedSnackbars } from '../../../index';
+import { CustomizedSnackbars } from '../../';
 import { url } from '../profileTab.js'
 import './advancedSettings.css';
 import '../profileTab.css'
