@@ -5,6 +5,7 @@ This module provides complete testing for all validators.
 """
 
 from django.test import TestCase
+from datetime import time
 from utils.validators import (string_validator, coordinate_validator, required_keys_validator,
                               none_validator_for_required_keys, date_validator, start_date_validator,
                               end_date_validator, time_validator, week_day_validator, email_validator,
@@ -293,37 +294,41 @@ class ValidatorsTestCase(TestCase):
 
     def test_route_data_validator(self):
         """Method that tests the route_data_validator function"""
-        invalid_data = {'time': '21:43:23'}
+        minutes = time(minute=12)
+        invalid_data = {'time': minutes}
         result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        invalid_data = {'time': '21:43:23',
-                        'position': None}
+        invalid_data = {'time': minutes,
+                        'start_place': 1,
+                        'transport_name': '1'}
         result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
 
         invalid_data = {'time': 'invalid time',
-                        'position': 1,
-                        'transport_id': 4321}
-        result = route_data_validator(data=invalid_data, update=True)
+                        'start_place': 1,
+                        'end_place': 2,
+                        'transport_name': '1'}
+        result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        invalid_data = {'time': '21:43:23',
-                        'position': 'invalid position',
-                        'transport_id': 4321}
-        result = route_data_validator(data=invalid_data, update=True)
+        invalid_data = {'start_place': 1,
+                        'end_place': 2,
+                        'transport_id': '3A'}
+        result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        invalid_data = {'time': '21:43:23',
-                        'position': 1,
-                        'transport_id': 'invalid transport_id'}
-        result = route_data_validator(data=invalid_data, update=True)
+        invalid_data = {'start_place': 1,
+                        'end_place': None,
+                        'transport_id': '3A'}
+        result = route_data_validator(data=invalid_data)
         self.assertFalse(result)
 
-        test_data = {'time': '21:43:23',
-                     'position': 1,
-                     'transport_id': 4321}
-        result = route_data_validator(data=test_data, update=True)
+        test_data = {'time': minutes,
+                     'start_place': 1,
+                     'end_place': 2,
+                     'transport_id': "A3"}
+        result = route_data_validator(data=test_data)
         self.assertTrue(result)
 
     def test_way_data_validator(self):

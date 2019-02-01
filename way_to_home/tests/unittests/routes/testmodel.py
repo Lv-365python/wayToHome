@@ -91,7 +91,7 @@ class RouteModelTestCase(TestCase):
         """Provide tests for `update` method of certain Route instance."""
         update_data = {
             'time':  datetime.time(23, 58, 59),
-            'transport_id': 51,
+            'transport_name': "51",
             'position': 0,
         }
         is_updated = self.route.update(**update_data)

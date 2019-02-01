@@ -202,7 +202,6 @@ def route_data_validator(data, update=False):
 
     for key, value in filtered_data.items():
         if value is not None:
-            print(validation_rules[key](value))
             if not validation_rules[key](value):
                 return False
 
