@@ -52,7 +52,8 @@ class UserProfileModelTestCase(TestCase):
             'id': user_profile.id,
             'first_name': user_profile.first_name,
             'last_name': user_profile.last_name,
-            'user_id': user_profile.user_id
+            'user_id': user_profile.user_id,
+            'telegram_id': None
         }
         self.assertDictEqual(returned_dict, expected_dict)
 

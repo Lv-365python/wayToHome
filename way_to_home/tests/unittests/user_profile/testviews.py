@@ -54,7 +54,8 @@ class UserProfileViewTest(TestCase):
             'id': 1111,
             'first_name': 'Jhon',
             'last_name': 'Doe',
-            'user_id': 1001
+            'user_id': 1001,
+            'telegram_id': None
         }
 
         response = self.client.get(self.url)
