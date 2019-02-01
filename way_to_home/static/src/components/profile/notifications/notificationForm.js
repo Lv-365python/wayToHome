@@ -229,7 +229,7 @@ class NotificationForm extends Component{
                             saveNotification={this.handleSaveClick}
                             setError={this.setError} /> ))}
 
-                    <div className="addButton" >
+                    <div className="addButtonNot" >
                         <Button
                             variant="contained"
                             size="medium"

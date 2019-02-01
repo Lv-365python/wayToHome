@@ -4,8 +4,8 @@ import axios from 'axios';
 import Button from "@material-ui/core/Button";
 import WarningIcon from '@material-ui/icons/Warning'
 
-import { WayItem, NewWayItem } from './index';
-import { CustomizedSnackbars } from '../../index';
+import { WayItem, NewWayItem } from './';
+import { CustomizedSnackbars } from '../';
 import './wayTab.css';
 import '../userSettingsForm.css'
 

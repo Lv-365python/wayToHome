@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { ProfileTab, PlaceTab, WayTab } from './index';
+import { ProfileTab, PlaceTab, WayTab } from './';
 import './userSettingsForm.css';
 
 

@@ -15,7 +15,7 @@
     color: #3F51B5;
 }
 
-.addButton {
+.addButtonNot {
     display: flex;
     justify-content: center;
     align-items: end;
