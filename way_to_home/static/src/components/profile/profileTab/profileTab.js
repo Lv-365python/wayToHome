@@ -66,7 +66,7 @@ export default class ProfileTab extends React.Component {
                 });
             })
             .catch(error => {
-                this.setMessage('Не вдалося завантажити данні.', 'error')
+                this.setMessage('Не вдалося завантажити дані.', 'error')
             })
     };
 
@@ -91,10 +91,10 @@ export default class ProfileTab extends React.Component {
             last_name: this.state.last_name,
         })
             .then(response => {
-                this.setMessage('Зміни профілю збережено', 'success')
+                this.setMessage('Зміни профілю збережено.', 'success')
             })
             .catch(error => {
-                this.setMessage('Не вдалося зберегти данні.', 'error')
+                this.setMessage('Не вдалося зберегти дані.', 'error')
             })
     };
 
