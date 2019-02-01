@@ -44,6 +44,13 @@ export class MapContainer extends Component {
         });
     };
 
+    onMarkerDragEnd = (coord, index) => {
+        const { latLng } = coord;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+        console.log(lat,lng);
+    };
+
     getCoordsWay = () => {
         const {startPoint, endPoint} = this.state;
         const DirectionsService = new google.maps.DirectionsService();
@@ -91,6 +98,7 @@ export class MapContainer extends Component {
                     onClick = { this.onMarkerClick }
                     draggable = {true}
                     title = { 'Кінцева точка' }
+                    onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
                     position = {endPointCoords || pointMarkerEnd}
                     name = { 'Точка Б' }
                 />
