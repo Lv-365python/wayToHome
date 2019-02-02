@@ -160,7 +160,7 @@ def _make_route_dict_from_google_maps(step):
             pre_name = 'А'
         elif vehicle_type == 'BUS':
             pre_name = 'А'
-            short_name = short_name.replace('А', '')
+            short_name = short_name.replace('A', '')
 
         short_name = short_name.rjust(2, '0')
         route['transport_name'] = pre_name + short_name
@@ -203,7 +203,7 @@ def _create_route(way, position, **kwargs):
         end_place = Place.create(longitude=end_place['longitude'],
                                  latitude=end_place['latitude'])
 
-    if not (start_place or end_place):
+    if not start_place or not end_place:
         return False
 
     time = kwargs.get('time')
