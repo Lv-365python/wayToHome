@@ -188,14 +188,12 @@ def route_data_validator(data, update=False):
             return False
 
     route_model_fields = [
-        'time',
-        'position',
-        'transport_name'
+        'transport_name',
+        'time'
     ]
 
     filtered_data = {key: data.get(key) for key in route_model_fields}
     validation_rules = {
-        'position': lambda val: isinstance(val, int) and val >= 0,
         'transport_name': lambda val: string_validator(val, max_length=5),
         'time': lambda val: isinstance(val, datetime.time)
     }
