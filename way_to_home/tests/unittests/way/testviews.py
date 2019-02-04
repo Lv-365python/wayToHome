@@ -2,6 +2,7 @@
 
 import json
 
+from django.db import DatabaseError
 from django.test import TestCase, Client
 from django.urls import reverse
 from unittest import mock
@@ -33,7 +34,7 @@ class WayViewsTestCase(TestCase):
 		)
 
 		Place.objects.create(
-			id=11,
+			id=111,
 			longitude=49.842601,
 			latitude=23.968448,
 			address='Широка 34, 79052',
@@ -42,9 +43,42 @@ class WayViewsTestCase(TestCase):
 		)
 
 		self.way = Way.objects.get(id=100)
-		self.place = Place.objects.get(id=11)
+		self.place = Place.objects.get(id=111)
 		self.client = Client()
 		self.client.login(email='mail@gmail.com', password='Password1234')
+
+		data = {
+			'name': 'test_name',
+			'start_place': self.place.id,
+			'end_place': self.place.id,
+			"steps": [{
+				"start_location": {"lat": 40.8507300, "lng": -86.6512600},
+				"end_location": {"lat": 41.8525900, "lng": -87.1524100},
+				"duration": {"value": 190},
+				"transit": {"line": {
+					"short_name": "3A",
+					"vehicle": {"type": "BUS"}
+				}}
+			}, {
+				"start_location": {"lat": 41.8507300, "lng": -87.6512600},
+				"end_location": {"lat": 41.8525800, "lng": -87.9514100},
+				"duration": {"value": 190},
+				"transit": {"line": {
+					"short_name": "12",
+					"vehicle": {"type": "TROLLEYBUS"}
+				}}
+			}, {
+				"start_location": {"lat": 41.8507300, "lng": -87.6512600},
+				"end_location": {"lat": 41.8525800, "lng": -87.6514100},
+				"duration": {"value": 190},
+				"transit": {"line": {
+					"short_name": "12",
+					"vehicle": {"type": "TRAM"}
+				}}
+			}]
+		}
+
+		self.data = data
 
 	def test_get_one(self):
 		"""Provide tests for request to retrieve certain Way instance."""
@@ -107,37 +141,6 @@ class WayViewsTestCase(TestCase):
 	def test_post(self):
 		"""Method that tests the success post request for creating Way."""
 
-		data = {
-			'name': 'test_name',
-			'start_place': self.place.id,
-			'end_place': self.place.id,
-			"steps": [{
-				"start_location": {"lat": 40.8507300, "lng": -86.6512600},
-				"end_location": {"lat": 41.8525900, "lng": -87.1524100},
-				"duration": {"value": 190},
-				"transit": {"line": {
-					"short_name": "3A",
-					"vehicle": {"type": "BUS"}
-				}}
-			}, {
-				"start_location": {"lat": 41.8507300, "lng": -87.6512600},
-				"end_location": {"lat": 41.8525800, "lng": -87.9514100},
-				"duration": {"value": 190},
-				"transit": {"line": {
-					"short_name": "12",
-					"vehicle": {"type": "TROLLEYBUS"}
-				}}
-			}, {
-				"start_location": {"lat": 41.8507300, "lng": -87.6512600},
-				"end_location": {"lat": 41.8525800, "lng": -87.6514100},
-				"duration": {"value": 190},
-				"transit": {"line": {
-					"short_name": "12",
-					"vehicle": {"type": "TRAM"}
-				}}
-			}]
-		}
-
 		expected_data = {
 			'name': 'test_name',
 			'user_id': 100,
@@ -157,7 +160,7 @@ class WayViewsTestCase(TestCase):
 		}
 
 		url = reverse('way', args=[])
-		response = self.client.post(url, json.dumps(data), content_type='application/json')
+		response = self.client.post(url, json.dumps(self.data), content_type='application/json')
 		response_dict = json.loads(response.content)
 		response_dict.pop('id')
 		for route in response_dict['routes']:
@@ -185,6 +188,81 @@ class WayViewsTestCase(TestCase):
 
 		self.assertEqual(response.status_code, 400)
 
+	def test_post_transaction_fail(self):
+		"""Method that tests when transaction failed"""
+
+		url = reverse('way')
+
+		with mock.patch('way.views.Way.create') as way_mock:
+			way_mock.side_effect = DatabaseError()
+			response = self.client.post(url, json.dumps(self.data), content_type='application/json')
+
+		self.assertEqual(response.status_code, 400)
+
+	def test_post_validation_fail(self):
+		"""Method that tests when route validation failed."""
+
+		url = reverse('way')
+
+		with mock.patch('way.views._make_route_dict_from_google_maps') as make_route_dict_mock:
+			make_route_dict_mock.return_value = {"time": True}
+			response = self.client.post(url, json.dumps(self.data), content_type='application/json')
+
+		self.assertEqual(response.status_code, 400)
+
+	def test_post_create_place_fail(self):
+		"""Method that tests when place creating failed."""
+
+		url = reverse('way')
+
+		with mock.patch('way.views.Place.create') as place_mock:
+			place_mock.return_value = False
+			response = self.client.post(url, json.dumps(self.data), content_type='application/json')
+
+		self.assertEqual(response.status_code, 400)
+
+	def test_post_invalid_data(self):
+		"""Method that tests unsuccessful post request with invalid post data."""
+
+		data = {
+			'name': {},
+		}
+		url = reverse('way', args=[])
+		response = self.client.post(url, json.dumps(data), content_type='application/json')
+		self.assertEqual(response.status_code, 400)
+
+	def test_post_transit_types(self):
+		"""Method that tests different transit types of vehicles"""
+
+		vehicle_types = ("BUS", "TROLLEYBUS", "TRAM", "SHARE_TAXI")
+
+		for vehicle_type in vehicle_types:
+			data = {
+				'name': 'test_name',
+				'start_place': self.place.id,
+				'end_place': self.place.id,
+				"steps": [{
+					"start_location": {"lat": 40.8507300, "lng": -86.6512600},
+					"end_location": {"lat": 41.8525900, "lng": -87.1524100},
+					"duration": {"value": 190},
+				}, {
+					"start_location": {"lat": 41.8507300, "lng": -87.6512600},
+					"end_location": {"lat": 41.8525800, "lng": -87.9514100},
+					"duration": {"value": 190},
+					"transit": {"line": {
+						"short_name": "12",
+						"vehicle": {"type": vehicle_type}
+					}}
+				}, {
+					"start_location": {"lat": 41.8507300, "lng": -87.6512600},
+					"end_location": {"lat": 41.8525800, "lng": -87.6514100},
+					"duration": {"value": 190},
+				}]
+			}
+			url = reverse('way', args=[])
+			response = self.client.post(url, json.dumps(data), content_type='application/json')
+			self.assertEqual(response.status_code, 201)
+
 	def test_post_invalid_data(self):
 		"""Method that tests unsuccessful post request with invalid post data."""
 
@@ -198,34 +276,11 @@ class WayViewsTestCase(TestCase):
 	def test_post_create_route_fail(self):
 		"""Method that tests when route in way post method was not created"""
 
-		data = {
-			'name': 'test_name',
-			'start_place': self.place.id,
-			'end_place': self.place.id,
-			"steps": [{
-				"start_location": {"lat": 40.8507300, "lng": -86.6512600},
-				"end_location": {"lat": 41.8525900, "lng": -87.1524100},
-				"duration": {"value": 190},
-			}, {
-				"start_location": {"lat": 41.8507300, "lng": -86.6512600},
-				"end_location": {"lat": 41.8525800, "lng": -87.9514100},
-				"duration": {"value": 190},
-				"transit": {"line": {
-					"short_name": "12",
-					"vehicle": {"type": "SHARE_TAXI"}
-				}}
-
-			}, {
-				"start_location": {"lat": 41.8507300, "lng": -87.6512600},
-				"end_location": {"lat": 41.8525800, "lng": -87.6514100},
-				"duration": {"value": 190},
-			}]
-		}
 		url = reverse('way')
 
 		with mock.patch('way.views.Way') as mock_way:
 			mock_way._create_route.return_value = False
-			response = self.client.post(url, json.dumps(data), content_type='application/json')
+			response = self.client.post(url, json.dumps(self.data), content_type='application/json')
 
 		self.assertEqual(response.status_code, 400)
 
