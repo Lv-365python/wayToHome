@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.views.generic import View
 from django.http import JsonResponse
 from django.db import transaction
+from django.db import DatabaseError
 from way.models import Way
 from place.models import Place
 from route.models import Route
@@ -67,38 +68,41 @@ class WayView(View):
         data = request.body
         steps = data.get('steps')
 
-        with transaction.atomic():
-
-            if not way_data_validator(data):
-                return RESPONSE_400_INVALID_DATA
-
-            way = Way.create(user=request.user, name=data.get('name'))
-
-            if not way:
-                return RESPONSE_400_DB_OPERATION_FAILED
-
-            position = 0
-
-            for step in steps:
-                route = _make_route_dict_from_google_maps(step)
-                if not route_data_validator(route):
+        try:
+            with transaction.atomic():
+                if not way_data_validator(data):
                     return RESPONSE_400_INVALID_DATA
 
-                if position == 0:
-                    route['start_place'] = data.get('start_place')
-                if position == len(steps)-1:
-                    route['end_place'] = data.get('end_place')
+                way = Way.create(user=request.user, name=data.get('name'))
 
-                was_created = _create_route(way, position, **route)
+                if not way:
+                    return RESPONSE_400_DB_OPERATION_FAILED
 
-                if not was_created:
-                    return RESPONSE_400_INVALID_DATA
-                position += 1
+                position = 0
 
-            data = way.get_way_with_routes()
-            return JsonResponse(data, status=201)
+                for step in steps:
 
-        return RESPONSE_400_DB_OPERATION_FAILED
+                    route = _make_route_dict_from_google_maps(step)
+
+                    if not route_data_validator(route):
+                        return RESPONSE_400_INVALID_DATA
+
+                    if position == 0:
+                        route['start_place'] = data.get('start_place')
+                    if position == len(steps)-1:
+                        route['end_place'] = data.get('end_place')
+
+                    was_created = _create_route(way, position, **route)
+
+                    if not was_created:
+                        return RESPONSE_400_INVALID_DATA
+                    position += 1
+
+                data = way.get_way_with_routes()
+                return JsonResponse(data, status=201)
+
+        except DatabaseError:
+            return RESPONSE_400_DB_OPERATION_FAILED
 
     def delete(self, request, way_id):  # pylint: disable=R0201
         """
