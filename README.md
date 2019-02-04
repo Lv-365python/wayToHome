@@ -107,7 +107,7 @@ $ systemctl status rabbitmq-server
     ```
     npm install
     ```
-2. Create `settings.py` in `way_to_home/static/src` with following settings:
+2. Create `settings.js` in `way_to_home/static/src` with following settings:
     ```js
     // Required keys for Here App API
     export const HERE_APP_ID = '<here_app_api_id>';
