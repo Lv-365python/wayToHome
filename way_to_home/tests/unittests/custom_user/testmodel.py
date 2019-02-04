@@ -3,9 +3,11 @@ CustomUser Model Test
 ========================
 This module provides complete testing for all CustomUser's model functions.
 """
-
+from django.core.exceptions import ValidationError
+from django.db import OperationalError
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
+from unittest import mock
 
 
 class CustomUserTestCase(TestCase):
@@ -114,6 +116,18 @@ class CustomUserTestCase(TestCase):
             is_active=new_is_active
         )
         self.assertFalse(is_updated)
+
+        exceptions = (ValueError, ValidationError, OperationalError)
+        with mock.patch('django.contrib.auth.base_user.AbstractBaseUser.save') as updated:
+            for exc in exceptions:
+                updated.side_effect = exc('message')
+                is_updated = self.custom_user.update(
+                    password=new_password,
+                    google_token=new_google_token,
+                    phone_number=new_phone_number,
+                    is_active=new_is_active
+                )
+                self.assertFalse(is_updated)
 
         not_updated_user = CustomUser.objects.get(id=self.custom_user.id)
         self.assertFalse(updated_user.check_password(new_password))
