@@ -13,12 +13,16 @@ def handle_start(message):
         received data : telegram message, with text property like '/start {user_id}'
     """
     user_id = (message.text.split()[-1])
-    if not user_id == '/start' or user_id == 'start':
+    if user_id != '/start' and user_id != 'start':
         user = CustomUser.get_by_id(int(user_id))
-        if not user.telegram_id:
-            user.update(telegram_id=message.chat.id)
-
-    BOT.send_message(chat_id=message.chat.id, text='Сповіщення в телеграмі активовано.')
+        if not user.user_profile.telegram_id:
+            user.user_profile.update(telegram_id=message.chat.id)
+        BOT.send_message(chat_id=message.chat.id,
+                         text=f'Сповіщення в телеграмі активовано для {user.email}.')
+    else:
+        BOT.send_message(chat_id=message.chat.id,
+                         text='Для активації сповіщень через телеграм необхідно скористатись'
+                              ' посиланням на нашому сайті.')
 
 
 @BOT.message_handler(commands=['help'])
