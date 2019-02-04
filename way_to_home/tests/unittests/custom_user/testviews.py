@@ -6,7 +6,7 @@ This module provides complete testing for all CustomUser's views functions.
 
 import json
 
-from django.db import DatabaseError
+from django.db import DatabaseError, IntegrityError
 from django.urls import reverse
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
@@ -187,6 +187,19 @@ class CustomUserViewTest(TestCase):
         self.assertNotEqual(response.cookies['sessionid'].value, '')
         self.assertEqual(response.status_code, 200)
 
+    def test_log_in_not_remember_me(self):
+        """Provides test for a (POST) request to log in a registered user with correct credentials."""
+        test_data = {
+            'email': 'user@mail.com',
+            'password': '1111Bb',
+            'remember_me': False,
+        }
+        url = reverse('login_user')
+        response = self.client.post(url, json.dumps(test_data), content_type='application/json')
+        self.assertIn('sessionid', response.cookies)
+        self.assertNotEqual(response.cookies['sessionid'].value, '')
+        self.assertEqual(response.status_code, 200)
+
     def test_log_in_fail(self):
         """Provides test for a (POST) request to log in a registered user with incorrect credentials."""
         test_data = {
@@ -281,6 +294,23 @@ class CustomUserViewTest(TestCase):
         uri = f'{url}?code={code}'
         response = self.client.get(uri)
         self.assertEquals(response.status_code, 302)
+
+    @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
+    @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_existing)
+    @mock.patch('custom_user.models.CustomUser.get_by_email', return_value=False)
+    def test_login_google_transaction_failed(self, get_by_email):
+        """Provides test for a (GET) request to authenticate via Google in case transaction atomic failed"""
+        url = reverse('sign_in_google')
+        code = 'test_code'
+        uri = f'{url}?code={code}'
+
+        exceptions = (DatabaseError, IntegrityError)
+
+        with mock.patch('custom_user.models.CustomUser.create') as user:
+            for exc in exceptions:
+                user.side_effect = exc()
+                response = self.client.get(uri)
+                self.assertEquals(response.status_code, 400)
 
     @mock.patch('requests_oauthlib.OAuth2Session.fetch_token', GoogleMock.fetch_token)
     @mock.patch('requests_oauthlib.OAuth2Session.get', GoogleMock.get_empty)
