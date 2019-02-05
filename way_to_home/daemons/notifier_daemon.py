@@ -39,7 +39,7 @@ class NotifierDaemon(Daemon):
 
         today_notifications = Notification.get_today_scheduled()
         for notification in today_notifications:
-            first_route = notification.way.get_first_route()
+            first_route = notification.way.get_route_by_position(position=0)
             time_to_stop = first_route.time if first_route else None
             task_time = get_prepare_task_time(notification.time, time_to_stop)
 

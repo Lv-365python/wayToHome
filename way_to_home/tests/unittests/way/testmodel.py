@@ -4,6 +4,7 @@ import datetime
 
 from django.test import TestCase
 
+from notification.models import Notification
 from way.models import Way
 from custom_user.models import CustomUser
 from place.models import Place
@@ -32,6 +33,14 @@ class WayModelTestCase(TestCase):
             way=self.way,
             start_place=start_place,
             end_place=end_place
+        )
+        self.notification = Notification.objects.create(
+            id=100,
+            way=self.way,
+            start_time=datetime.date(2019, 10, 29),
+            end_time=datetime.date(2019, 12, 29),
+            week_day=6,
+            time=datetime.time(23, 58, 59)
         )
 
     def test_get_by_id(self):
@@ -115,11 +124,16 @@ class WayModelTestCase(TestCase):
 
         self.assertEqual(expected_string, actual_string)
 
-    def test_get_first_route(self):
-        """Provide tests for `get_first_route` method of certain Way instance."""
-        expected_route = self.way.get_first_route()
+    def test_get_route_by_position(self):
+        """Provide tests for `get_route_by_position` method of certain Way instance."""
+        expected_route = self.way.get_route_by_position(position=0)
         self.assertEqual(expected_route, self.route)
 
         way_without_routes = Way.objects.create(user=self.user)
-        expected_route = way_without_routes.get_first_route()
+        expected_route = way_without_routes.get_route_by_position(position=0)
         self.assertIsNone(expected_route)
+
+    def test_get_by_notification(self):
+        """Provide tests for `get_by_notification` method of certain Way instance."""
+        expected_way = self.way.get_by_notification(notification_id=100)
+        self.assertEqual(expected_way, self.way)
