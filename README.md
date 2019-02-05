@@ -127,6 +127,9 @@ $ systemctl status rabbitmq-server
     ```
     # daemon for preparing gtfs data from EasyWay
     python gtfs_daemon.py 11
+    
+    # daemon for assigning celery tasks to prepare notifications
+    python notifier_deamon.py
     ```
     
 3. Create file `way_to_home.log` in `/var/log/` directory, and add user permissions to that file.
@@ -146,6 +149,11 @@ $ systemctl status rabbitmq-server
     celery -A way_to_home beat -l info
     ```
 ## Addition commands
+
+- To use `makefile` run command in the project root folder:
+	```
+	makefile help
+	```
 
 #### Frontend
 - To start react server:

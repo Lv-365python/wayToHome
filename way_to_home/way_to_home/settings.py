@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'way_to_home.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'travis',
+        'NAME': 'way_to_home',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
