@@ -16,6 +16,7 @@ from utils.notificationhelper import (get_seconds_until_midnight,
                                      get_prepare_task_time,
                                      set_notifications_tasks,
                                      get_notifications_tasks,
+                                     get_route_id_by_name,
                                      )
 
 
@@ -100,3 +101,19 @@ class NotificationTestCase(TestCase):
             self.preparing_time
         )
         self.assertEqual(expected_task_time, gotten_task_time)
+
+    def test_get_route_id_by_name_success(self):
+        """Provide tests for `get_route_id_by_name` method."""
+        routes_data = {'test_route_id': 'test_short_name'}
+        route_name = 'test_short_name'
+        expected_result = 'test_route_id'
+        gotten_result = get_route_id_by_name(routes_data, route_name)
+        self.assertEqual(expected_result, gotten_result)
+
+    def test_get_route_id_by_name_fail(self):
+        """Provide tests for `get_route_id_by_name` method in the case when
+        `route_name` parameter not exist."""
+        routes_data = {'test_route_id': 'test_short_name'}
+        route_name = 'nonexistent_name'
+        gotten_result = get_route_id_by_name(routes_data, route_name)
+        self.assertIsNone(gotten_result)
