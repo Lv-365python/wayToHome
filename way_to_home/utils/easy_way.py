@@ -19,12 +19,12 @@ def compile_file(file_gtfs):
         return None
 
     feed.ParseFromString(content)
-    gtfs_data = parse_vehicle_data(feed.entity)  # pylint: disable=no-member
+    gtfs_data = _parse_vehicle_data(feed.entity)  # pylint: disable=no-member
 
     return gtfs_data
 
 
-def parse_vehicle_data(feed_entity):
+def _parse_vehicle_data(feed_entity):
     """This function create dictionary that contain necessary data about certain route."""
     vehicle_data = {}
     for entity in feed_entity:
