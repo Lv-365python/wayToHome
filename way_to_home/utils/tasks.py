@@ -1,16 +1,23 @@
 """This module provides celery tasks."""
 
 import pickle
+import time
 
 from celery.schedules import crontab
 from celery.task import periodic_task, task
 
 from django.conf import settings
+
+from custom_user.models import CustomUser
 from notification.models import Notification
+from way.models import Way
+from .notificationhelper import get_route_id_by_name
 from .utils import LOGGER
 from .file_handlers import load_file, unzip_file
 from .redishelper import REDIS_HELPER
-from .easy_way import parse_routes_data, parse_trips_data, parse_stops_data
+from .easy_way import parse_routes_data, parse_trips_data, parse_stops_data, prettify_gtfs
+from .mapshelper import find_closest_bus_time
+from .senderhelper import send_sms
 
 
 DEFAULT_RETRY_DELAY = 60
@@ -68,9 +75,48 @@ def prepare_static_easyway_data(self):
         file_path = f'{EASYWAY_DIR}/{data_identifier}.txt'
         parsed_data = parser(file_path)
         pickled_data = pickle.dumps(parsed_data)
-        REDIS_HELPER.set(data_identifier, pickle.dumps(pickled_data))
+        REDIS_HELPER.set(data_identifier, pickled_data)
 
 
 @task
-def prepare_notification(notification_id):  # pylint: disable=unused-argument
+def prepare_notification(notification_id):
     """Prepare data about transport arrival time before notifying the user."""
+    way = Way.get_by_notification(notification_id)
+
+    route = way.get_route_by_position(position=1)
+    route_name = route.transport_name
+    bus_stop = route.start_place
+    stop_coords = f'{bus_stop.latitude},{bus_stop.longitude}'
+
+    routes_data = pickle.loads(REDIS_HELPER.get('routes'))
+    route_id = get_route_id_by_name(routes_data, route_name)
+    if not route_id:
+        return False
+
+    gtfs_data = pickle.loads(REDIS_HELPER.get('gtfs_data'))
+    buses = gtfs_data.get(route_id)
+    if not buses:
+        return False
+
+    buses_coords = prettify_gtfs(buses)
+    bus_time = find_closest_bus_time(buses_coords, stop_coords)
+    arriving_time = int(time.strftime("%M", time.gmtime(bus_time)))
+
+    send_notification.delay(way.user_id, arriving_time)
+
+    return True
+
+
+@task
+def send_notification(user_id, arriving_time):
+    """Send notification about transport arrival."""
+    user = CustomUser.get_by_id(user_id)
+
+    phone_number = user.phone_number
+    if not phone_number:
+        return False
+
+    message = f'Ваш транспорт прибуде через {arriving_time} хвилин'
+    was_sent = send_sms(phone_number, message)
+
+    return was_sent

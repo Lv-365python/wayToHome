@@ -89,3 +89,12 @@ def parse_stops_data(file_path='./stops.txt'):
         stops[key] = (latitude, longitude)
 
     return stops
+
+
+def prettify_gtfs(gtfs_data):
+    """Provide parsing GTFS dict to more comfortable format."""
+    prettified_data = []
+    for vehicle in gtfs_data:
+        prettified_data.append(f'{vehicle["lat"]},{vehicle["lon"]}')
+
+    return prettified_data
