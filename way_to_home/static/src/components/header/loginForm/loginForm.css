@@ -11,6 +11,10 @@
     display: block;
 }
 
+.ResetPasswordButton{
+    margin-top: 16px;
+}
+
 .loginButtons{
     margin-top: 16px;
 }

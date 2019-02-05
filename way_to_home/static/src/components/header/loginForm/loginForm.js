@@ -22,7 +22,10 @@ class LoginForm extends Component {
         request_type: 'login',
         confirm_button: 'увійти',
         change_button: 'зареєструватися',
+        confirm_reset_button: 'скинути пароль',
+        reset_password_button: 'забули пароль',
         repeat_display: 'none',
+        repeat_reset_display: 'inline-flex',
         email: '',
         first_pass: '',
         second_pass: '',
@@ -36,64 +39,103 @@ class LoginForm extends Component {
 
     onClickChangeType = () => {
         let display = this.state.repeat_display === 'inline-flex' ? 'none': 'inline-flex';
-        this.setState({repeat_display: display});
-
         let button_text = this.state.change_button === 'зареєструватися' ? 'увійти': 'зареєструватися';
-        this.setState({change_button: button_text});
-
         let confirm_text = this.state.confirm_button === 'зареєструватися' ? 'увійти': 'зареєструватися';
-        this.setState({confirm_button: confirm_text});
-
+        let button_reset_password_text = this.state.reset_password_button === 'забули пароль';
         let type = this.state.request_type === 'register' ? 'login': 'register';
-        this.setState({request_type: type});
+
+        this.setState({repeat_display: display,
+            change_button: button_text,
+            confirm_button: confirm_text,
+            reset_password_button: button_reset_password_text,
+            request_type: type
+        });
 
         if(type === 'register' && this.state.first_pass !== this.state.second_pass)
             this.setState({disable_button: true});
     };
 
+    onClickReset = () => {
+        let display = this.state.repeat_reset_display === 'none' ? 'inline-flex': 'none';
+        this.setState({
+            repeat_reset_display: display,
+            request_type: 'reset_password',
+            confirm_button: 'відновити пароль'
+        })
+    };
+
     onClickConfirm = () => {
         let type = this.state.request_type;
-        axios.post('/api/v1/user/' + type, {
-            email: this.state.email,
-            password: this.state.first_pass,
-            remember_me: this.state.remember_me,
-        })
-            .then(() => {
-
-                if(this.state.request_type === 'register') {
-                    setTimeout(() => {
-                        this.props.history.go(0)
-                    }, 3 * 1000);
-                    this.setError('Підтвердіть Вашу пошту');
-                }else this.props.history.go(0)
+        if(type === 'reset_password') {
+            axios.post('/api/v1/user/' + type, {
+                email: this.state.email
             })
-            .catch((error) => {
-                this.setError(error.response.data);
-            });
+                .then(() => {
+                    setTimeout(() => {
+                            this.props.history.go(0)
+                        }, 3 * 1000);
+                        this.setError('Підтвердіть Вашу пошту');
+                })
+                .catch((error) => {
+                    this.setError(error.response.data);
+                });
+        }
+        else {
+            axios.post('/api/v1/user/' + type, {
+                email: this.state.email,
+                password: this.state.first_pass,
+                remember_me: this.state.remember_me,
+            })
+                .then(() => {
+
+                    if (this.state.request_type === 'register') {
+                        setTimeout(() => {
+                            this.props.history.go(0)
+                        }, 3 * 1000);
+                        this.setError('Підтвердіть Вашу пошту');
+                    } else this.props.history.go(0)
+                })
+                .catch((error) => {
+                    this.setError(error.response.data);
+                });
+        }
     };
 
     onChangeEmail = (event) => {
         let email = event.target.value;
-        this.setState({email: email});
         let email_error = this.handleEmail(email);
-        this.setState({email_error: !email_error});
+
+        this.setState({
+            email: email,
+            email_error: !email_error
+        });
+
         this.handleButton(!email_error, email, this.state.pass_error, this.state.first_pass);
     };
 
     onChangeFirstPassword = (event) => {
         this.handleChange();
+
         let first_pass = event.target.value;
-        this.setState({first_pass: first_pass});
         let pass_error = !this.handlePassword(first_pass);
-        this.setState({pass_error: pass_error});
+
+        this.setState({
+            first_pass: first_pass,
+            pass_error: pass_error
+        });
+
         this.handleButton(this.state.email_error, this.state.email, pass_error, first_pass);
     };
 
     onChangeSecondPassword = (event) => {
         let second_pass = event.target.value;
-        this.setState({second_pass: second_pass});
         let pass_error = !this.handlePassword(this.state.first_pass, second_pass);
-        this.setState({pass_error: pass_error});
+
+        this.setState({
+            second_pass: second_pass,
+            pass_error: pass_error
+        });
+
         this.handleButton(this.state.email_error, this.state.email, pass_error, this.state.first_pass);
     };
 
@@ -119,17 +161,35 @@ class LoginForm extends Component {
         }
         else if(type === 'login')
             return regex.test(first_pass);
-
         return false;
     };
 
     handleButton = (email_error, email, pass_error, pass) => {
-        if(email_error || pass_error)
-            this.setState({disable_button: true});
-        else if(!email || !pass)
-            this.setState({disable_button: true});
-        else
-            this.setState({disable_button: false});
+        let type = this.state.request_type;
+        if (type === 'reset_password') {
+            if (email_error) {
+                this.setState({disable_button: true});
+            }
+
+            else if (!email) {
+                this.setState({disable_button: true});
+            }
+
+            else
+                this.setState({disable_button: false});
+
+        } else {
+            if (email_error || pass_error) {
+                this.setState({disable_button: true});
+            }
+
+            else if (!email || !pass) {
+                this.setState({disable_button: true});
+            }
+
+            else
+                this.setState({disable_button: false});
+        }
     };
 
     handleSigninGoogle = () => {
@@ -155,8 +215,8 @@ class LoginForm extends Component {
     };
 
     render() {
-        const {email_error, email, pass_error, first_pass, repeat_display, second_pass,
-            change_button, disable_button, confirm_button, error, remember_me} = this.state;
+        const {email_error, email, pass_error, first_pass, repeat_display, repeat_reset_display, second_pass,
+            change_button, disable_button, confirm_button, reset_password_button, error, remember_me} = this.state;
         return (
             <div className='LoginFormDiv'>
                 <TextField
@@ -174,7 +234,6 @@ class LoginForm extends Component {
 
                 <TextField
                     error={pass_error}
-                    id="filled-adornment-password"
                     label={pass_error ? 'Поганий пароль' : 'Пароль'}
                     type={this.state.showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
@@ -182,7 +241,7 @@ class LoginForm extends Component {
                     variant="filled"
                     value={first_pass}
                     onChange={this.onChangeFirstPassword}
-                    style={{paddingRight: '25px', width: '300px'}}
+                    style={{paddingRight: '25px', width: '300px', display: repeat_reset_display}}
 
                     InputProps={{
                         endAdornment: (
@@ -209,8 +268,18 @@ class LoginForm extends Component {
                     variant="filled"
                     value={second_pass}
                     onChange={this.onChangeSecondPassword}/>
+                <div className="ResetPasswordButton">
+                    <Button
+                        style={{display: repeat_reset_display}}
+                        className='reset_password_button'
+                        color="primary"
+                        onClick={this.onClickReset}>
+                        {reset_password_button}
+                    </Button>
+                </div>
                 <div>
                     <FormControlLabel
+                        style={{display: repeat_reset_display}}
                         checked={remember_me}
                         onChange={this.changeSaveCookies}
                         control={<Checkbox value="checkedC"/>}
@@ -218,12 +287,14 @@ class LoginForm extends Component {
                 </div>
                 <div className="blow">
                     <SVGInline
+                        style={{display: repeat_reset_display}}
                         svg={ iconSVG }
                         onClick={this.handleSigninGoogle}
                     />
                 </div>
                 <div>
                     <Button
+                        style={{display: repeat_reset_display}}
                         color="primary"
                         onClick={this.onClickChangeType}>
                         {change_button}

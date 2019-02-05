@@ -209,12 +209,12 @@ def reset_password(request):
 @require_http_methods(['PUT'])
 def confirm_reset_password(request, token):
     """Function that provides confirm reset user password"""
-    data = request.body
-    new_password = data.get('new_password')
     confirm = decode_token(token)
-
     if not confirm:
         return RESPONSE_498_INVALID_TOKEN
+    data = request.body
+    new_password = data.get('new_password')
+
     user = CustomUser.get_by_email(email=confirm.get('email'))
 
     if not user:
@@ -224,6 +224,7 @@ def confirm_reset_password(request, token):
         return RESPONSE_400_INVALID_DATA
 
     is_updated = user.update(password=new_password)
+
     if not is_updated:
         return RESPONSE_400_DB_OPERATION_FAILED
 
@@ -232,6 +233,7 @@ def confirm_reset_password(request, token):
     html_message = render_to_string('emails/' + 'update_password.html')
 
     send_email((user.email,), html_message, mail_subject, message)
+
     return RESPONSE_200_UPDATED
 
 
