@@ -67,6 +67,6 @@ def get_prepare_task_time(notification_time, time_to_stop=None,
 def get_route_id_by_name(routes_data, route_name):
     """Find route id by route name."""
     for route_id, short_name in routes_data.items():
-        if route_name in short_name:
+        if route_name == short_name:
             return route_id
     return None
