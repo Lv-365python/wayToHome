@@ -2,12 +2,12 @@
 
 import os
 import time
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from utils.utils import LOGGER
 
 
-class Daemon:
+class Daemon(ABC):
     """Provides basic functionality of daemon."""
 
     def __init__(self, frequency):

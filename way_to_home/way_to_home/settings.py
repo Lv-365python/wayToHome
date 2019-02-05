@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'route',
     'notification',
     'home',
+    'utils',
 ]
 
 SESSION_COOKIE_HTTPONLY = False
