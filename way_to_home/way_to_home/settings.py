@@ -26,7 +26,7 @@ SECRET_KEY = '_v%d$8q8a3+^mo)v3x-pnwmaqha5ssp*k0j)_t6*^h3$!t5cij'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 APPEND_SLASH = False
 
@@ -92,8 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'way_to_home',
         'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
