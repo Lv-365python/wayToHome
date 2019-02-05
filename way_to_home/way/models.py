@@ -43,9 +43,14 @@ class Way(AbstractModel):
         except (ValueError, IntegrityError, OperationalError) as err:
             LOGGER.error(f'Unsuccessful way creating. {err}')
 
-    def get_first_route(self):
+    def get_route_by_position(self, position):
         """Return first route of way."""
         try:
-            return self.routes.get(position=0)
-        except (ObjectDoesNotExist, OperationalError):
+            return self.routes.get(position=position)
+        except (ObjectDoesNotExist, OperationalError, ValueError):
             pass
+
+    @classmethod
+    def get_by_notification(cls, notification_id):
+        """Return Way object by notification_id"""
+        return cls.objects.get(notifications__id=notification_id)

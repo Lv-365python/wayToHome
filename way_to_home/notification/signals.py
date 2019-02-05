@@ -67,7 +67,7 @@ def create_notification_task(sender, instance, created, update_fields, **kwargs)
     if instance.time < now:
         return False
 
-    first_route = instance.way.get_first_route()
+    first_route = instance.way.get_route_by_position(position=0)
     time_to_stop = first_route.time if first_route else None
 
     task_time = get_prepare_task_time(instance.time, time_to_stop)
