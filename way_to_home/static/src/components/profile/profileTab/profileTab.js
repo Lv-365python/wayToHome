@@ -31,7 +31,7 @@ let savedState = {
     ajaxMessage: '',
     message_type: '',
     user_id: '',
-    telegram_id: '',
+    telegram_id: undefined,
 };
 
 export const url = '/api/v1/user';
@@ -54,7 +54,7 @@ export default class ProfileTab extends React.Component {
         ajaxMessage: '',
         message_type: '',
         user_id: '',
-        telegram_id: '',
+        telegram_id: undefined,
     };
 
     setMessage = (message, type) => {
@@ -182,12 +182,10 @@ export default class ProfileTab extends React.Component {
     textFieldChangePhoneNumber = (event) => {
         let checked = event.target.value;
         let error = this.handlePhoneNumber(checked);
-        console.log(error);
         this.setState({
             phone_number: checked,
             phone_error: error,
         });
-        console.log(this.state.phone_error);
         this.checkSaveActive(this.state.first_name, this.state.last_name,
             checked, error)
     };
@@ -207,22 +205,38 @@ export default class ProfileTab extends React.Component {
     };
 
     removeTelegramClick = (event) => {
-        let uri = '/profile';
+        let uri = '/profile/telegram_id';
         axios.put(url + uri, {
-            telegram_id: ''
+            telegram_id: null
         })
             .then(response => {
-                console.log(response);
-                this.setState({telegram_id: ''})
+                this.setMessage('Telegram успішно відключено', 'success')
+                this.setState({telegram_id: undefined})
             })
             .catch(error => {
-                console.log(error);
+                this.setMessage('Telegram не вдалось відключити', 'error')
             })
     };
 
     telegramRedirectClick = (event) => {
-        this.setState({telegram_id:'placeholder'})
-        window.open(telegram_bot_url + "?start=" + this.state.user_id, "_blank")
+        let uri = '/profile/telegram_access_token';
+        let token = this.generateToken();
+
+        axios.put(url + uri, {
+            token: token
+        })
+            .then(response => {
+                window.open(telegram_bot_url + "?start=" + token, "_blank");
+                this.setState({telegram_id:'placeholder'});
+            })
+            .catch(error => {
+                this.setMessage('Не вдалося підключити Telegram, спробуйте пізніше', 'error')
+            })
+
+    };
+
+    generateToken = () => {
+        return Math.random().toString(36).substring(2);
     };
 
     render(){

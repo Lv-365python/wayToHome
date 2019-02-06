@@ -92,6 +92,10 @@ $ systemctl status rabbitmq-server
     JWT_TOKEN_KEY = '<jwt_token_key>'
     JWT_ALGORITHM = 'HS384'
     
+    # Required settings for telegram bot
+
+    TELEGRAM_BOT_TOKEN = 'telegram_bot_token'
+ 
     # Google settings
     CLIENT_ID = '<client_id>'
     CLIENT_SECRET = '<client_secret>'
