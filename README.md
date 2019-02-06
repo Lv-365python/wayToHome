@@ -127,7 +127,7 @@ $ systemctl status rabbitmq-server
     ```
     # daemon for preparing gtfs data from EasyWay
     python gtfs_daemon.py 11
-    
+        
     # daemon for assigning celery tasks to prepare notifications
     python notifier_deamon.py
     ```
@@ -150,6 +150,16 @@ $ systemctl status rabbitmq-server
     ```
 ## Addition commands
 
+#### Docker
+- To start up your Docker container
+    ```
+    docker-compose up -d --build
+    ```
+- To close down your Docker container
+    ```
+    docker-compose down
+    ```
+    
 - To use `makefile` run command in the project root folder:
 	```
 	makefile help
