@@ -5,6 +5,7 @@ import nexmo
 
 from django.conf import settings
 from django.core.mail import send_mail
+from telebot import TeleBot, apihelper
 
 
 def send_sms(phone_number, message):
@@ -34,5 +35,15 @@ def send_email(to_email, html_message, mail_subject, message):
                   recipient_list=to_email)
 
     except SMTPRecipientsRefused:
+        return False
+    return True
+
+
+def send_telegram_message(chat_id, text):
+    """This function sends telegram message with given text to user"""
+    bot = TeleBot(settings.TELEGRAM_BOT_TOKEN)
+    try:
+        bot.send_message(chat_id=chat_id, text=text)
+    except apihelper.ApiException:
         return False
     return True

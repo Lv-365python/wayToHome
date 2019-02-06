@@ -94,7 +94,7 @@ $ systemctl status rabbitmq-server
     
     # Required settings for telegram bot
 
-    TELEGRAM_BOT_TOKEN = 'telegram_bot_token'
+    TELEGRAM_BOT_TOKEN = '<telegram_bot_token>'
  
     # Google settings
     CLIENT_ID = '<client_id>'

@@ -13,7 +13,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "way_to_home.settings")
 django.setup()
 
 from django.conf import settings
-from telebot import TeleBot, apihelper
+from telebot import TeleBot
 from utils.redishelper import REDIS_HELPER
 
 UNAUTHORIZED_ACCESS_MESSAGE = 'Для активації сповіщень через телеграм' \
@@ -24,13 +24,7 @@ TOKEN = settings.TELEGRAM_BOT_TOKEN
 BOT = TeleBot(token=TOKEN)
 
 
-def send_telegram_message(chat_id, text):
-    """This function sends telegram message with given text to user"""
-    try:
-        BOT.send_message(chat_id=chat_id, text=text)
-    except apihelper.ApiException:
-        return False
-    return True
+
 
 
 def get_access_tokens():
