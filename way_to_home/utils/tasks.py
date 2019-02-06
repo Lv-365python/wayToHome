@@ -17,7 +17,7 @@ from .file_handlers import load_file, unzip_file
 from .redishelper import REDIS_HELPER
 from .easy_way import parse_routes_data, parse_trips_data, parse_stops_data, prettify_gtfs
 from .mapshelper import find_closest_bus_time
-from .senderhelper import send_sms
+from .senderhelper import send_sms, send_telegram_message
 
 
 DEFAULT_RETRY_DELAY = 60
@@ -107,16 +107,22 @@ def prepare_notification(notification_id):
     return True
 
 
-@task
-def send_notification(user_id, arriving_time):
+@task(bind=True, retry_kwargs={'max_retries': 5})
+def send_notification(self, user_id, arriving_time):
     """Send notification about transport arrival."""
     user = CustomUser.get_by_id(user_id)
-
-    phone_number = user.phone_number
-    if not phone_number:
-        return False
-
     message = f'Ваш транспорт прибуде через {arriving_time} хвилин'
-    was_sent = send_sms(phone_number, message)
+    was_sent = False
+
+    chat_id = user.user_profile.telegram_id
+    phone_number = user.phone_number
+
+    if chat_id:
+        was_sent = send_telegram_message(chat_id, message)
+    elif phone_number:
+        was_sent = send_sms(phone_number, message)
+
+    if not was_sent:
+        raise self.retry(countdown=5)
 
     return was_sent

@@ -3,7 +3,6 @@
 from telegram_bot import bothelper
 from custom_user.models import CustomUser
 from user_profile.models import UserProfile
-
 BOT = bothelper.BOT
 
 
