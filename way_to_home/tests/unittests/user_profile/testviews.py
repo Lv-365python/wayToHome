@@ -97,7 +97,7 @@ class UserProfileViewTest(TestCase):
             'first_name': 'new_first_name',
             'last_name': 'new_last_name'
         }
-        with mock.patch('utils.abstract_models.AbstractModel.update') as update:
+        with mock.patch('user_profile.models.UserProfile.update') as update:
             update.return_value = False
             response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
             self.assertEquals(response.status_code, 400)

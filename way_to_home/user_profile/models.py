@@ -1,6 +1,6 @@
 """This module implements class that represents the user profile entity."""
 
-from django.db import models, IntegrityError
+from django.db import models, IntegrityError, transaction
 from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
@@ -42,3 +42,27 @@ class UserProfile(AbstractModel):
             return user_profile
         except (ValueError, IntegrityError, OperationalError) as err:
             LOGGER.error(f'Unsuccessful user profile creating. {err}')
+
+    def update(self, first_name=None, last_name=None, telegram_id=''): # pylint: disable=arguments-differ
+        """Method for updating of user profile object"""
+        with transaction.atomic():
+            if first_name:
+                self.first_name = first_name
+            if last_name:
+                self.last_name = last_name
+            if telegram_id != '':
+                self.telegram_id = telegram_id
+            try:
+                self.save()
+                return True
+            except (ValueError, OperationalError) as err:
+                LOGGER.error(f'Unsuccessful profile\' parameters updating with id={self.id}. {err}')
+                return False
+
+    @classmethod
+    def get_by_telegram_id(cls, telegram_id):
+        """Method for finding profile with given telegram_id"""
+        try:
+            return cls.objects.get(telegram_id=telegram_id)
+        except (ValueError, cls.DoesNotExist, OperationalError) as err:
+            LOGGER.error(f'Failed to find profile by telegram id={telegram_id} {err}')

@@ -2,6 +2,11 @@
 
 from django.http import JsonResponse
 from django.views import View
+from django.views.decorators.http import require_http_methods
+
+from telegram_bot.bothelper import (get_access_tokens,
+                                    set_access_tokens,
+                                    remove_user_access_token)
 from utils.validators import profile_validator
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EMPTY_JSON,
@@ -39,7 +44,7 @@ class UserProfileView(View):
 
         data = {
             'first_name': data.get('first_name'),
-            'last_name': data.get('last_name')
+            'last_name': data.get('last_name'),
         }
 
         if not profile_validator(data):
@@ -50,3 +55,46 @@ class UserProfileView(View):
             return RESPONSE_400_DB_OPERATION_FAILED
 
         return RESPONSE_200_UPDATED
+
+
+@require_http_methods(["PUT"])
+def put_access_token(request):
+    """Set telegram access token to redis as value with key of user id"""
+    user = request.user
+    if not hasattr(user, 'user_profile'):
+        return RESPONSE_400_OBJECT_NOT_FOUND
+
+    token = request.body.get('token')
+    telegram_data = get_access_tokens()
+    telegram_data[user.id] = token
+    if not set_access_tokens(telegram_data):
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    return RESPONSE_200_UPDATED
+
+
+@require_http_methods(["PUT"])
+def update_telegram_id(request):
+    """
+        Update telegram id in user profile,
+        separated form common put to add ability to process None in body
+    """
+    user = request.user
+    if not hasattr(user, 'user_profile'):
+        return RESPONSE_400_OBJECT_NOT_FOUND
+
+    profile = user.user_profile
+    telegram_id = request.body.get('telegram_id')
+    if telegram_id is None:
+        remove_user_access_token(user)
+        profile.update(telegram_id=None)
+        return RESPONSE_200_UPDATED
+
+    if not isinstance(telegram_id, int):
+        return RESPONSE_400_INVALID_DATA
+
+    is_update = profile.update(telegram_id=telegram_id)
+    if not is_update:
+        return RESPONSE_400_DB_OPERATION_FAILED
+
+    return RESPONSE_200_UPDATED
