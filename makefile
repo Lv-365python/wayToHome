@@ -41,7 +41,7 @@ rabbitMQ:
 
 postgres:
 	sudo apt-get install postgresql postgresql-contrib
-	sudo -u postgres psql -c "CREATE DATABASE qwer"
+	sudo -u postgres psql -c "CREATE DATABASE postgres"
 	sudo -u postgres psql -c "ALTER USER postgres CREATEDB"
 
 redis:

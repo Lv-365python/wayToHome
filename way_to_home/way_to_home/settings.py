@@ -90,9 +90,9 @@ WSGI_APPLICATION = 'way_to_home.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'way_to_home',
         'USER': 'postgres',
-        'HOST': 'db',
+        'HOST': 'postgres',
+        'NAME': 'postgres',
         'PORT': '5432',
     }
 }
@@ -177,7 +177,7 @@ GOOGLE_API_KEY = 'Google API key'
 
 # Celery settings
 
-CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672'
 CELERY_IGNORE_RESULT = True
 CELERY_ENABLE_UTC = False
 CELERY_TIMEZONE = 'Europe/Kiev'

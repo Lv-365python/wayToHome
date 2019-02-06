@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  db:
+  postgres:
     image: postgres
     container_name: postgres
     restart: always
@@ -14,14 +14,14 @@ services:
     restart: always
     container_name: django
     build: .
-    command: python /way_to_home/way_to_home/manage.py runserver 0.0.0.0:8000
+    command: bash -c "python ./way_to_home/manage.py migrate --noinput && python ./way_to_home/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/way_to_home
     ports:
       - 8000:8000
     depends_on:
-      - db
-      - redis 
+      - postgres
+      - redis
 
   redis:
     image: "redis"
@@ -31,13 +31,41 @@ services:
     ports:
       - 6379
 
-#  celery:
-#    build: .
-  #  entrypoint: ["celery", "worker", "-l", "info", "-A", "app.CELERY", "-Q", "general"]
-#    environment:
-#      C_FORCE_ROOT: "True"
-#      DOCKER: 1
-#    volumes:
-#      - './way_to_home:/way_to_home'
-#    depends_on:
-#      - redis
+  rabbitmq:
+    hostname: rabbitmq
+    image: "rabbitmq"
+    container_name: rabbitmq
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq/data
+    ports:
+      - 5672:5672
+
+  celery:
+    build: .
+    container_name: celery_worker
+    command: bash -c "cd way_to_home && celery -A way_to_home worker -l info"
+    volumes:
+      - .:/way_to_home
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+
+  celery-beat:
+    build: .
+    container_name: celery_beat
+    command: bash -c "cd way_to_home && celery -A way_to_home beat -l info"
+    volumes:
+      - .:/way_to_home
+    depends_on:
+      - celery
+
+  demons:
+    build: .
+    container_name: demons
+    command: bash -c "cd way_to_home/daemons && python gtfs_daemon.py 11 && python notifier_deamon.py"
+    depends_on:
+      - app
+      - postgres
+    volumes:
+      - .:/way_to_home
