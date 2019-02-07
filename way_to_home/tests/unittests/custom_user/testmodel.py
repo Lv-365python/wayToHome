@@ -19,7 +19,6 @@ class CustomUserTestCase(TestCase):
             id=111,
             password='1111',
             email='user@mail.com',
-            google_token='example_google_token_1111',
             phone_number='+3801111',
             is_active=True
         )
@@ -48,7 +47,6 @@ class CustomUserTestCase(TestCase):
         created_user = CustomUser.create(
             email='created_user@mail.com',
             password='2222',
-            google_token='example_google_token_2222',
             phone_number='+3802222'
         )
 
@@ -58,7 +56,6 @@ class CustomUserTestCase(TestCase):
         created_user = CustomUser.create(
             email=None,
             password='',
-            google_token='example_google_token_2222',
             phone_number='+3802222'
         )
         self.assertIsNone(created_user)
@@ -86,13 +83,11 @@ class CustomUserTestCase(TestCase):
     def test_update(self):
         """Provide tests for 'update' method of certain CustomUser instance."""
         new_password = '0000'
-        new_google_token = 'example_google_token_3333'
         new_phone_number = '+3803333'
         new_is_active = False
 
         is_updated = self.custom_user.update(
             password=new_password,
-            google_token=new_google_token,
             phone_number=new_phone_number,
             is_active=new_is_active
         )
@@ -100,18 +95,15 @@ class CustomUserTestCase(TestCase):
 
         updated_user = CustomUser.objects.get(id=self.custom_user.id)
         self.assertTrue(updated_user.check_password(new_password))
-        self.assertEqual(updated_user.google_token, new_google_token)
         self.assertEqual(updated_user.phone_number, new_phone_number)
         self.assertEqual(updated_user.is_active, new_is_active)
 
-        new_google_token = 'example_google_token_4444'
         new_phone_number = '+3804444'
         new_is_active = 3
         new_password = '4444'
 
         is_updated = self.custom_user.update(
             password=new_password,
-            google_token=new_google_token,
             phone_number=new_phone_number,
             is_active=new_is_active
         )
@@ -123,7 +115,6 @@ class CustomUserTestCase(TestCase):
                 updated.side_effect = exc('message')
                 is_updated = self.custom_user.update(
                     password=new_password,
-                    google_token=new_google_token,
                     phone_number=new_phone_number,
                     is_active=new_is_active
                 )
@@ -131,7 +122,6 @@ class CustomUserTestCase(TestCase):
 
         not_updated_user = CustomUser.objects.get(id=self.custom_user.id)
         self.assertFalse(updated_user.check_password(new_password))
-        self.assertNotEqual(not_updated_user.google_token, new_google_token)
         self.assertNotEqual(not_updated_user.phone_number, new_phone_number)
         self.assertNotEqual(not_updated_user.is_active, new_is_active)
 
