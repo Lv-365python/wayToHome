@@ -13,7 +13,6 @@ class CustomUser(AbstractBaseUser):
     """Model for User entity."""
     email = models.EmailField(max_length=64, unique=True)
     password = models.CharField(max_length=128)
-    google_token = models.CharField(blank=True, max_length=255)
     phone_number = models.CharField(blank=True, max_length=15)
     is_active = models.BooleanField(default=False)
 
@@ -32,13 +31,11 @@ class CustomUser(AbstractBaseUser):
             'phone_number': self.phone_number
         }
 
-    def update(self, password=None, google_token=None, phone_number=None, is_active=None):
+    def update(self, password=None, phone_number=None, is_active=None):
         """Method for object update."""
         with transaction.atomic():
             if password:
                 self.set_password(password)
-            if google_token:
-                self.google_token = google_token
             if phone_number:
                 self.phone_number = phone_number
             if is_active is not None:
@@ -67,12 +64,11 @@ class CustomUser(AbstractBaseUser):
             LOGGER.error(f'Failed returns user by id={obj_id} {err}')
 
     @classmethod
-    def create(cls, email, password, google_token='', phone_number=''):
+    def create(cls, email, password, phone_number=''):
         """Method for object creation."""
         user = cls()
         user.email = email
         user.set_password(password)
-        user.google_token = google_token
         user.phone_number = phone_number
 
         try:
