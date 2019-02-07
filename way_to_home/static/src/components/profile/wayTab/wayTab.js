@@ -21,7 +21,6 @@ export default class WayTab extends Component{
         newWay: [],
         ajaxError: undefined,
         showMessage: false,
-        showWayItems: true,
     };
 
     getData = () => {
