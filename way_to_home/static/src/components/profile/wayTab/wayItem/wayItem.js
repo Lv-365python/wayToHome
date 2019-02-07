@@ -50,7 +50,7 @@ export default class WayItem extends Component{
                     startPlaceName: startPlace.name,
                 });
             })
-            .catch(error => this.setError("Не вдалося завантажити місце"));
+            .catch(error => this.props.setError("Не вдалося завантажити місце"));
 
         axios.get(url + endRoute.end_place)
             .then(response => {
@@ -60,7 +60,7 @@ export default class WayItem extends Component{
                     endPlaceName: endPlace.name,
                 });
             })
-            .catch(error => this.setError("Не вдалося завантажити місце"));
+            .catch(error => this.props.setError("Не вдалося завантажити місце"));
 
         axios.get('/api/v1/user/')
             .then(response => {
@@ -75,23 +75,30 @@ export default class WayItem extends Component{
         this.getData();
     };
 
-    toggleNotificationForm = () => {
+    openNotificationForm = () => {
         if (this.state.phone_number === ""){
-            this.setError("Спочатку введіть номер телефону")
+            this.props.setError("Спочатку введіть номер телефону")
         } else {
             this.setState(state => ({
                 isNotificationFormOpen: !state.isNotificationFormOpen,
                 isWayFormOpen: !state.isWayFormOpen
             }));
+            this.props.hideWayItems(this.props.way.id);
         }
     };
 
+    hideNotificationForm = () => {
+        this.setState(state => ({
+                isNotificationFormOpen: !state.isNotificationFormOpen,
+                isWayFormOpen: !state.isWayFormOpen
+        }));
+        this.props.reloadComponent()
+    };
     toggleDeleteAlert = () => {
         this.setState(state => ({
             deleteAlertOpen: !state.deleteAlertOpen
         }));
     };
-
 
     render(){
 
@@ -126,7 +133,7 @@ export default class WayItem extends Component{
                         <Tooltip title="Нотифікації">
                             <IconButton color="primary"
                                         aria-label="Нотифікації"
-                                        onClick={this.toggleNotificationForm}>
+                                        onClick={this.openNotificationForm}>
                                 <NotificationIcon/>
                             </IconButton>
                         </Tooltip>
@@ -172,7 +179,8 @@ export default class WayItem extends Component{
                 {
                     this.state.isNotificationFormOpen &&
                     <div>
-                        <NotificationForm way={this.props.way} toggleNotificationForm={this.toggleNotificationForm}/>
+                        <NotificationForm way={this.props.way} hideNotificationForm={this.hideNotificationForm}
+                        />
                     </div>
                 }
             </div>
