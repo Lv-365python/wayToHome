@@ -16,10 +16,12 @@ export default class WayTab extends Component{
 
     state = {
         ways: [],
+        oldWays: [],
         places: [],
         newWay: [],
         ajaxError: undefined,
-        showMessage: false
+        showMessage: false,
+        showWayItems: true,
     };
 
     getData = () => {
@@ -116,6 +118,19 @@ export default class WayTab extends Component{
             .catch(error => this.setError(error));
     };
 
+    toggleWayItems = (id) => {
+        this.setState({
+            oldWays: this.state.ways,
+            ways: this.state.ways.filter(item => item.id === id)
+        })
+    };
+
+    changeState = () => {
+        this.setState({
+            ways: this.state.oldWays
+        })
+    };
+
     render(){
 
         let { ajaxError, ways, newWay, places} = this.state;
@@ -136,6 +151,9 @@ export default class WayTab extends Component{
                         way={way}
                         places={places}
                         deleteButton={this.handleDeleteExistItemClick}
+                        hideWayItems={this.toggleWayItems}
+                        reloadComponent={this.changeState}
+                        setError={this.setError}
                     />
                 ))}
 
@@ -161,6 +179,7 @@ export default class WayTab extends Component{
                       Додати шлях
                     </Button>
                 </div>
+
                 {ajaxError && <CustomizedSnackbars message={ajaxError} reset={this.setError}/>}
             </div>
         )

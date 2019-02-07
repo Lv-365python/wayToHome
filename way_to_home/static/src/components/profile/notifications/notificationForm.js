@@ -262,7 +262,7 @@ class NotificationForm extends Component{
                             variant="contained"
                             size="medium"
                             color="secondary"
-                            onClick={this.props.toggleNotificationForm}>
+                            onClick={this.props.hideNotificationForm}>
                             Повернутись
                         </Button>
                     </div>

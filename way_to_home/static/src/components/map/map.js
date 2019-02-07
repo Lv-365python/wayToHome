@@ -77,9 +77,10 @@ export class MapContainer extends Component {
     };
 
     render() {
-        const {pointMarkerStart, pointMarkerEnd, coordsWay, error} = this.state;
+        const {pointMarkerStart, pointMarkerEnd, coordsWay, isStartBtnOpen, error} = this.state;
         let startPointCoords = undefined;
         let endPointCoords = undefined;
+        let isHomeOpen = window.location.href.includes('home');
         if (coordsWay !== undefined){
             startPointCoords = coordsWay[0];
             endPointCoords = coordsWay[coordsWay.length - 1];
@@ -94,12 +95,15 @@ export class MapContainer extends Component {
                     lng: 24.028667
                 }}
             >
-                <StartBtn getCoordsWay={this.getCoordsWay}
+                {isHomeOpen &&
+                    <StartBtn getCoordsWay={this.getCoordsWay}
                           setEndPoint={this.setEndPoint}
                           setStartPoint={this.setStartPoint}
                           pointMarkerStart={pointMarkerStart}
                           pointMarkerEnd={pointMarkerEnd}
-                />
+                    />
+                }
+
                 <Marker
                     draggable = {true}
                     title = { 'Початкова точка' }
