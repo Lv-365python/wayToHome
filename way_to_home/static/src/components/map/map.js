@@ -77,7 +77,7 @@ export class MapContainer extends Component {
     };
 
     render() {
-        const {pointMarkerStart, pointMarkerEnd, coordsWay, isStartBtnOpen, error} = this.state;
+        const {pointMarkerStart, pointMarkerEnd, coordsWay, error} = this.state;
         let startPointCoords = undefined;
         let endPointCoords = undefined;
         let isHomeOpen = window.location.href.includes('home');
@@ -96,7 +96,8 @@ export class MapContainer extends Component {
                 }}
             >
                 {isHomeOpen &&
-                    <StartBtn getCoordsWay={this.getCoordsWay}
+                    <StartBtn
+                          getCoordsWay={this.getCoordsWay}
                           setEndPoint={this.setEndPoint}
                           setStartPoint={this.setStartPoint}
                           pointMarkerStart={pointMarkerStart}
