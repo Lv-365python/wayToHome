@@ -33,7 +33,8 @@ class UserProfileModelTestCase(TestCase):
             id=333,
             first_name='userName',
             last_name='userSurname',
-            user=custom_user
+            user=custom_user,
+            telegram_id=100,
         )
         self.user_profile.save()
 
@@ -53,7 +54,7 @@ class UserProfileModelTestCase(TestCase):
             'first_name': user_profile.first_name,
             'last_name': user_profile.last_name,
             'user_id': user_profile.user_id,
-            'telegram_id': None
+            'telegram_id': 100
         }
         self.assertDictEqual(returned_dict, expected_dict)
 
@@ -105,3 +106,21 @@ class UserProfileModelTestCase(TestCase):
         user_profile = UserProfile.objects.get(id=self.user_profile.id)
         self.assertEqual(user_profile.first_name, new_first_name)
         self.assertEqual(user_profile.last_name, new_last_name)
+
+        is_updated = self.user_profile.update(first_name=new_first_name,
+                                              last_name=new_last_name,
+                                              telegram_id='wrong_id',
+                                              )
+        self.assertFalse(is_updated)
+
+    def test_get_by_telegram_id(self):
+        """ Provide tests for 'get_by_telegram_id' method of certain UserProfile instance """
+        expected_user_profile = UserProfile.objects.get(telegram_id=self.user_profile.telegram_id)
+        returned_user_profile = UserProfile.get_by_telegram_id(telegram_id=self.user_profile.telegram_id)
+        self.assertEqual(expected_user_profile, returned_user_profile)
+
+        nonexistent_user_profile = UserProfile.get_by_telegram_id(telegram_id='wrong_id')
+        self.assertIsNone(nonexistent_user_profile)
+
+        nonexistent_user_profile = UserProfile.get_by_telegram_id(telegram_id=200)
+        self.assertIsNone(nonexistent_user_profile)

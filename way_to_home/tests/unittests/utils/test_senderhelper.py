@@ -4,12 +4,13 @@ import smtplib
 
 from django.template.loader import render_to_string
 from django.test import TestCase
+from telebot.apihelper import ApiException
 from unittest.mock import patch
 
 from django.conf import settings
 from custom_user.models import CustomUser
 from utils.jwttoken import create_token
-from utils.senderhelper import send_sms, send_email
+from utils.senderhelper import send_sms, send_email, send_telegram_message
 
 
 class SenderHelperTestCase(TestCase):
@@ -70,3 +71,17 @@ class SenderHelperTestCase(TestCase):
             self.message_text
         )
         self.assertFalse(successful_sent)
+
+    @patch('telebot.TeleBot.send_message')
+    def test_send_telegram_message_fail(self, send_message):
+        """Provide tests for `send_telegram_message` method in case of fail."""
+        send_message.side_effect = ApiException('exception_message', 'callback_func', 'test_result')
+        successful_sent = send_telegram_message(100, 'test_text')
+        self.assertFalse(successful_sent)
+
+    @patch('telebot.TeleBot.send_message')
+    def test_send_telegram_message_success(self, send_message):
+        """Provide tests for `send_telegram_message` method in case of success."""
+        send_message.return_value = True
+        successful_sent = send_telegram_message(100, 'test_text')
+        self.assertTrue(successful_sent)
