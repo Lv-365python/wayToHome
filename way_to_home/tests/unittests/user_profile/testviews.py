@@ -113,3 +113,75 @@ class UserProfileViewTest(TestCase):
             profile_validator.return_value = False
             response = self.client.put(self.url, json.dumps(test_data), content_type='application/json')
             self.assertEquals(response.status_code, 400)
+
+    def test_put_access_token_if_userprofile_nonexistent(self):
+        """Method that tests the unsuccessful request to set telegram token for user
+        in case when profile is not found."""
+        url = reverse('telegram_redis')
+        response = self.second_client.put(url, {}, content_type='application/json')
+        self.assertEqual(400, response.status_code)
+
+    @mock.patch('user_profile.views.get_access_tokens')
+    @mock.patch('user_profile.views.set_access_tokens')
+    def test_put_access_token_set_fail(self, set_access_tokens, get_access_tokens):
+        """Method that tests the unsuccessful request to set telegram token for user
+        in case of data not passing validation."""
+        get_access_tokens.return_value = {}
+        set_access_tokens.return_value = False
+        test_data = {'token': 'test_token'}
+        url = reverse('telegram_redis')
+
+        response = self.client.put(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    @mock.patch('user_profile.views.get_access_tokens')
+    @mock.patch('user_profile.views.set_access_tokens')
+    def test_put_access_token_success(self, set_access_tokens, get_access_tokens):
+        """Method that tests the successful request to set telegram token for user."""
+        get_access_tokens.return_value = {}
+        set_access_tokens.return_value = True
+        test_data = {'token': 'test_token'}
+        url = reverse('telegram_redis')
+
+        response = self.client.put(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_telegram_id_fail(self):
+        """Method that tests the unsuccessful request to update telegram token for user
+        in case when profile is not found."""
+        url = reverse('telegram_id')
+        response = self.second_client.put(url, {}, content_type='application/json')
+        self.assertEqual(400, response.status_code)
+
+    def test_update_telegram_id_success_if_telegram_id_is_none(self):
+        """Method that tests the successful request to update telegram token for user
+        in case when telegram_id field is None."""
+        test_data = {'token': 'test_token'}
+        url = reverse('telegram_id')
+        response = self.client.put(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_telegram_id_if_validation_fail(self):
+        """Method that tests the unsuccessful request to update telegram token for user
+        in case of data not passing validation."""
+        test_data = {'telegram_id': 'test_token'}
+        url = reverse('telegram_id')
+        response = self.client.put(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    @mock.patch('user_profile.models.UserProfile.update')
+    def test_update_telegram_id_if_profile_wasnot_updated(self, update):
+        """Method that tests the unsuccessful request to update telegram token for user
+        in case of data wasn't updated."""
+        update.return_value = False
+        test_data = {'telegram_id': 100}
+        url = reverse('telegram_id')
+        response = self.client.put(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_telegram_id_success(self):
+        """Method that tests the successful request to update telegram token."""
+        test_data = {'telegram_id': 100}
+        url = reverse('telegram_id')
+        response = self.client.put(url, json.dumps(test_data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
