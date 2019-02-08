@@ -50,7 +50,7 @@ export default class WayItem extends Component{
                     startPlaceName: startPlace.name,
                 });
             })
-            .catch(error => this.props.setError("Не вдалося завантажити місце"));
+            .catch(error => this.props.setMessage("Не вдалося завантажити місце", 'error'));
 
         axios.get(url + endRoute.end_place)
             .then(response => {
@@ -60,7 +60,7 @@ export default class WayItem extends Component{
                     endPlaceName: endPlace.name,
                 });
             })
-            .catch(error => this.props.setError("Не вдалося завантажити місце"));
+            .catch(error => this.props.setMessage("Не вдалося завантажити місце", 'error'));
 
         axios.get('/api/v1/user/')
             .then(response => {
@@ -68,7 +68,7 @@ export default class WayItem extends Component{
                     phone_number: response.data.phone_number,
                 });
             })
-            .catch(error => this.props.setError("Не вдалося завантажити номер телефону"));
+            .catch(error => this.props.setMessage("Не вдалося завантажити номер телефону", 'error'));
     };
 
     componentWillMount() {
@@ -77,7 +77,7 @@ export default class WayItem extends Component{
 
     openNotificationForm = () => {
         if (this.state.phone_number === ""){
-            this.props.setError("Спочатку введіть номер телефону")
+            this.props.setMessage("Спочатку введіть номер телефону", 'error')
         } else {
             this.setState(state => ({
                 isNotificationFormOpen: !state.isNotificationFormOpen,
@@ -89,8 +89,8 @@ export default class WayItem extends Component{
 
     hideNotificationForm = () => {
         this.setState(state => ({
-                isNotificationFormOpen: !state.isNotificationFormOpen,
-                isWayFormOpen: !state.isWayFormOpen
+            isNotificationFormOpen: !state.isNotificationFormOpen,
+            isWayFormOpen: !state.isWayFormOpen
         }));
         this.props.reloadComponent()
     };

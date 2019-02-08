@@ -41,7 +41,7 @@ class AdvancedSettings extends Component {
     setMessage = (message, type) => {
         this.setState({
             ajaxMessage: message,
-            message_type: type,
+            messageType: type,
         });
     };
 
@@ -218,7 +218,7 @@ class AdvancedSettings extends Component {
                 {this.state.ajaxMessage &&
                 <CustomizedSnackbars
                     message={this.state.ajaxMessage}
-                    reset={this.setError}
+                    reset={this.setMessage}
                     variant={this.state.message_type}
                 />
                 }
