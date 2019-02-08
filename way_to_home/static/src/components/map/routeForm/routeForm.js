@@ -3,7 +3,6 @@ import axios from 'axios';
 import Button from '@material-ui/core/Button';
 
 import { CustomizedSnackbars } from '../..';
-import { ResultForm } from '..';
 import InputPoint from './inputPoint';
 import './routeForm.css';
 
@@ -12,7 +11,6 @@ export default class RouteSearchForm extends Component {
     state = {
         pointA: undefined,
         pointB: undefined,
-        open: false,
         error: undefined,
     };
 
@@ -22,9 +20,6 @@ export default class RouteSearchForm extends Component {
         const markerEnd = this.props.pointMarkerEnd;
         if((pointA && pointB) || (markerStart.lat !== markerEnd.lat && markerStart.lng !== markerEnd.lng)){
             this.props.getCoordsWay();
-            this.setState((state) => ({
-                open: !state.open
-            }));
             return;
         }
         this.setError("Введіть координати початку і кінця маршруту.");
@@ -87,12 +82,6 @@ export default class RouteSearchForm extends Component {
         this.props.setEndPoint(pointB);
     };
 
-    closeRouteResult = () =>{
-        this.setState({
-            open: false
-        });
-    };
-
     setError = (value) => {
         this.setState({
             error: value
@@ -100,7 +89,7 @@ export default class RouteSearchForm extends Component {
     };
 
     render() {
-        const { open, error, pointA, pointB } = this.state;
+        const { error, pointA, pointB } = this.state;
 
         return (
             <div className='searchForm'>
@@ -116,7 +105,6 @@ export default class RouteSearchForm extends Component {
                 <button onClick={this.props.onClose} className="hideBtn">X</button>
                 <button onClick={() => this.getCurrentPosition('A')} className="currPosBtn_1">O</button>
                 <button onClick={() => this.getCurrentPosition('B')} className="currPosBtn_2">O</button>
-                { open && <ResultForm onClose={this.closeRouteResult}/>}
             </div>
         )
     }

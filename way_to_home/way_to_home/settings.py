@@ -146,7 +146,7 @@ CLIENT_SECRET = 'CLIENT_SECRET'
 REDIRECT_URI = 'http://localhost:8000/api/v1/user/signin_via_google'
 AUTH_URL = 'https://accounts.google.com/o/oauth2/auth'
 TOKEN_URL = 'https://www.googleapis.com/oauth2/v3/token'
-SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me']
+SCOPE = ['openid', 'https://www.googleapis.com/auth/userinfo.email']
 STATE = 'way_to_home'
 
 # Required settings for sending email.
