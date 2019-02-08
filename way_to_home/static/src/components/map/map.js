@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, Marker, Polyline } from 'google-maps-react';
 import { GOOGLE_MAP_API } from "src/settings"
 import { CustomizedSnackbars } from '../index';
+import {ResultForm, StartBtn} from '.';
 import './map.css'
-import { StartBtn } from '.';
 
 export class MapContainer extends Component {
 
@@ -14,7 +14,9 @@ export class MapContainer extends Component {
         map: undefined,
         error: undefined,
         pointMarkerStart: {lat: 49.84, lng: 24.028667 },
-        pointMarkerEnd: {lat: 49.84, lng: 24.028667 }
+        pointMarkerEnd: {lat: 49.84, lng: 24.028667 },
+        openResultForm: false,
+        routes: undefined
     };
 
     setStartPoint = (start) => {
@@ -24,7 +26,8 @@ export class MapContainer extends Component {
     };
 
     setEndPoint = (end) => {
-        this.setState({ endPoint: end,
+        this.setState({
+            endPoint: end,
         });
     };
 
@@ -37,6 +40,7 @@ export class MapContainer extends Component {
     setCoords = (coords) => {
         this.setState({
             coordsWay: coords,
+            openResultForm: true
         });
     };
 
@@ -69,6 +73,7 @@ export class MapContainer extends Component {
         }, (response, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
                 const coords = response.routes[0].overview_path;
+                this.setState({routes: response.routes[0]});
                 this.setCoords(coords);
             } else {
                 this.setError('Неможливо прокласти маршрут.');
@@ -76,8 +81,14 @@ export class MapContainer extends Component {
         });
     };
 
+    closeRouteResult = () =>{
+        this.setState({
+            openResultForm: false
+        });
+    };
+
     render() {
-        const {pointMarkerStart, pointMarkerEnd, coordsWay, error} = this.state;
+        const {pointMarkerStart, pointMarkerEnd, coordsWay, error, openResultForm} = this.state;
         let startPointCoords = undefined;
         let endPointCoords = undefined;
         let isHomeOpen = window.location.href.includes('home');
@@ -130,6 +141,7 @@ export class MapContainer extends Component {
                         }}
                     />
                 )}
+                { openResultForm && <ResultForm routes={this.state.routes} onClose={this.closeRouteResult}/>}
                 { error && <CustomizedSnackbars message={error} reset={this.setError}/>}
             </Map>
         );
