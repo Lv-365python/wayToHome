@@ -60,9 +60,9 @@ export default class ProfileTab extends React.Component {
     setMessage = (message, type) => {
         this.setState({
             ajaxMessage: message,
-            message_type: type,
+            messageType: type,
         })
-    }
+    };
 
     getProfile = () => {
         let uri = '/profile';

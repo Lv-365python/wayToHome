@@ -18,7 +18,7 @@ export default class confirm_reset_pass extends Component{
     setMessage = (message, type) => {
         this.setState({
             ajaxMessage: message,
-            message_type: type,
+            messageType: type,
         })
     };
 
@@ -103,7 +103,7 @@ export default class confirm_reset_pass extends Component{
                 <CustomizedSnackbars
                     message={this.state.ajaxMessage}
                     reset={this.setMessage}
-                    variant={this.state.message_type}
+                    variant={this.state.messageType}
                 />
                 }
             </div>

@@ -19,8 +19,9 @@ export default class WayTab extends Component{
         oldWays: [],
         places: [],
         newWay: [],
-        ajaxError: undefined,
         showMessage: false,
+        message: undefined,
+        messageType: undefined
     };
 
     getData = () => {
@@ -36,7 +37,7 @@ export default class WayTab extends Component{
                 if (response.status === 200) {
                     this.setState({ways: response.data});
                 } else {
-                    this.setError(response.data);
+                    this.setMessage(response.data, 'error');
                 }
 
                 if (this.state.ways.length === 0){
@@ -53,7 +54,7 @@ export default class WayTab extends Component{
                 if (response.status === 200) {
                     this.setState({places: response.data});
                 } else {
-                    this.setError(response.data);
+                    this.setMessage(response.data, 'error');
                 }
             })
     };
@@ -74,8 +75,11 @@ export default class WayTab extends Component{
         })
     };
 
-    setError = (error) => {
-        this.setState({ajaxError: error});
+    setMessage = (message, message_type) => {
+        this.setState({
+            message: message,
+            messageType: message_type
+        });
     };
 
     handleDeleteExistItemClick = (id) => {
@@ -83,12 +87,13 @@ export default class WayTab extends Component{
             .then(response => {
                 if (response.status === 200 ) {
                     const ways = this.state.ways.filter(way => way.id !== id);
-                    this.setState({ways: ways})
+                    this.setState({ways: ways});
+                    this.setMessage('Успішне видалення!', 'success');
                 } else {
-                    this.setError(response.data);
+                    this.setMessage(response.data, 'error');
                 }
             })
-            .catch(error => this.setError(error));
+            .catch(error => this.setMessage(error, 'error'));
     };
 
     handleSaveClick = (placeAid, placeBid, route) => {
@@ -111,10 +116,10 @@ export default class WayTab extends Component{
                         newWay: []
                     })
                 } else {
-                    this.setError(response.data);
+                    this.setMessage(response.data);
                 }
             })
-            .catch(error => this.setError(error));
+            .catch(error => this.setMessage(error));
     };
 
     toggleWayItems = (id) => {
@@ -132,40 +137,42 @@ export default class WayTab extends Component{
 
     render(){
 
-        let { ajaxError, ways, newWay, places} = this.state;
-        let showMessage = ways.length === 0 ? true : false;
+        let { ways, newWay, places, message, messageType } = this.state;
+        let showMessage = ways.length === 0;
 
         return(
             <div>
+                <div className="wayList">
+                    {ways.map(way => (
+                        <WayItem
+                            key={way.id}
+                            way={way}
+                            places={places}
+                            deleteButton={this.handleDeleteExistItemClick}
+                            hideWayItems={this.toggleWayItems}
+                            reloadComponent={this.changeState}
+                            setMessage={this.setMessage}
+                        />
+                    ))}
+
+                    {newWay.map(way => (
+                        <NewWayItem
+                            key={Date.now()}
+                            way={way}
+                            places={places}
+                            deleteButton={this.handleDeleteNewItemClick}
+                            saveRoute={this.handleSaveClick}
+                            setMessage={this.setMessage}
+                        />
+                    ))}
+                </div>
+
                 {showMessage &&
                 <div className="showMessage">
                     <WarningIcon style={{'fontSize': '58px', 'paddingTop':'3%', 'color': 'orange'}}/>
                     <h1>Список Ваших шляхів порожній</h1>
                     <h2>Додайте шляхи по кнопці нижче</h2>
                 </div>}
-
-                {ways.map(way => (
-                    <WayItem
-                        key={way.id}
-                        way={way}
-                        places={places}
-                        deleteButton={this.handleDeleteExistItemClick}
-                        hideWayItems={this.toggleWayItems}
-                        reloadComponent={this.changeState}
-                        setError={this.setError}
-                    />
-                ))}
-
-                {newWay.map(way => (
-                    <NewWayItem
-                        key={Date.now()}
-                        way={way}
-                        places={places}
-                        deleteButton={this.handleDeleteNewItemClick}
-                        saveRoute={this.handleSaveClick}
-                        setError={this.setError}
-                    />
-                ))}
 
                 <div className="addButton" >
                     <Button
@@ -175,11 +182,15 @@ export default class WayTab extends Component{
                         onClick={this.handleAddButtonClick}
                         disabled={newWay.length > 0 ? true : false}
                     >
-                      Додати шлях
+                        Додати шлях
                     </Button>
                 </div>
 
-                {ajaxError && <CustomizedSnackbars message={ajaxError} reset={this.setError}/>}
+                {message &&
+                <CustomizedSnackbars
+                    message={message}
+                    variant={messageType}
+                    reset={this.setMessage}/>}
             </div>
         )
     }

@@ -78,7 +78,7 @@ export default class NewWayItem extends Component{
                 })
 
             } else {
-                this.props.setError("Не вдалось прокласти маршрут")
+                this.props.setMessage("Не вдалось прокласти маршрут", 'error')
             }
         });
     };
@@ -111,7 +111,9 @@ export default class NewWayItem extends Component{
         });
         this.props.saveRoute(this.state.placeA, this.state.placeB, route);
 
-        this.setState({loading:false})
+        this.setState({loading:false});
+        this.props.setMessage("Маршрут успішно збережено", 'success')
+
     };
 
     render() {

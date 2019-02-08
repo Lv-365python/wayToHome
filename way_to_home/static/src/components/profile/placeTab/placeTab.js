@@ -21,7 +21,7 @@ export default class PlaceTab extends React.Component {
     state = {
         openAddModal: false,
         message: undefined,
-        message_type: undefined,
+        messageType: undefined,
         places: [],
     };
 
@@ -93,14 +93,14 @@ export default class PlaceTab extends React.Component {
     setMessage = (message, message_type) => {
         this.setState({
             message: message,
-            message_type: message_type
+            messageType: message_type
         });
     };
 
     render(){
 
-        const {places, message, message_type } = this.state;
-        let showMessage = places.length === 0 ? true : false;
+        const {places, message, messageType } = this.state;
+        let showMessage = places.length === 0;
 
         return (
             <div>
@@ -147,7 +147,7 @@ export default class PlaceTab extends React.Component {
                 {message &&
                 <CustomizedSnackbars
                     message={message}
-                    variant={message_type}
+                    variant={messageType}
                     reset={this.setMessage}/>}
             </div>
         );
