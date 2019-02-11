@@ -10,12 +10,12 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTelegram } from '@fortawesome/free-brands-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faTelegram} from '@fortawesome/free-brands-svg-icons'
 
 import AdvancedSettings from './advancedSettings/advancedSettings.js';
 import './profileTab.css';
-import {CustomizedSnackbars} from "src/components/index";
+import {CustomizedSnackbars} from '../';
 
 let savedState = {
     first_name: '',
@@ -29,7 +29,7 @@ let savedState = {
     email: '',
     openAdvancedModal: false,
     ajaxMessage: '',
-    message_type: '',
+    messageType: '',
     user_id: '',
     telegram_id: undefined,
 };
@@ -52,7 +52,7 @@ export default class ProfileTab extends React.Component {
         email: '',
         openAdvancedModal: false,
         ajaxMessage: '',
-        message_type: '',
+        messageType: '',
         user_id: '',
         telegram_id: undefined,
     };
@@ -61,7 +61,7 @@ export default class ProfileTab extends React.Component {
         this.setState({
             ajaxMessage: message,
             messageType: type,
-        })
+        });
     };
 
     getProfile = () => {
@@ -82,7 +82,7 @@ export default class ProfileTab extends React.Component {
     };
 
     getUserData = () => {
-        axios.get(url +'/')
+        axios.get(url + '/')
             .then(response => {
                 this.setState({
                     user_id: response.data.id,
@@ -124,17 +124,17 @@ export default class ProfileTab extends React.Component {
     };
 
     saveToDatabase = (event) => {
-         if(!this.state.phone_error) {
-             this.savePhone();
-         }
-         this.saveProfile();
-         this.setState({
+        if (!this.state.phone_error) {
+            this.savePhone();
+        }
+        this.saveProfile();
+        this.setState({
             save_disabled: true,
-         });
+        });
     };
 
-    componentDidMount(){
-        if(savedState.save_disabled===true && savedState.phone_error===false){
+    componentDidMount() {
+        if (savedState.save_disabled === true && savedState.phone_error === false) {
             this.getProfile();
             this.getUserData();
         } else {
@@ -143,24 +143,21 @@ export default class ProfileTab extends React.Component {
 
     };
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         savedState = this.state;
     };
 
     checkSaveActive = (name, surname, number, error) => {
-        if(name === this.state.initial_first_name &&
-        surname === this.state.initial_last_name){
-            if(error){
+        if (name === this.state.initial_first_name &&
+            surname === this.state.initial_last_name) {
+            if (error) {
                 this.setState({save_disabled: true});
-            }
-            else if (number !== this.state.initial_phone_number){
+            } else if (number !== this.state.initial_phone_number) {
                 this.setState({save_disabled: false});
-            }
-            else {
+            } else {
                 this.setState({save_disabled: true});
             }
-        }
-        else {
+        } else {
             this.setState({save_disabled: false});
         }
     };
@@ -226,8 +223,8 @@ export default class ProfileTab extends React.Component {
             token: token
         })
             .then(response => {
-                window.open(telegram_bot_url + "?start=" + token, "_blank");
-                this.setState({telegram_id:'placeholder'});
+                window.open(telegram_bot_url + '?start=' + token, '_blank');
+                this.setState({telegram_id: 'placeholder'});
             })
             .catch(error => {
                 this.setMessage('Не вдалося підключити Telegram, спробуйте пізніше', 'error')
@@ -239,8 +236,8 @@ export default class ProfileTab extends React.Component {
         return Math.random().toString(36).substring(2);
     };
 
-    render(){
-        return(
+    render() {
+        return (
             <div className="profileTabDiv">
 
                 <TextField
@@ -272,10 +269,10 @@ export default class ProfileTab extends React.Component {
 
                 <div className="profileFields">
                     <TextField
-                        label={this.state.phone_error? "Некоректний номер" : "Номер телефону"}
+                        label={this.state.phone_error ? "Некоректний номер" : "Номер телефону"}
                         margin="normal"
                         variant="filled"
-                        value={this.state.phone_number}
+                        value={this.state.phone_number || "+380"}
                         onChange={this.textFieldChangePhoneNumber}
                         error={this.state.phone_error}
                     />
@@ -284,13 +281,13 @@ export default class ProfileTab extends React.Component {
                 <Chip
                     className="telegramChip"
                     color="primary"
-                    label={this.state.telegram_id? "Відключити телеграм": "Підключити телеграм"}
-                    onClick={this.state.telegram_id? null: this.telegramRedirectClick}
-                    onDelete={this.state.telegram_id? this.removeTelegramClick: null}
+                    label={this.state.telegram_id ? "Відключити телеграм" : "Підключити телеграм"}
+                    onClick={this.state.telegram_id ? null : this.telegramRedirectClick}
+                    onDelete={this.state.telegram_id ? this.removeTelegramClick : null}
                     clickable={!this.state.telegram_id}
                     avatar={
                         <Avatar>
-                            <FontAwesomeIcon icon={faTelegram} />
+                            <FontAwesomeIcon icon={faTelegram}/>
                         </Avatar>
                     }
                 />
@@ -307,12 +304,12 @@ export default class ProfileTab extends React.Component {
 
                 <Tooltip title="Додаткові Налаштування">
                     <IconButton
-                    color="primary"
-                    aria-label="Додаткові Налаштування"
-                    onClick={this.onClickAdvancedBtn}
-                    size = "medium"
+                        color="primary"
+                        aria-label="Додаткові Налаштування"
+                        onClick={this.onClickAdvancedBtn}
+                        size="medium"
                     >
-                        <SettingsIcon />
+                        <SettingsIcon/>
                     </IconButton>
                 </Tooltip>
 
@@ -322,7 +319,7 @@ export default class ProfileTab extends React.Component {
                         onClose={this.modalAdvancedClose}
                         disableAutoFocus={true}>
                         <AdvancedSettings
-                            close = {this.modalAdvancedClose}
+                            close={this.modalAdvancedClose}
                         />
                     </Modal>
                 </div>
@@ -331,11 +328,11 @@ export default class ProfileTab extends React.Component {
                 <CustomizedSnackbars
                     message={this.state.ajaxMessage}
                     reset={this.setMessage}
-                    variant={this.state.message_type}
+                    variant={this.state.messageType}
                 />
                 }
 
             </div>
-            )
-        }
+        )
+    }
 }
