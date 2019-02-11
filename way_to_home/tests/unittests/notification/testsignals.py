@@ -1,6 +1,5 @@
 """This module provides tests for Notifications signals."""
 
-import logging
 from datetime import date, timedelta, time, datetime
 
 from kombu.exceptions import OperationalError
@@ -21,9 +20,6 @@ class NotificationSignalsTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Notification signals."""
-        logging.disable(logging.INFO)
-        logging.disable(logging.ERROR)
-
         signals.post_save.disconnect(create_notification_task, sender=Notification)
         signals.post_delete.disconnect(revoke_notification_task, sender=Notification)
 
@@ -46,13 +42,6 @@ class NotificationSignalsTestCase(TestCase):
             'update_fields': []
         }
         self.notifications_tasks = {self.notification.id: AsyncResult(self.notification.id)}
-
-    def tearDown(self):
-        """Provide cleaning commands after Notifications signals testing."""
-        logging.disable(logging.NOTSET)
-
-        signals.post_save.connect(create_notification_task, sender=Notification)
-        signals.post_delete.connect(revoke_notification_task, sender=Notification)
 
     @patch('celery.result.AsyncResult.revoke')
     @patch('notification.signals.set_notifications_tasks')

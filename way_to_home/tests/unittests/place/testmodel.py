@@ -5,13 +5,14 @@ Place model tests
 from decimal import Decimal
 
 from custom_user.models import CustomUser
-from django.test import TestCase, Client
+from django.test import TestCase
 
 from place.models import Place
 
 
 class PlaceModelTest(TestCase):
     """TestCase for providing Place model testing"""
+
     def setUp(self):
         """Method that provides preparation before testing Place model features."""
         custom_user = CustomUser.objects.create(id=2, email='mymail@icloud.com', is_active=True)

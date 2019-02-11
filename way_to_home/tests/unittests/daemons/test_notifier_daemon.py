@@ -1,15 +1,15 @@
 """This module provides tests for Notifier daemon."""
 
-import logging
 from datetime import date, timedelta
 
 from django.test import TestCase
 from unittest.mock import patch
-
+from django.db.models import signals
 from kombu.exceptions import OperationalError
 
 from daemons.notifier_daemon import NotifierDaemon
 from notification.models import Notification
+from notification.signals import create_notification_task, revoke_notification_task
 from way.models import Way
 from custom_user.models import CustomUser
 
@@ -22,8 +22,8 @@ class NotifierDaemonTestCase(TestCase):
 
     def setUp(self):
         """Provide preparation Notifier daemon testing."""
-        logging.disable(logging.INFO)
-        logging.disable(logging.ERROR)
+        signals.post_save.disconnect(create_notification_task, sender=Notification)
+        signals.post_delete.disconnect(revoke_notification_task, sender=Notification)
 
         self.notifier_daemon = NotifierDaemon(None)
 
@@ -38,10 +38,6 @@ class NotifierDaemonTestCase(TestCase):
             week_day=today.weekday(),
             time='8:30:00'
         )
-
-    def tearDown(self):
-        """Provide cleaning commands after Notifier daemon testing."""
-        logging.disable(logging.NOTSET)
 
     def test_daemon_initialization(self):
         """Provide tests for proper initialization of daemon instance."""
@@ -99,7 +95,8 @@ class NotifierDaemonTestCase(TestCase):
     def test_execute_fail_assign_tasks(self, time_until_midnight, redis_set, assign_task):
         """
         Provide tests for proper execution of method `execute`
-        method in case of fail celery assigning tasks."""
+        method in case of fail celery assigning tasks.
+        """
         time_until_midnight.return_value = TIME_UNTIL_MIDNIGHT
         redis_set.return_value = True
 

@@ -6,6 +6,7 @@ This module provides complete testing for all notification functions.
 
 import pytz
 import pickle
+
 from celery.result import AsyncResult
 from freezegun import freeze_time
 from unittest import mock

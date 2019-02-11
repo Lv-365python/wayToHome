@@ -1,6 +1,5 @@
 """This module provides tests for GTFS daemon."""
 
-import logging
 from django.test import TestCase
 
 from daemons.gtfs_daemon import GTFSDaemon
@@ -12,15 +11,8 @@ class GTFSDaemonTestCase(TestCase):
 
     def setUp(self):
         """Provide preparation data for testing of GTFS daemon."""
-        logging.disable(logging.INFO)
-        logging.disable(logging.ERROR)
-
         self.frequency = 11
         self.gtfs_daemon = GTFSDaemon(self.frequency)
-
-    def tearDown(self):
-        """Provide cleaning commands after Notifier daemon testing."""
-        logging.disable(logging.NOTSET)
 
     def test_daemon_initialization(self):
         """Provide tests for proper initialization of daemon instance."""
@@ -32,7 +24,7 @@ class GTFSDaemonTestCase(TestCase):
     def test_daemon_start(self):
         """Provide tests for proper executing of `start` method."""
         self.gtfs_daemon.pid = None
-        self.gtfs_daemon.is_processed= False
+        self.gtfs_daemon.is_processed = False
 
         self.gtfs_daemon.start()
         self.assertTrue(self.gtfs_daemon.is_processed)

@@ -3,8 +3,10 @@
 import datetime
 
 from django.test import TestCase
+from django.db.models import signals
 
 from notification.models import Notification
+from notification.signals import create_notification_task, revoke_notification_task
 from way.models import Way
 from custom_user.models import CustomUser
 from place.models import Place
@@ -16,6 +18,9 @@ class WayModelTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Way model's features."""
+        signals.post_save.disconnect(create_notification_task, sender=Notification)
+        signals.post_delete.disconnect(revoke_notification_task, sender=Notification)
+
         self.user = CustomUser.objects.create(id=100, email='mail@gmail.com', password='Password1234', is_active=True)
         start_place = Place.objects.create(id=100, longitude=111.123456, latitude=84.123456)
         end_place = Place.objects.create(id=200, longitude=120.123456, latitude=89.123456)
