@@ -94,14 +94,17 @@ def prepare_notification(notification_id):
     bus_stop = route.start_place
     stop_coords = f'{bus_stop.latitude},{bus_stop.longitude}'
 
-    routes_data = pickle.loads(REDIS_HELPER.get('routes'))
+    pickled_routes_data = REDIS_HELPER.get('routes')
+    routes_data = pickle.loads(pickled_routes_data)
     route_id = get_route_id_by_name(routes_data, route_name)
     if not route_id:
+        LOGGER.error(f'Failed to find route with name={route_name} from routes data')
         return False
 
     gtfs_data = pickle.loads(REDIS_HELPER.get('gtfs_data'))
     buses = gtfs_data.get(route_id)
     if not buses:
+        LOGGER.error(f'Failed to retrieve route with id={route_id} from GTFS data')
         return False
 
     buses_coords = prettify_gtfs(buses)
@@ -110,6 +113,7 @@ def prepare_notification(notification_id):
 
     send_notification.delay(way.user_id, arriving_time)
 
+    LOGGER.info(f'Notification with id={notification_id} was successfully prepared')
     return True
 
 
@@ -129,6 +133,8 @@ def send_notification(self, user_id, arriving_time):
         was_sent = send_sms(phone_number, message)
 
     if not was_sent:
+        LOGGER.error(f'Notification was not sent to user with id={user_id}')
         raise self.retry(countdown=5)
 
+    LOGGER.info(f'Notification was successfully prepared sent to user with id={user_id}')
     return was_sent
