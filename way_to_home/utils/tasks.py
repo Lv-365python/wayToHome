@@ -42,11 +42,14 @@ def delete_expired_notifications(self):
     notifications = Notification.get_expired()
     for notification_id in notifications.values_list('id', flat=True):
         if not Notification.delete_by_id(obj_id=notification_id):
-            LOGGER.info(f'Notification with {self.notification_id} doesn\'t delete')
+            LOGGER.error(f'Expired notification with id={notification_id} was not deleted')
             retry = True
 
     if retry:
         raise self.retry()
+
+    LOGGER.info('Expired notifications was successfully deleted')
+    return True
 
 
 @periodic_task(bind=True,
@@ -63,12 +66,12 @@ def prepare_static_easyway_data(self):
 
     loaded_file = load_file(url, save_to=EASYWAY_DIR)
     if not loaded_file:
-        LOGGER.info('File doesn\'t load.')
+        LOGGER.error('File with static data was not loaded from EasyWay')
         raise self.retry()
 
     is_unzipped = unzip_file(loaded_file, unzip_to=EASYWAY_DIR)
     if not is_unzipped:
-        LOGGER.info('File doesn\'t unzip.')
+        LOGGER.error('File with static data was not unzipped')
         raise self.retry()
 
     for data_identifier, parser in EASYWAY_PARSERS.items():
@@ -76,6 +79,9 @@ def prepare_static_easyway_data(self):
         parsed_data = parser(file_path)
         pickled_data = pickle.dumps(parsed_data)
         REDIS_HELPER.set(data_identifier, pickled_data)
+
+    LOGGER.info('EasyWay static data was successfully prepared')
+    return True
 
 
 @task
