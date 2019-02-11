@@ -8,12 +8,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { CustomizedSnackbars } from '../../';
 import { url } from '../profileTab.js'
 import './advancedSettings.css';
 import '../profileTab.css'
+
 
 let savedState = {
     deleteAlertOpen: false,
@@ -23,6 +28,7 @@ let savedState = {
     ajaxMessage: undefined,
     message_type: undefined,
     new_password_error: false,
+    password_visible: false,
 };
 
 
@@ -36,6 +42,7 @@ class AdvancedSettings extends Component {
         ajaxMessage: undefined,
         message_type: undefined,
         new_password_error: false,
+        password_visible: false,
     };
 
     setMessage = (message, type) => {
@@ -133,6 +140,10 @@ class AdvancedSettings extends Component {
             })
     };
 
+    handleClickShowPassword = () => {
+        this.setState(state => ({ password_visible: !state.password_visible }));
+    };
+
     render() {
         return(
             <div className="advancedSettingsDiv">
@@ -141,7 +152,20 @@ class AdvancedSettings extends Component {
                     className = "profileFields"
                     value = {this.state.old_password}
                     onChange = {this.oldPasswordChange}
-                    type = "old_password"
+                    type={this.state.password_visible ? 'text' : 'password'}
+
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
+                                >
+                                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
                     />
 
                  <TextField
@@ -149,7 +173,7 @@ class AdvancedSettings extends Component {
                     className = "profileFields"
                     value = {this.state.new_password}
                     onChange = {this.newPasswordChange}
-                    type = "new_password"
+                    type={this.state.password_visible ? 'text' : 'password'}
                     error = {this.state.new_password_error}
                     />
                 <div className="buttonsDiv">

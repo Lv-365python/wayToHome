@@ -24,9 +24,6 @@ TOKEN = settings.TELEGRAM_BOT_TOKEN
 BOT = TeleBot(token=TOKEN)
 
 
-
-
-
 def get_access_tokens():
     """Retrieve dictionary with pairs of user id and token from redis"""
     telegram_pickled = REDIS_HELPER.get(TELEGRAM_REDIS_KEY)
