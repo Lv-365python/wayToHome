@@ -7,9 +7,11 @@ from unittest import mock
 from django.core.serializers.json import DjangoJSONEncoder
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.db.models import signals
 
 from custom_user.models import CustomUser
 from notification.models import Notification
+from notification.signals import create_notification_task, revoke_notification_task
 from way.models import Way
 
 
@@ -18,6 +20,9 @@ class NotificationViewsTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Notification views."""
+        signals.post_save.disconnect(create_notification_task, sender=Notification)
+        signals.post_delete.disconnect(revoke_notification_task, sender=Notification)
+
         user = CustomUser.objects.create(id=100, email='testuser@mail.com', is_active=True)
         user.set_password('testpassword')
         user.save()

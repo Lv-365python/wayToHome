@@ -3,9 +3,11 @@
 import datetime
 
 from django.test import TestCase
+from django.db.models import signals
 
 from custom_user.models import CustomUser
 from notification.models import Notification
+from notification.signals import create_notification_task, revoke_notification_task
 from way.models import Way
 
 
@@ -14,6 +16,9 @@ class NotificationModelTestCase(TestCase):
 
     def setUp(self):
         """Method that provides preparation before testing Notification model's features."""
+        signals.post_save.disconnect(create_notification_task, sender=Notification)
+        signals.post_delete.disconnect(revoke_notification_task, sender=Notification)
+
         user = CustomUser.objects.create(id=100, email='testuser@mail.com', password='testpassword', is_active=True)
         self.way = Way.objects.create(id=100, user=user)
         self.notification = Notification.objects.create(
