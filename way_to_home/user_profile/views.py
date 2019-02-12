@@ -4,9 +4,9 @@ from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.http import require_http_methods
 
-from telegram_bot.bothelper import (get_access_tokens,
-                                    set_access_tokens,
-                                    remove_user_access_token)
+from telegram_bot.bot_helper import (get_access_tokens,
+                                     set_access_tokens,
+                                     remove_user_access_token)
 from utils.validators import profile_validator
 from utils.responsehelper import (RESPONSE_200_UPDATED,
                                   RESPONSE_400_EMPTY_JSON,

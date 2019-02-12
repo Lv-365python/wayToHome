@@ -19,7 +19,6 @@ from utils.redishelper import REDIS_HELPER
 UNAUTHORIZED_ACCESS_MESSAGE = 'Для активації сповіщень через телеграм' \
                               ' необхідно скористатись посиланням на нашому сайті.'
 TELEGRAM_REDIS_KEY = 'telegram'
-TELEGRAM_CACHE_TIME = 60*60*24
 TOKEN = settings.TELEGRAM_BOT_TOKEN
 BOT = TeleBot(token=TOKEN)
 
@@ -34,7 +33,7 @@ def get_access_tokens():
 def set_access_tokens(data):
     """Retrieve dictionary with pairs of user id and token from redis"""
     telegram_pickled = pickle.dumps(data)
-    return REDIS_HELPER.set(TELEGRAM_REDIS_KEY, telegram_pickled, cache_time=TELEGRAM_CACHE_TIME)
+    return REDIS_HELPER.set(TELEGRAM_REDIS_KEY, telegram_pickled)
 
 
 def remove_user_access_token(user):
