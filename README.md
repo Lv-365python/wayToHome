@@ -150,6 +150,11 @@ $ systemctl status rabbitmq-server
     celery -A way_to_home worker -l info
     celery -A way_to_home beat -l info
     ```
+6. Go to the folder `telegram_bot` and run telegram bot:
+    ```
+    python bot_handler.py
+    ```
+    
 ## Addition commands
 
 #### Docker
@@ -163,9 +168,9 @@ $ systemctl status rabbitmq-server
     ```
 
 #### Makefile
-- To use `makefile` run command in the project root folder:
+- To see all available `makefile` possibilities run command in the project root folder:
 	```
-	makefile help
+	make help
 	```
 
 #### Frontend
