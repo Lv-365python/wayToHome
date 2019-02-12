@@ -32,6 +32,7 @@ export default class WayItem extends Component{
         isWayFormOpen: true,
         isNotificationFormOpen: false,
         phone_number: undefined,
+        telegram_id: undefined
     };
 
     getData = () => {
@@ -69,6 +70,13 @@ export default class WayItem extends Component{
                 });
             })
             .catch(error => this.props.setMessage("Не вдалося завантажити номер телефону", 'error'));
+        axios.get('/api/v1/user/profile')
+            .then(response => {
+                this.setState({
+                    telegram_id: response.data.telegram_id,
+                });
+            })
+            .catch(error => this.props.setMessage("Не вдалося завантажити інформацію для телеграму", 'error'));
     };
 
     componentWillMount() {
@@ -76,8 +84,8 @@ export default class WayItem extends Component{
     };
 
     openNotificationForm = () => {
-        if (this.state.phone_number === ""){
-            this.props.setMessage("Спочатку введіть номер телефону", 'error')
+        if (!this.state.phone_number && !this.state.telegram_id){
+            this.props.setMessage("Спочатку введіть номер телефону або ввімкніть нотифікації через телеграм", 'error')
         } else {
             this.setState(state => ({
                 isNotificationFormOpen: !state.isNotificationFormOpen,
