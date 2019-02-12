@@ -42,6 +42,9 @@ export default class ResultForm extends Component {
     };
 
     isFare = () => {
+        if ((this.props.routes.legs[0].steps).length > 5) {
+            return <p></p>
+        }
         if ((this.props.routes.legs[0].steps).length > 1) {
             return <p>Вартість: {this.props.routes.fare.value} грн</p>
         }

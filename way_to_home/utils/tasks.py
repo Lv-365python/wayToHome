@@ -111,17 +111,17 @@ def prepare_notification(notification_id):
     bus_time = find_closest_bus_time(buses_coords, stop_coords)
     arriving_time = int(time.strftime("%M", time.gmtime(bus_time)))
 
-    send_notification.delay(way.user_id, arriving_time)
+    send_notification.delay(way.user_id, arriving_time, route_name)
 
     LOGGER.info(f'Notification with id={notification_id} was successfully prepared')
     return True
 
 
 @task(bind=True, retry_kwargs={'max_retries': 5})
-def send_notification(self, user_id, arriving_time):
+def send_notification(self, user_id, arriving_time, route_name):
     """Send notification about transport arrival."""
     user = CustomUser.get_by_id(user_id)
-    message = f'Ваш транспорт прибуде через {arriving_time} хвилин'
+    message = f'Ваш транспорт {route_name} прибуде через {arriving_time} хвилин'
     was_sent = False
 
     chat_id = user.user_profile.telegram_id
