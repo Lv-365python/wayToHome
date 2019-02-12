@@ -188,7 +188,7 @@ class NotificationForm extends Component{
             .then(response => {
                 this.setMessage('Дата оновлена', 'success');
             })
-            .catch(error => this.setMessage("Не вдалося обновити дату", "error"))
+            .catch(error => this.setMessage("Не вдалося оновити дату", "error"))
             };
 
     render(){
