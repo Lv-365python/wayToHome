@@ -21,7 +21,8 @@ class NotificationForm extends Component{
         endDate: new Date(),
         notifications: [],
         newNotifications: [],
-        ajaxError: undefined,
+        ajaxMessage: undefined,
+        messageType: undefined
     };
 
     formatDate = (date) => {
@@ -80,10 +81,10 @@ class NotificationForm extends Component{
 
                     this.setState({notifications: response.data});
                 } else {
-                    this.setError("Не вдалося завантажити нотифікації");
+                    this.setMessage("Не вдалося завантажити нотифікації", "error");
                 }
             })
-            .catch(error => this.setError("Не вдалося завантажити нотифікації"));
+            .catch(error => this.setMessage("Не вдалося завантажити нотифікації", "error"));
     };
 
     componentDidMount() {
@@ -102,8 +103,11 @@ class NotificationForm extends Component{
         })
     };
 
-    setError = (error) => {
-        this.setState({ajaxError: error});
+    setMessage = (message, type) => {
+        this.setState({
+            ajaxMessage: message,
+            messageType: type,
+        });
     };
 
     handleDeleteExistItemClick = (id) => {
@@ -111,14 +115,11 @@ class NotificationForm extends Component{
         let type = `way/${this.props.way.id}/notification/${id}`;
         axios.delete(url + type)
             .then( (response) => {
-                if (response.status === 200 ) {
-                    let notifications = this.state.notifications.filter(notification => notification.id !== id);
-                    this.setState({notifications: notifications})
-                } else {
-                    this.setError("Не вдалося видалити нотифікацію");
-                }
+                let notifications = this.state.notifications.filter(notification => notification.id !== id);
+                this.setState({notifications: notifications});
+                this.setMessage("Нотифікацію успішно видалено", 'success')
             })
-            .catch(error => this.setError("Не вдалося видалити нотифікацію"));
+            .catch(error => this.setMessage("Не вдалося видалити нотифікацію", "error"));
     };
 
     handleSaveClick = (notification) => {
@@ -144,7 +145,7 @@ class NotificationForm extends Component{
 
     onChangeStartDate = (newDate) => {
         if (newDate >= this.state.EndDate){
-            this.setError('Початкова дата не може бути більшою або рівною за кінцеву')
+            this.setMessage('Початкова дата не може бути більшою або рівною за кінцеву', 'error')
         } else {
             this.setState({startDate: newDate});
 
@@ -162,7 +163,7 @@ class NotificationForm extends Component{
     onChangeEndDate = (newDate) => {
         let today = new Date();
         if (newDate <= this.state.startDate || newDate <= today){
-            this.setError('Кінцева дата не може бути меншою або рівною за початкову та сьогоднішню дату')
+            this.setMessage('Кінцева дата не може бути меншою або рівною за початкову та сьогоднішню дату', 'error')
         } else {
             this.setState({EndDate: newDate});
 
@@ -184,10 +185,10 @@ class NotificationForm extends Component{
             start_time: start_time,
             end_time: end_time
         })
-            .then(function (response) {
-                console.log(response);
+            .then(response => {
+                this.setMessage('Дата оновлена', 'success');
             })
-            .catch(error => this.setError("Не вдалося обновити нотифікацію"))
+            .catch(error => this.setMessage("Не вдалося обновити дату", "error"))
             };
 
     render(){
@@ -217,6 +218,7 @@ class NotificationForm extends Component{
                             start_date={this.state.startDate}
                             end_date={this.state.endDate}
                             way={this.props.way}
+                            setMessage={this.setMessage}
                             deleteButton={this.handleDeleteExistItemClick} /> ))}
 
                     {this.state.newNotifications.map(() => (
@@ -227,7 +229,7 @@ class NotificationForm extends Component{
                             endDate={this.state.endDate}
                             way={this.props.way}
                             saveNotification={this.handleSaveClick}
-                            setError={this.setError} /> ))}
+                            setMessage={this.setMessage} /> ))}
 
                     <div className="addButtonNot" >
                         <Button
@@ -276,7 +278,13 @@ class NotificationForm extends Component{
                         <Calendar onChange={this.onChangeEndDate}
                                   value={this.state.endDate} />
                     </div> }
-                    {this.state.ajaxError && <CustomizedSnackbars message={this.state.ajaxError} reset={this.setError}/>}
+                    {this.state.ajaxMessage &&
+                        <CustomizedSnackbars
+                            message={this.state.ajaxMessage}
+                            reset={this.setMessage}
+                            variant={this.state.messageType}
+                        />
+                    }
                 </div>
             </div>
         )
