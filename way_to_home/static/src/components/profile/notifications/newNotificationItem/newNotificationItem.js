@@ -85,8 +85,9 @@ class NewNotificationItem extends Component{
         })
             .then(response => {
                 this.props.saveNotification(response.data);
+                this.props.setMessage('Нотифікацію успішно додано', 'success')
         }).catch(error => {
-                this.props.setError("Не вдалось створити місце. Спробуйте ще раз.");
+                this.props.setMessage("Не вдалось створити нотифікацію. Спробуйте ще раз", 'error');
         });
     };
 

@@ -27,34 +27,13 @@ export default class NotificationItem extends Component{
         week_day: this.props.week_day,
         day: "",
         days: [
-            {
-                value: 0,
-                label: 'Понеділок',
-            },
-            {
-                value: 1,
-                label: 'Вівторок',
-            },
-            {
-                value: 2,
-                label: 'Середа',
-            },
-            {
-                value: 3,
-                label: 'Четвер',
-            },
-            {
-                value: 4,
-                label: 'Пятниця',
-            },
-            {
-                value: 5,
-                label: 'Субота',
-            },
-            {
-                value: 6,
-                label: 'Неділя',
-            },
+            { value: 0, label: 'Понеділок' },
+            { value: 1, label: 'Вівторок' },
+            { value: 2, label: 'Середа' },
+            { value: 3, label: 'Четвер' },
+            { value: 4, label: 'Пятниця' },
+            { value: 5, label: 'Субота' },
+            { value: 6, label: 'Неділя' },
         ],
     };
 
@@ -109,15 +88,12 @@ export default class NotificationItem extends Component{
             time: time
         })
             .then(response => {
-                if (response.status === 200) {
-                    this.setState({
-                        time: newTime
-                    });
-                } else {
-                    this.setError(response.data);
-                }
+                this.props.setMessage('Час успішно оновлений', 'success');
             })
-            .catch(error => this.setError(error));
+            .catch(error => {
+                this.props.setMessage('Не вдалося оновити час', 'error')
+            });
+;
     };
 
     render(){
