@@ -67,7 +67,8 @@ export default class NewWayItem extends Component{
                             lat: step.end_location.lat,
                             lng: step.end_location.lng
                         },
-                        duration: step.duration.text
+                        duration: step.duration.value,
+                        transit: step.transit ? step.transit.line.short_name : undefined
                     })
                 });
                 this.setState({

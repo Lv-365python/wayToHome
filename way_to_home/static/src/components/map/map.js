@@ -134,7 +134,7 @@ export class MapContainer extends Component {
                     />
                 }
 
-                 <Marker
+                <Marker
                     draggable = {true}
                     title = { 'Кінцева точка' }
                     onDragend={(t, map, coord) => this.onMarkerDragEnd(coord)}
