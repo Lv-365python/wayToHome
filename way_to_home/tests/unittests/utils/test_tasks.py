@@ -111,14 +111,16 @@ class CeleryTasksTestCase(TestCase):
         """Provide tests for `send_notification` task in case of success."""
         mock_send_sms.return_value = True
 
-        successful_sent = send_notification.run(user_id=self.user.id, arriving_time=10)
+        successful_sent = send_notification.run(user_id=self.user.id,
+                                                arriving_time=10, route_name='A45')
         self.assertTrue(successful_sent)
 
         mock_send_telegram_message.return_value = True
         self.user_profile.telegram_id = 100
         self.user_profile.save()
 
-        successful_sent = send_notification.run(user_id=self.user.id, arriving_time=10)
+        successful_sent = send_notification.run(user_id=self.user.id,
+                                                arriving_time=10, route_name='A45')
         self.assertTrue(successful_sent)
 
     @patch('utils.tasks.send_telegram_message')
@@ -127,13 +129,15 @@ class CeleryTasksTestCase(TestCase):
         """Provide tests for `send_notification` task in case of send operation was failed."""
         mock_send_sms.return_value = False
 
-        self.assertRaises(Retry, send_notification.run, user_id=self.user.id, arriving_time=10)
+        self.assertRaises(Retry, send_notification.run,
+                          user_id=self.user.id, arriving_time=10, route_name='A45')
 
         mock_send_telegram_message.return_value = False
         self.user_profile.telegram_id = 100
         self.user_profile.save()
 
-        self.assertRaises(Retry, send_notification.run, user_id=self.user.id, arriving_time=10)
+        self.assertRaises(Retry, send_notification.run,
+                          user_id=self.user.id, arriving_time=10, route_name='A45')
 
     @patch('pickle.loads')
     @patch('utils.tasks.get_route_id_by_name')
