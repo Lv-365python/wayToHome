@@ -105,7 +105,7 @@ export class MapContainer extends Component {
     };
 
     render() {
-        const {pointMarkerStart, pointMarkerEnd, coordsWay, error, openResultForm} = this.state;
+        const {pointMarkerStart, pointMarkerEnd, coordsWay, error, openResultForm, choice} = this.state;
         let startPointCoords = undefined;
         let endPointCoords = undefined;
         let isHomeOpen = window.location.href.includes('home');
@@ -130,6 +130,7 @@ export class MapContainer extends Component {
                           setStartPoint={this.setStartPoint}
                           pointMarkerStart={pointMarkerStart}
                           pointMarkerEnd={pointMarkerEnd}
+                          choice={choice}
                     />
                 }
 
