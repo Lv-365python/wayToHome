@@ -134,6 +134,13 @@ export class MapContainer extends Component {
                     />
                 }
 
+                 <Marker
+                    draggable = {true}
+                    title = { 'Кінцева точка' }
+                    onDragend={(t, map, coord) => this.onMarkerDragEnd(coord)}
+                    position = {endPointCoords || pointMarkerEnd}
+                    name = { 'Точка Б' }
+                />
                 <Marker
                     draggable = {true}
                     title = { 'Початкова точка' }
@@ -141,13 +148,7 @@ export class MapContainer extends Component {
                     position = {startPointCoords || pointMarkerStart}
                     name = { 'Точка А' }
                 />
-                <Marker
-                    draggable = {true}
-                    title = { 'Кінцева точка' }
-                    onDragend={(t, map, coord) => this.onMarkerDragEnd(coord)}
-                    position = {endPointCoords || pointMarkerEnd}
-                    name = { 'Точка Б' }
-                />
+
                 {coordsWay && (
                     <Polyline
                         path={coordsWay}

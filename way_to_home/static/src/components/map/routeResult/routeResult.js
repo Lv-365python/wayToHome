@@ -13,12 +13,6 @@ export default class ResultForm extends Component {
         open: true
     };
 
-    hideForm = () => {
-        this.setState({
-            open: false
-        });
-    };
-
     isBus = () => {
         let style = {'display': 'flex', 'justifyContent': 'center', 'marginTop': '15%'};
          let info = this.props.routes.legs[0];
@@ -92,7 +86,6 @@ export default class ResultForm extends Component {
 
 
     render() {
-        console.log(this.props.routes);
         const {open} = this.state;
 
         return (
@@ -128,6 +121,7 @@ export default class ResultForm extends Component {
                         </ToggleDisplay>
 
                         <h3 style={{'paddingTop': '4%'}}>Щасливої дороги!</h3>
+                        <button onClick={this.props.onClose} className="hideResultForm">X</button>
                     </div>
                 </div>}
             </Fragment>
