@@ -42,11 +42,16 @@ class CeleryTasksTestCase(TestCase):
         way = Way.objects.create(id=100, user=self.user)
         point_A = Place.objects.create(longitude=43.1234, latitude=34.1234)
         point_B = Place.objects.create(longitude=43.1234, latitude=34.1234)
-        route = Route.objects.create(way=way,
-                                     start_place=point_A,
-                                     end_place=point_B,
-                                     time='08:30:00',
-                                     position=1)
+        first_route = Route.objects.create(way=way,
+                                           start_place=point_A,
+                                           end_place=point_B,
+                                           time='08:30:00',
+                                           position=0)
+        second_route = Route.objects.create(way=way,
+                                            start_place=point_A,
+                                            end_place=point_B,
+                                            time='08:30:00',
+                                            position=1)
 
         today = datetime.date.today()
         self.expired_notification = Notification.objects.create(
