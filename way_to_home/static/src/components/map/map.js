@@ -16,24 +16,33 @@ export class MapContainer extends Component {
         pointMarkerStart: {lat: 49.84, lng: 24.028667 },
         pointMarkerEnd: {lat: 49.84, lng: 24.028667 },
         openResultForm: false,
-        routes: undefined
+        routes: undefined,
+        choice: undefined
     };
 
     setStartPoint = (start) => {
         this.setState({
             startPoint: start,
         });
+        this.setChoice('point');
     };
 
     setEndPoint = (end) => {
         this.setState({
             endPoint: end,
         });
+        this.setChoice('point');
     };
 
     setError = (error) => {
         this.setState({
             error: error,
+        });
+    };
+
+    setChoice = (choice) =>{
+        this.setState({
+            choice: choice,
         });
     };
 
@@ -50,6 +59,7 @@ export class MapContainer extends Component {
         this.setState({
             pointMarkerStart: pointA,
         });
+        this.setChoice('marker');
     };
 
     onMarkerDragEnd = (coord) => {
@@ -58,13 +68,20 @@ export class MapContainer extends Component {
         this.setState({
             pointMarkerEnd: pointA,
         });
+        this.setChoice('marker');
     };
 
     getCoordsWay = () => {
-        const {startPoint, endPoint, pointMarkerStart, pointMarkerEnd} = this.state;
+        const {startPoint, endPoint, pointMarkerStart, pointMarkerEnd, choice} = this.state;
         const DirectionsService = new google.maps.DirectionsService();
-        const start = startPoint || new google.maps.LatLng(pointMarkerStart.lat, pointMarkerStart.lng);
-        const end = endPoint || new google.maps.LatLng(pointMarkerEnd.lat, pointMarkerEnd.lng);
+        let start, end;
+        if (choice === 'point'){
+             start = startPoint;
+             end = endPoint;
+        }else{
+            start = new google.maps.LatLng(pointMarkerStart.lat, pointMarkerStart.lng);
+            end = new google.maps.LatLng(pointMarkerEnd.lat, pointMarkerEnd.lng);
+        }
 
         DirectionsService.route({
             origin: start,
