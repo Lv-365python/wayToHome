@@ -19,6 +19,10 @@ export default class RouteSearchForm extends Component {
         const markerStart = this.props.pointMarkerStart;
         const markerEnd = this.props.pointMarkerEnd;
         if((pointA && pointB) || (markerStart.lat !== markerEnd.lat && markerStart.lng !== markerEnd.lng)){
+            if(this.props.choice === 'marker'){
+                this.convertToAddress(markerStart.lat, markerStart.lng, 'A');
+                this.convertToAddress(markerEnd.lat, markerEnd.lng, 'B');
+            }
             this.props.getCoordsWay();
             return;
         }
@@ -39,6 +43,10 @@ export default class RouteSearchForm extends Component {
     handleSuccess = (position, point) => {
         let latitude  = position.coords.latitude;
         let longitude = position.coords.longitude;
+        this.convertToAddress(latitude, longitude, point);
+    };
+
+    convertToAddress = (latitude, longitude, point) => {
         let url = 'https://nominatim.openstreetmap.org/reverse';
         axios.get(url, {
             params: {
@@ -94,9 +102,9 @@ export default class RouteSearchForm extends Component {
         return (
             <div className='searchForm'>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Точка A' value={pointA} onChange={this.setPointA}/>
+                <InputPoint name='Точка A' value={ pointA } onChange={this.setPointA}/>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Точка Б' value={pointB} onChange={this.setPointB}/>
+                <InputPoint name='Точка Б' value={ pointB } onChange={this.setPointB}/>
                 <div style={{marginTop: '60px'}}></div>
                 <Button variant='contained' color='primary' size='medium' onClick={this.onClick} className='Btn'>
                     ПОШУК

@@ -41,6 +41,7 @@ export default class StartBtn extends Component{
                                          setStartPoint={this.props.setStartPoint}
                                          pointMarkerStart={this.props.pointMarkerStart}
                                          pointMarkerEnd={this.props.pointMarkerEnd}
+                                         choice={this.props.choice}
                         />
                     }
                 </div>
