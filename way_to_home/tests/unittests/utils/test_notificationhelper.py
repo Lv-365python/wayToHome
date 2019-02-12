@@ -17,7 +17,15 @@ from utils.notificationhelper import (get_seconds_until_midnight,
                                       get_prepare_task_time,
                                       set_notifications_tasks,
                                       get_notifications_tasks,
-                                      get_route_id_by_name)
+                                      get_route_id_by_name,
+                                      get_preparing_time,
+                                      DEFAULT_PREPARING_TIME)
+
+
+class MockTime:
+    hour = 0
+    minute = 30
+    second = 50
 
 
 class NotificationTestCase(TestCase):
@@ -117,3 +125,9 @@ class NotificationTestCase(TestCase):
         route_name = 'nonexistent_name'
         gotten_result = get_route_id_by_name(routes_data, route_name)
         self.assertIsNone(gotten_result)
+
+    def test_get_preparing_time(self):
+        """Provide tests for `get_preparing_time` method."""
+        expected_result = 30 * 60 + 50 + DEFAULT_PREPARING_TIME
+        result = get_preparing_time(MockTime())
+        self.assertEqual(result, expected_result)

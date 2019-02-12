@@ -108,7 +108,8 @@ def prepare_notification(notification_id):
         return False
 
     buses_coords = prettify_gtfs(buses)
-    bus_time = find_closest_bus_time(buses_coords, stop_coords)
+    time_to_stop = way.get_route_by_position(position=0).time
+    bus_time = find_closest_bus_time(buses_coords, stop_coords, time_to_stop)
     arriving_time = int(time.strftime("%M", time.gmtime(bus_time)))
 
     send_notification.delay(way.user_id, arriving_time, route_name)

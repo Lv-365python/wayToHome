@@ -70,3 +70,12 @@ def get_route_id_by_name(routes_data, route_name):
         if route_name == short_name:
             return route_id
     return None
+
+
+def get_preparing_time(time_to_stop):
+    """Prepare time to stop in seconds."""
+    time = (DEFAULT_PREPARING_TIME +
+            time_to_stop.hour * 60 * 60 +
+            time_to_stop.minute * 60 +
+            time_to_stop.second)
+    return time
