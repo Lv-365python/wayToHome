@@ -8,7 +8,7 @@ from requests_oauthlib import OAuth2Session
 
 from user_profile.models import UserProfile
 from custom_user.models import CustomUser
-from utils.jwttoken import create_token, decode_token
+from utils.jwthelper import create_token, decode_token
 from utils.senderhelper import send_email
 from utils.validators import (credentials_validator,
                               password_validator,

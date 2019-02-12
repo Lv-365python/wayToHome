@@ -12,7 +12,7 @@ from custom_user.models import CustomUser
 from notification.models import Notification
 from way.models import Way
 from .notificationhelper import get_route_id_by_name
-from .utils import LOGGER
+from .loggerhelper import LOGGER
 from .file_handlers import load_file, unzip_file
 from .redishelper import REDIS_HELPER
 from .easy_way import parse_routes_data, parse_trips_data, parse_stops_data, prettify_gtfs

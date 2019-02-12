@@ -3,7 +3,7 @@
 from django.db import models, IntegrityError
 from django.db.utils import OperationalError
 from utils.abstract_models import AbstractModel
-from utils.utils import LOGGER
+from utils.loggerhelper import LOGGER
 from way.models import Way
 from place.models import Place
 

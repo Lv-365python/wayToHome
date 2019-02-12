@@ -7,8 +7,8 @@ from celery.exceptions import TaskError
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
-from utils.tasks import prepare_notification
-from utils.utils import LOGGER
+from utils.celery_tasks import prepare_notification
+from utils.loggerhelper import LOGGER
 from utils.notificationhelper import (get_prepare_task_time,
                                       get_notifications_tasks,
                                       set_notifications_tasks)

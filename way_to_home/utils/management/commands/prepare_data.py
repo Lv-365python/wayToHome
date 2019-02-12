@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 
-from utils.tasks import prepare_static_easyway_data
+from utils.celery_tasks import prepare_static_easyway_data
 
 
 class Command(BaseCommand):

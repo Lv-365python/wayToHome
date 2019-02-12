@@ -89,11 +89,13 @@ $ systemctl status rabbitmq-server
     DEFAULT_FROM_EMAIL = '<default_from_email>'
     
     # JWT settings
-    JWT_TOKEN_KEY = '<jwt_token_key>'
+    JWT_KEY = '<jwt_key>'
     JWT_ALGORITHM = 'HS384'
+ 
+    # Celery settings
+    CELERY_BROKER_URL = '<celery_broker_url>'
     
-    # Required settings for telegram bot
-
+    # Telegram bot settings
     TELEGRAM_BOT_TOKEN = '<telegram_bot_token>'
  
     # Google settings
@@ -159,7 +161,8 @@ $ systemctl status rabbitmq-server
     ```
     docker-compose down
     ```
-    
+
+#### Makefile
 - To use `makefile` run command in the project root folder:
 	```
 	makefile help
