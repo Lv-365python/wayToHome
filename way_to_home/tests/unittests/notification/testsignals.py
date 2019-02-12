@@ -106,7 +106,7 @@ class NotificationSignalsTestCase(TestCase):
         self.assertFalse(successful_executed)
 
     @patch('celery.result.AsyncResult.revoke')
-    @patch('utils.tasks.prepare_notification.apply_async')
+    @patch('utils.celery_tasks.prepare_notification.apply_async')
     @patch('notification.signals.set_notifications_tasks')
     @patch('notification.signals.get_notifications_tasks')
     def test_create_notification_task_success_after_create(self, get_notifications_tasks,
@@ -121,7 +121,7 @@ class NotificationSignalsTestCase(TestCase):
         self.assertTrue(successful_executed)
 
     @patch('celery.result.AsyncResult.revoke')
-    @patch('utils.tasks.prepare_notification.apply_async')
+    @patch('utils.celery_tasks.prepare_notification.apply_async')
     @patch('notification.signals.set_notifications_tasks')
     @patch('notification.signals.get_notifications_tasks')
     def test_create_notification_task_success_after_update(self, get_notifications_tasks,
@@ -208,7 +208,7 @@ class NotificationSignalsTestCase(TestCase):
         successful_executed = create_notification_task(**self.post_save_params)
         self.assertFalse(successful_executed)
 
-    @patch('utils.tasks.prepare_notification.apply_async')
+    @patch('utils.celery_tasks.prepare_notification.apply_async')
     @patch('notification.signals.set_notifications_tasks')
     @patch('notification.signals.get_notifications_tasks')
     def test_create_notification_task_assign_error(self, get_notifications_tasks,
@@ -228,7 +228,7 @@ class NotificationSignalsTestCase(TestCase):
         executed = create_notification_task(**self.post_save_params)
         self.assertTrue(executed)
 
-    @patch('utils.tasks.prepare_notification.apply_async')
+    @patch('utils.celery_tasks.prepare_notification.apply_async')
     @patch('notification.signals.set_notifications_tasks')
     @patch('notification.signals.get_notifications_tasks')
     def test_create_notification_task_set_error(self, get_notifications_tasks,

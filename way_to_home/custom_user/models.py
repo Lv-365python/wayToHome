@@ -6,7 +6,7 @@ from django.db import models, IntegrityError, transaction
 from django.core.exceptions import ValidationError
 from django.db.utils import OperationalError
 
-from utils.utils import LOGGER
+from utils.loggerhelper import LOGGER
 
 
 class CustomUser(AbstractBaseUser):

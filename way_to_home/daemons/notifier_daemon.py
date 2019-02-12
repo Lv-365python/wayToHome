@@ -15,8 +15,8 @@ django.setup()
 
 from notification.models import Notification
 from daemons.base_daemon import Daemon
-from utils.tasks import prepare_notification
-from utils.utils import LOGGER
+from utils.celery_tasks import prepare_notification
+from utils.loggerhelper import LOGGER
 from utils.notificationhelper import (get_prepare_task_time,
                                       get_seconds_until_midnight,
                                       set_notifications_tasks)

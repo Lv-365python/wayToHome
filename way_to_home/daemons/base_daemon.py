@@ -4,7 +4,7 @@ import os
 import time
 from abc import abstractmethod, ABC
 
-from utils.utils import LOGGER
+from utils.loggerhelper import LOGGER
 
 
 class Daemon(ABC):

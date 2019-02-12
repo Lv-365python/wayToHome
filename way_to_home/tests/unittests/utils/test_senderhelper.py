@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 from django.conf import settings
 from custom_user.models import CustomUser
-from utils.jwttoken import create_token
+from utils.jwthelper import create_token
 from utils.senderhelper import send_sms, send_email, send_telegram_message
 
 

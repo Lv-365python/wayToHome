@@ -159,7 +159,7 @@ DEFAULT_FROM_EMAIL = 'DEFAULT_FROM_EMAIL'
 
 # JWT Token required settings.
 
-JWT_TOKEN_KEY = 'any secret word'
+JWT_KEY = 'any secret word'
 JWT_ALGORITHM = 'HS384'
 
 # Required settings for telegram bot

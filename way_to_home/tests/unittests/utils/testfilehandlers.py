@@ -10,7 +10,12 @@ from zipfile import BadZipFile
 
 from django.test import TestCase
 
-from utils.file_handlers import unzip_file, load_file, pickle_data, unpickle_data, parse_csv_file, _get_fields_position
+from utils.file_handlers import (unzip_file,
+                                 load_file,
+                                 pickle_data,
+                                 unpickle_data,
+                                 parse_csv_file,
+                                 _get_fields_position)
 
 
 class MockZipFile:

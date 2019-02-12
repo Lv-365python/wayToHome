@@ -18,7 +18,7 @@ from django.conf import settings
 from utils.file_handlers import load_file
 from utils.easy_way import compile_file
 from utils.redishelper import REDIS_HELPER
-from utils.utils import LOGGER
+from utils.loggerhelper import LOGGER
 from daemons.base_daemon import Daemon
 from daemons.helper import parse_args
 

@@ -10,7 +10,7 @@ from django.db import DatabaseError, IntegrityError
 from django.urls import reverse
 from django.test import TestCase, Client
 from custom_user.models import CustomUser
-from utils.jwttoken import create_token
+from utils.jwthelper import create_token
 from unittest import mock
 
 

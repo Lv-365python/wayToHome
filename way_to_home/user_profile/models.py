@@ -4,7 +4,7 @@ from django.db import models, IntegrityError, transaction
 from django.db.utils import OperationalError
 from custom_user.models import CustomUser
 from utils.abstract_models import AbstractModel
-from utils.utils import LOGGER
+from utils.loggerhelper import LOGGER
 
 
 class UserProfile(AbstractModel):

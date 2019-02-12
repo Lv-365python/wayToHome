@@ -14,11 +14,10 @@ from datetime import datetime, date, timedelta, time
 from django.test import TestCase
 
 from utils.notificationhelper import (get_seconds_until_midnight,
-                                     get_prepare_task_time,
-                                     set_notifications_tasks,
-                                     get_notifications_tasks,
-                                     get_route_id_by_name,
-                                     )
+                                      get_prepare_task_time,
+                                      set_notifications_tasks,
+                                      get_notifications_tasks,
+                                      get_route_id_by_name)
 
 
 class NotificationTestCase(TestCase):
