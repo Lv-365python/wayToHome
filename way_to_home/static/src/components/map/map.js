@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Map, GoogleApiWrapper, Marker, Polyline } from 'google-maps-react';
+import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps-react';
 import { GOOGLE_MAP_API } from "src/settings"
 import { CustomizedSnackbars } from '../index';
 import {ResultForm, StartBtn} from '.';
+import axios from "axios";
 import './map.css'
 
 export class MapContainer extends Component {
@@ -17,21 +18,22 @@ export class MapContainer extends Component {
         pointMarkerEnd: {lat: 49.84, lng: 24.028667 },
         openResultForm: false,
         routes: undefined,
-        choice: undefined
+        choice: undefined,
+        showingInfoWindow: false,
+        activeMarker: {},
+        selectedPlace: undefined
     };
 
     setStartPoint = (start) => {
         this.setState({
             startPoint: start,
         });
-        this.setChoice('point');
     };
 
     setEndPoint = (end) => {
         this.setState({
             endPoint: end,
         });
-        this.setChoice('point');
     };
 
     setError = (error) => {
@@ -46,29 +48,99 @@ export class MapContainer extends Component {
         });
     };
 
+    setPlace = (addr) =>{
+        this.setState({
+            selectedPlace: addr,
+        });
+    };
+
     setCoords = (coords) => {
         this.setState({
             coordsWay: coords,
-            openResultForm: true
         });
     };
 
-    onMarkerDragStart = (coord) => {
-        const { latLng } = coord;
-        let pointA = {lat: latLng.lat(), lng: latLng.lng()};
+    setPointMarkerStart = (point) =>{
         this.setState({
-            pointMarkerStart: pointA,
+            pointMarkerStart: point,
         });
+    };
+
+    setPointMarkerEnd = (point) =>{
+        this.setState({
+            pointMarkerEnd: point,
+        });
+    };
+
+    onMarkerDrag = (coord, key) =>{
+        if(this.state.coordsWay) {
+            this.setCoords();
+        }
+        if(this.state.selectedPlace) {
+            this.setPlace();
+        }
+        const { latLng } = coord;
+        const point = {lat: latLng.lat(), lng: latLng.lng()};
+        if(key === 1){
+            this.setPointMarkerStart(point);
+        }else{
+            this.setPointMarkerEnd(point);
+        }
         this.setChoice('marker');
     };
 
-    onMarkerDragEnd = (coord) => {
-        const { latLng } = coord;
-        let pointA = {lat: latLng.lat(), lng: latLng.lng()};
+    onMarkerClick = (props, marker) => {
+        const {pointMarkerStart, pointMarkerEnd} = this.state;
+        if(marker.name === 1) {
+            this.convertToAddress(pointMarkerStart.lat, pointMarkerStart.lng, this.setPlace);
+        }else{
+            this.convertToAddress(pointMarkerEnd.lat, pointMarkerEnd.lng, this.setPlace);
+        }
         this.setState({
-            pointMarkerEnd: pointA,
+            activeMarker: marker,
+            showingInfoWindow: true
         });
-        this.setChoice('marker');
+    };
+
+    onMapClicked = () => {
+        if (this.state.showingInfoWindow) {
+            this.setState({
+                showingInfoWindow: false,
+                activeMarker: null,
+                selectedPlace: undefined
+            })
+        }
+    };
+
+    convertToAddress = (latitude, longitude, callfunc) => {
+        let url = 'https://nominatim.openstreetmap.org/reverse';
+        axios.get(url, {
+            params: {
+                format: 'jsonv2',
+                lat: latitude,
+                lon: longitude
+            }
+        })
+            .then(response => {
+                const address = this.getAddress(response);
+                callfunc(address);
+            })
+            .catch(error => {
+                this.setError("Неможливо визначити адресу.");
+            });
+    };
+
+    getAddress = response => {
+        const address = response.data.address;
+        let addr = `${address.town || address.city}, ${address.road || address.path || address.suburb}`;
+
+        if (address.house_number)
+            addr += `, ${address.house_number}`;
+
+        if (addr.includes("undefined"))
+            addr = "Неможливо визначити місце.";
+
+        return addr;
     };
 
     getCoordsWay = () => {
@@ -76,8 +148,8 @@ export class MapContainer extends Component {
         const DirectionsService = new google.maps.DirectionsService();
         let start, end;
         if (choice === 'point'){
-             start = startPoint;
-             end = endPoint;
+            start = startPoint;
+            end = endPoint;
         }else{
             start = new google.maps.LatLng(pointMarkerStart.lat, pointMarkerStart.lng);
             end = new google.maps.LatLng(pointMarkerEnd.lat, pointMarkerEnd.lng);
@@ -90,11 +162,24 @@ export class MapContainer extends Component {
         }, (response, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
                 const coords = response.routes[0].overview_path;
-                this.setState({routes: response.routes[0]});
+                let point;
                 this.setCoords(coords);
+                this.setState({routes: response.routes[0]});
+                point = {lat: coords[0].lat(), lng: coords[0].lng()};
+                this.setPointMarkerStart(point);
+                point = {lat: coords[coords.length - 1].lat(), lng: coords[coords.length - 1].lng()};
+                this.setPointMarkerEnd(point);
+                this.setChoice(choice);
+                this.openRouteResult();
             } else {
                 this.setError('Неможливо прокласти маршрут.');
             }
+        });
+    };
+
+    openRouteResult = () =>{
+        this.setState({
+            openResultForm: true
         });
     };
 
@@ -106,13 +191,7 @@ export class MapContainer extends Component {
 
     render() {
         const {pointMarkerStart, pointMarkerEnd, coordsWay, error, openResultForm, choice} = this.state;
-        let startPointCoords = undefined;
-        let endPointCoords = undefined;
         let isHomeOpen = window.location.href.includes('home');
-        if (coordsWay !== undefined){
-            startPointCoords = coordsWay[0];
-            endPointCoords = coordsWay[coordsWay.length - 1];
-        }
         return (
             <Map
                 google={this.props.google}
@@ -122,32 +201,41 @@ export class MapContainer extends Component {
                     lat: 49.84,
                     lng: 24.028667
                 }}
+                onClick={this.onMapClicked}
             >
                 {isHomeOpen &&
-                    <StartBtn
-                          getCoordsWay={this.getCoordsWay}
-                          setEndPoint={this.setEndPoint}
-                          setStartPoint={this.setStartPoint}
-                          pointMarkerStart={pointMarkerStart}
-                          pointMarkerEnd={pointMarkerEnd}
-                          choice={choice}
-                    />
+                <StartBtn
+                    getCoordsWay={this.getCoordsWay}
+                    setEndPoint={this.setEndPoint}
+                    setStartPoint={this.setStartPoint}
+                    pointMarkerStart={pointMarkerStart}
+                    pointMarkerEnd={pointMarkerEnd}
+                    choice={choice}
+                    convertToAddress={this.convertToAddress}
+                    setChoice={this.setChoice}
+                />
                 }
-
                 <Marker
                     draggable = {true}
+                    onClick={this.onMarkerClick}
                     title = { 'Кінцева точка' }
-                    onDragend={(t, map, coord) => this.onMarkerDragEnd(coord)}
-                    position = {endPointCoords || pointMarkerEnd}
-                    name = { 'Точка Б' }
+                    name={2}
+                    onDragend={(t, map, coord) => this.onMarkerDrag(coord, 2)}
+                    position = {pointMarkerEnd}
                 />
                 <Marker
                     draggable = {true}
+                    onClick={this.onMarkerClick}
                     title = { 'Початкова точка' }
-                    onDragend={(t, map, coord) => this.onMarkerDragStart(coord)}
-                    position = {startPointCoords || pointMarkerStart}
-                    name = { 'Точка А' }
+                    name={1}
+                    onDragend={(t, map, coord) => this.onMarkerDrag(coord, 1)}
+                    position = {pointMarkerStart}
                 />
+                <InfoWindow
+                    marker={this.state.activeMarker}
+                    visible={this.state.showingInfoWindow}>
+                    <p>{this.state.selectedPlace}</p>
+                </InfoWindow>
 
                 {coordsWay && (
                     <Polyline

@@ -6,6 +6,7 @@ export default class InputPoint extends Component {
 
     handleChange = event => {
         let value = event.target.value;
+        this.props.setChoice('point');
         if (value.length > 3) {
             this.props.onChange(value)
         } else {
