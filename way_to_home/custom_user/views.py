@@ -36,6 +36,7 @@ from way_to_home.settings import (DOMAIN,
                                   STATE)
 
 
+TTL_TOKEN = 60 * 60
 TTL_USER_ID_COOKIE = 60 * 60 * 24 * 14
 
 
@@ -58,7 +59,7 @@ def signup(request):
 
     ctx = {
         'domain': DOMAIN,
-        'token': create_token(data={'email': user.email})
+        'token': create_token(data={'email': user.email}, expiration_time=TTL_TOKEN)
     }
 
     mail_subject = 'Активувати акаунт'
@@ -194,7 +195,7 @@ def reset_password(request):
 
     ctx = {
         'domain': DOMAIN,
-        'token': create_token(data={'email': user.email})
+        'token': create_token(data={'email': user.email}, expiration_time=TTL_TOKEN)
     }
 
     mail_subject = 'Скинути пароль'
