@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import Button from '@material-ui/core/Button';
 
 import { CustomizedSnackbars } from '../..';
@@ -18,15 +17,28 @@ export default class RouteSearchForm extends Component {
         const { pointA, pointB } = this.state;
         const markerStart = this.props.pointMarkerStart;
         const markerEnd = this.props.pointMarkerEnd;
-        if((pointA && pointB) || (markerStart.lat !== markerEnd.lat && markerStart.lng !== markerEnd.lng)){
-            if(this.props.choice === 'marker'){
-                this.convertToAddress(markerStart.lat, markerStart.lng, 'A');
-                this.convertToAddress(markerEnd.lat, markerEnd.lng, 'B');
+        const choice = this.props.choice;
+        if((markerStart.lat !== markerEnd.lat && markerStart.lng !== markerEnd.lng) || (pointA && pointB)){
+            if(choice === 'point' && (!(pointA && pointB) || pointA === pointB)){
+                this.setError("Координати початку і кінця не повинні бути одинаковими чи пустими.");
+                return;
             }
             this.props.getCoordsWay();
+
+            if(choice === 'marker') {
+                this.reflectAddress();
+            }
             return;
         }
+
         this.setError("Введіть координати початку і кінця маршруту.");
+    };
+
+    reflectAddress = () =>{
+        const markerStart = this.props.pointMarkerStart;
+        const markerEnd = this.props.pointMarkerEnd;
+        this.props.convertToAddress(markerStart.lat, markerStart.lng, this.setPointA);
+        this.props.convertToAddress(markerEnd.lat, markerEnd.lng, this.setPointB);
     };
 
     getCurrentPosition = point => {
@@ -41,43 +53,11 @@ export default class RouteSearchForm extends Component {
     };
 
     handleSuccess = (position, point) => {
+        let setFunc = point === 'A' ? this.setPointA : this.setPointB;
         let latitude  = position.coords.latitude;
         let longitude = position.coords.longitude;
-        this.convertToAddress(latitude, longitude, point);
-    };
-
-    convertToAddress = (latitude, longitude, point) => {
-        let url = 'https://nominatim.openstreetmap.org/reverse';
-        axios.get(url, {
-            params: {
-                format: 'jsonv2',
-                lat: latitude,
-                lon: longitude
-            }
-        })
-            .then(response => {
-                const address = this.getAddress(response);
-                if (point === 'A')
-                    this.setPointA(address);
-                else
-                    this.setPointB(address);
-            })
-            .catch(error => {
-                this.setError("Неможливо визначити адресу.");
-            });
-    };
-
-    getAddress = response => {
-        const address = response.data.address;
-        let addr = `${address.town || address.city}, ${address.road || address.path || address.suburb}`;
-
-        if (address.house_number)
-            addr += `, ${address.house_number}`;
-
-        if (addr.includes("undefined"))
-            addr = "Неможливо визначити вашу геолокацію.";
-
-        return addr;
+        this.props.convertToAddress(latitude, longitude, setFunc);
+        this.props.setChoice('point');
     };
 
     setPointA = pointA => {
@@ -102,9 +82,9 @@ export default class RouteSearchForm extends Component {
         return (
             <div className='searchForm'>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Точка A' value={ pointA } onChange={this.setPointA}/>
+                <InputPoint name='Точка A' value={ pointA } onChange={this.setPointA} setChoice={this.props.setChoice}/>
                 <div style={{marginTop: '50px'}}></div>
-                <InputPoint name='Точка Б' value={ pointB } onChange={this.setPointB}/>
+                <InputPoint name='Точка Б' value={ pointB } onChange={this.setPointB} setChoice={this.props.setChoice}/>
                 <div style={{marginTop: '60px'}}></div>
                 <Button variant='contained' color='primary' size='medium' onClick={this.onClick} className='Btn'>
                     ПОШУК
