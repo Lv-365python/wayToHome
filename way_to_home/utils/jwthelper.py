@@ -8,15 +8,15 @@ SECRET_KEY = settings.JWT_KEY
 ALGORITHM = settings.JWT_ALGORITHM
 
 
-def create_token(data, expiration_time=None, not_before_time=None):
+def create_token(data, expiration_time=None, time_before=None):
     """Function that creates JWT with received date and certain expiration time."""
     try:
         if expiration_time:
             exp = int(timezone.now().timestamp()) + expiration_time
             data['exp'] = exp
 
-        if not_before_time:
-            nbf = int(timezone.now().timestamp()) + not_before_time
+        if time_before:
+            nbf = int(timezone.now().timestamp()) + time_before
             data['nbf'] = nbf
 
         token = jwt.encode(data, SECRET_KEY, ALGORITHM).decode("utf-8")
