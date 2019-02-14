@@ -3,6 +3,10 @@ import axios from 'axios';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { CustomizedSnackbars } from '../index';
 
@@ -13,6 +17,7 @@ export default class confirm_reset_pass extends Component{
         save_disabled: true,
         ajaxError: undefined,
         new_password_error: false,
+        password_visible: false
     };
 
     setMessage = (message, type) => {
@@ -25,6 +30,10 @@ export default class confirm_reset_pass extends Component{
     handlePassword = (pass) => {
         let regex = /^(?=.*?\d)(?=.*?[A-Z])(?=.*?[a-z])[A-Za-z\d]*$/;
         return regex.test(pass);
+    };
+
+    handleClickShowPassword = () => {
+        this.setState(state => ({ password_visible: !state.password_visible }));
     };
 
     newPasswordChange = (event) => {
@@ -75,9 +84,26 @@ export default class confirm_reset_pass extends Component{
                     label = {this.state.new_password_error? "Непідходящий пароль" : "Новий пароль"}
                     className = "profileFields"
                     value = {this.state.new_password}
+                    autoComplete="current-password"
+                    margin="normal"
+                    variant="filled"
                     onChange = {this.newPasswordChange}
-                    type = "new_password"
-                    error = {this.state.new_password_error}
+                    type={this.state.password_visible ? 'text' : 'password'}
+                    error = {this.state.new_password_error
+                    }
+
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
+                                >
+                                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
                 />
                 <div className="buttonsDiv">
                     <Button
