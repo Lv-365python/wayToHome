@@ -92,7 +92,7 @@ export default class ProfileTab extends React.Component {
                 });
             })
             .catch(error => {
-                this.setMessage('Не вдалося завантажити данні.', 'error')
+                this.setMessage('Не вдалося завантажити дані.', 'error')
             })
     };
 
@@ -103,10 +103,10 @@ export default class ProfileTab extends React.Component {
             last_name: this.state.last_name,
         })
             .then(response => {
-                this.setMessage('Зміни профілю збережено.', 'success')
+                this.setMessage('Зміни збережено.', 'success')
             })
             .catch(error => {
-                this.setMessage('Не вдалося зберегти дані.', 'error')
+                this.setMessage('Не вдалося зберегти зміни.', 'error')
             })
     };
 
@@ -116,18 +116,24 @@ export default class ProfileTab extends React.Component {
             phone: this.state.phone_number,
         })
             .then(response => {
-                this.setMessage('Зміни номеру телефону збережено.', 'success')
+                this.setMessage('Зміни збережено.', 'success')
             })
             .catch(error => {
-                this.setMessage('Не вдалося зберегти данні', 'error')
+                this.setMessage('Не вдалося зберегти зміни', 'error')
             })
     };
 
     saveToDatabase = (event) => {
-        if (!this.state.phone_error) {
+        if (!this.state.phone_error &&
+            this.state.phone_number !== this.state.initial_phone_number)
+        {
             this.savePhone();
         }
-        this.saveProfile();
+         if (this.state.name !== this.state.initial_first_name ||
+            this.state.last_name !== this.state.initial_last_name)
+         {
+            this.saveProfile();
+        }
         this.setState({
             save_disabled: true,
         });
@@ -164,7 +170,7 @@ export default class ProfileTab extends React.Component {
 
     textFieldChangeFirstName = (event) => {
         let checked = event.target.value;
-        this.setState({first_name: checked})
+        this.setState({first_name: checked});
         this.checkSaveActive(checked, this.state.last_name,
             this.state.phone_number, this.state.phone_error)
     };
@@ -320,6 +326,7 @@ export default class ProfileTab extends React.Component {
                         disableAutoFocus={true}>
                         <AdvancedSettings
                             close={this.modalAdvancedClose}
+                            email={this.state.email}
                         />
                     </Modal>
                 </div>
