@@ -15,37 +15,49 @@ export default class ResultForm extends Component {
 
     isBus = () => {
         let style = {'display': 'flex', 'justifyContent': 'center', 'marginTop': '15%'};
-         let info = this.props.routes.legs[0];
+        let info = this.props.routes.legs[0];
 
         if ((info.steps).length === 3) {
-            return <td style={style} >
-                {info.steps[1].transit.line.short_name}
-            </td>
+            if (info.steps[1].transit) {
+                return <td style={style}>
+                    {info.steps[1].transit.line.short_name}
+                </td>
+            } else return <td>---</td>
         } else if ((info.steps).length === 4) {
-            return <td style={style} >
-                {info.steps[1].transit.line.short_name}
-                +
-                {info.steps[2].transit.line.short_name}
-            </td>
+            if (info.steps[1].transit) {
+                return <td style={style}>
+                    {info.steps[1].transit.line.short_name}
+                    +
+                    {info.steps[2].transit.line.short_name}
+                </td>
+            }
+            else return <td>---</td>
         }
         return <td>---</td>
     };
 
     isWalk = () => {
+        if(this.props.routes.legs[0].steps[0].travel_mode === "TRANSIT"){
+            return true}
         return (this.props.routes.legs[0].steps).length > 1
     };
 
     isFare = () => {
         if ((this.props.routes.legs[0].steps).length > 5) {
-            return <p></p>
+            return <p>Неможливо визначити маршрут за межами міста.</p>
         }
         if ((this.props.routes.legs[0].steps).length > 1) {
-            return <p>Вартість: {this.props.routes.fare.value} грн</p>
+            if (this.props.routes.fare) {
+                return <p>Вартість: {this.props.routes.fare.value} грн</p>
+            }
+        else return <p></p>
         }
     };
 
     isRoute = () => {
         let info = this.props.routes.legs[0];
+        if(this.props.routes.legs[0].steps[0].travel_mode === "TRANSIT"){
+            return <p>Неможливо визначити маршрут за межами міста.</p>}
         if ((info.steps).length === 3) {
             return <p>
                 ({parseInt(info.duration.value/60) -
@@ -65,7 +77,7 @@ export default class ResultForm extends Component {
                 parseInt(info.steps[2].duration.value/60)}
                 хв. транспортом
             </p>
-        }
+        } else return <p>Неможливо визначити маршрут за межами міста.</p>
     };
 
     handleTransportType = () => {
@@ -73,14 +85,18 @@ export default class ResultForm extends Component {
         let info = this.props.routes.legs[0];
 
         if ((info.steps).length > 1) {
-            let type = info.steps[1].transit.line.vehicle.name;
-            if (type === 'Share taxi' || type === 'Bus') {
-                return <DirectionsBusIcon style={style}/>
-            } else if (type === 'Tram') {
-                return <TramIcon style={style}/>
-            } else if (type === 'Trolleybus') {
-                return <TrainIcon style={style}/>
-            }
+            if(info.steps[1].travel_mode === "TRANSIT") {
+                let type = info.steps[1].transit.line.vehicle.name;
+                if (type === 'Share taxi' || type === 'Bus') {
+                    return <DirectionsBusIcon style={style}/>
+                } else if (type === 'Tram') {
+                    return <TramIcon style={style}/>
+                } else if (type === 'Trolleybus') {
+                    return <TrainIcon style={style}/>
+                } else return <DirectionsBusIcon style={style}/>
+            } else return <DirectionsBusIcon style={style}/>
+        } else if (info.steps[0].travel_mode === "TRANSIT") {
+              return <DirectionsBusIcon style={style}/>
         } else return <DirectionsWalkIcon style={style}/>
     };
 
@@ -93,7 +109,7 @@ export default class ResultForm extends Component {
             <Fragment>
                 {open  && <div className='resultForm'>
                     <div>
-                        <h3 style={{'marginBottom': '4%'}}>Найоптимальніший маршрут: </h3>
+                        <h3 style={{'marginBottom': '4%'}}>Оптимальний маршрут: </h3>
                         <table className='routeInfo'>
                             <tr className='resultMess'>
                                 <th>ТИП</th>
