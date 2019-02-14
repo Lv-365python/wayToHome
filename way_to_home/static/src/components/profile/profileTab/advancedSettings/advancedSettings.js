@@ -48,7 +48,7 @@ class AdvancedSettings extends Component {
     setMessage = (message, type) => {
         this.setState({
             ajaxMessage: message,
-            messageType: type,
+            message_type: type,
         });
     };
 
@@ -122,6 +122,20 @@ class AdvancedSettings extends Component {
         this.setState({old_password: changed});
     };
 
+    reLogin = () => {
+        axios.post(url+'/login', {
+            'email': this.props.email,
+            'password': this.state.new_password,
+        })
+            .then(response =>{
+                this.setMessage('Пароль змінено', 'success');
+            })
+            .catch(error =>{
+                this.setMessage('Не вдалося залогуватись під новим паролем');
+                this.props.history.go(0);
+            })
+    };
+
     saveButtonClick = (event) => {
         let uri = '/change_password';
         axios.put(url + uri, {
@@ -129,11 +143,7 @@ class AdvancedSettings extends Component {
             old_password: this.state.old_password,
         })
             .then(response =>{
-                if(response.status === 200){
-                    this.setMessage('Пароль збережено', 'success');
-                } else {
-                    this.setMessage('Не вірний старий пароль', 'error');
-                }
+                this.reLogin()
             })
             .catch(error => {
                 this.setMessage('Не вірний старий пароль', 'error');
