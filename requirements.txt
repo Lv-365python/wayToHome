@@ -10,7 +10,7 @@ colorama==0.4.1
 coverage==4.5.2
 coveralls==1.5.1
 cryptography==2.4.2
-Django==2.1.5
+Django==2.2.13
 docopt==0.6.2
 freezegun==0.3.11
 google==2.0.1
